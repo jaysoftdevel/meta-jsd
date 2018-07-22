@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;cross_beagle_chain&apos;" deleteContents="false" description="Delete resource &apos;cross_beagle_chain&apos;" element1="/cross_beagle_chain" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1439568997510"/>
+</session>

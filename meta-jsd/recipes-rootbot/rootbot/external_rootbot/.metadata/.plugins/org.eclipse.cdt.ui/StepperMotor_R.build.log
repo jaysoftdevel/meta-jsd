@@ -1,0 +1,55 @@
+20:20:11 **** Build of configuration Default for project StepperMotor_R ****
+make all 
+>> Creating GPIO lib
+make -C ../GPIO/iofunc/ clean
+make[1]: Entering directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+rm -rf *.o libiofunc.a test_app core *~
+make[1]: Leaving directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+make -C ../GPIO/iofunc/ lib
+make[1]: Entering directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+gcc    -c -o iolib.o iolib.c
+iolib.c:14:0: warning: "IOLIB_DBG" redefined
+ #define IOLIB_DBG 1
+ ^
+In file included from iolib.c:12:0:
+iolib.h:8:0: note: this is the location of the previous definition
+ #define IOLIB_DBG 0
+ ^
+iolib.c: In function ‘iolib_setdir’:
+iolib.c:137:4: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘volatile unsigned int *’ [-Wformat=]
+    printf("mmap region %d address is 0x%08x\n", i, gpio_addr[i]);
+    ^
+iolib.c:143:2: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘volatile unsigned int *’ [-Wformat=]
+  if (IOLIB_DBG) printf("address: %x\n",reg);
+  ^
+iolib.c: In function ‘iolib_delay_ms’:
+iolib.c:196:5: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘int’ [-Wformat=]
+     fprintf(stderr, "delay_ms error: %s\n", strerror(errno));
+     ^
+ar -rs libiofunc.a iolib.o 
+ar: creating libiofunc.a
+make[1]: Leaving directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+>> Compiling StepperMotor_Control sample
+gcc -Wall -c -o StepperMotor_Control.o StepperMotor_Control.c -I../GPIO/iofunc
+StepperMotor_Control.c: In function ‘main’:
+StepperMotor_Control.c:62:2: warning: implicit declaration of function ‘initGpio’ [-Wimplicit-function-declaration]
+  initGpio();
+  ^
+StepperMotor_Control.c:75:2: warning: statement with no effect [-Wunused-value]
+  for (i; i < CYCLES; i++) {
+  ^
+StepperMotor_Control.c:107:2: warning: implicit declaration of function ‘deinitGpio’ [-Wimplicit-function-declaration]
+  deinitGpio();
+  ^
+StepperMotor_Control.c: In function ‘setGPIOClock’:
+StepperMotor_Control.c:120:3: warning: ‘return’ with a value, in function returning void
+   return 0;
+   ^
+gcc -o StepperMotor_Control StepperMotor_Control.o -L../GPIO/iofunc -liofunc
+StepperMotor_Control.c: In function ‘deinitGpio’:
+StepperMotor_Control.c:176:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+
+20:20:12 Build Finished (took 742ms)
+

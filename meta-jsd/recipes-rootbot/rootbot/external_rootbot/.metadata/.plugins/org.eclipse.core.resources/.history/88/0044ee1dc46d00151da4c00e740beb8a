@@ -1,0 +1,92 @@
+#include <signal.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <setjmp.h>
+#include <pthread.h>
+
+#define DELAY 10000
+
+static int nextStep = 1;
+static int nextDisp = 1;
+static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+// threads
+pthread_t tidStep;
+pthread_t tidDisp;
+
+void actHB_handler(int x) {
+	beats++;
+	if(beats%delayStep==0){
+		nextStep=1;
+	}
+	if(beats%delayDisp==0){
+		nextDisp=1;
+	}
+	if((delayStep>delayDisp && delayStep>=beats)||(delayStep<=delayDisp && delayDisp>=beats)){
+		beats=0;
+	}
+	return;
+}
+
+
+void* threadStep(void* arg) {
+	while (1) {
+		if (nextStep) {
+			printf("step\n");
+			nextStep = 0;
+		}
+		// do stuff!!!!
+		while (!nextStep) {
+			//printf("not\n");
+			usleep(100);
+		}
+	}
+}
+
+void* threadDisp(void* arg) {
+
+	while (1) {
+		if (nextDisp) {
+			printf("disp\n");
+			nextDisp = 0;
+		}
+		// do stuff!!!!
+		while (!nextDisp) {
+			//printf("not\n");
+			usleep(100);
+		}
+	}
+}
+
+int main(int argc, char ** argv) {
+
+	// creating and running stepper thread
+	if (pthread_create(&tidStep, NULL, &threadStep, NULL) != 0) {
+		printf("error creating thread\n");
+		return -1;
+	}
+	// creating and running display thread
+	if (pthread_create(&tidDisp, NULL, &threadDisp, NULL) != 0) {
+		printf("error creating thread\n");
+		return -1;
+	}
+	struct sigaction actHB;
+	// display handler
+	actHB.sa_handler = actHB_handler;
+	actHB.sa_flags = SA_ONSTACK;
+	sigaction(SIGALRM, &actHB, NULL);
+
+	/* Set an alarm to go off after 1,000 microseconds (one thousandth
+	 of a second). */
+	printf("go\n");
+	while (1) {
+		ualarm(heartBeat, heartBeat);
+		printf("beat\n")
+		// do stuff!!!!
+		while (1) {
+			//printf("not\n");
+			usleep(100);
+		}
+	}
+	return 0;
+}

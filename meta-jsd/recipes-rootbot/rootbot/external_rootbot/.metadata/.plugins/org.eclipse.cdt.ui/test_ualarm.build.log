@@ -1,0 +1,15 @@
+16:46:55 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+
+16:46:56 Build Finished (took 1s.533ms)
+

@@ -1,0 +1,2278 @@
+18:34:05 **** Build of configuration BBB for project test_remote ****
+make all 
+Building file: ../main.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"main.d" -MT"main.d" -o "main.o" "../main.c"
+../main.c:9:6: warning: return type of ‘main’ is not ‘int’ [-Wmain]
+ void main(){
+      ^
+Finished building: ../main.c
+ 
+Building target: test_remote
+Invoking: GCC C Linker
+gcc  -o "test_remote"  ./main.o   
+Finished building target: test_remote
+ 
+18:41:04 **** Incremental Build of configuration BBB for project test_remote ****
+make all 
+make: Nothing to be done for 'all'.
+18:47:58 **** Incremental Build of configuration BBB for project test_remote ****
+make all 
+make: Nothing to be done for 'all'.
+19:13:07 **** Clean-only build of configuration Debug for project hcsr04 ****
+19:13:07 **** Clean-only build of configuration Debug for project hcsr04 ****
+rm -rf hcsr04.d hcsr04.o hcsr04 
+Cannot run program "rm": Unknown reason
+
+19:13:08 **** Clean-only build of configuration Debug for project hcsr04 ****
+19:13:08 **** Build of configuration Debug for project hcsr04 ****
+19:13:08 **** Build of configuration Debug for project hcsr04_2 ****
+19:13:08 **** Build of configuration Debug for project hcsr04_3 ****
+19:13:08 **** Build of configuration Debug for project hcsr04_FL ****
+19:13:08 **** Clean-only build of configuration Debug for project lcd_kernel_module ****
+make clean 
+rm -rf  ./st7565.o ./st7565.mod.o  ./st7565.d ./st7565.mod.d  lcd_kernel_module
+ 
+19:13:09 **** Build of configuration Debug for project lcd_kernel_module ****
+make all 
+Building file: ../st7565.c
+Invoking: GCC C Compiler
+arm-linux-gnueabi-gcc -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/arch/arm/include -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/arch/arm/include/generated/asm -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"st7565.d" -MT"st7565.d" -o "st7565.o" "../st7565.c"
+In file included from ../st7565.c:1:0:
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:153:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘load_default_modules’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:154:12: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘init_rootfs’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:254:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘parse_early_param’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:255:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘parse_early_options’
+In file included from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/spinlock.h:50:0,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/seqlock.h:35,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/time.h:5,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/stat.h:18,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/module.h:10,
+                 from ../st7565.c:2:
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/preempt.h:20:25: fatal error: asm/preempt.h: No such file or directory
+compilation terminated.
+subdir.mk:25: recipe for target 'st7565.o' failed
+make: *** [st7565.o] Error 1
+20:20:11 **** Build of configuration Default for project GPIO ****
+make all 
+make: *** No rule to make target 'all'.  Stop.
+20:20:11 **** Build of configuration Default for project StepperMotor_R ****
+make all 
+>> Creating GPIO lib
+make -C ../GPIO/iofunc/ clean
+make[1]: Entering directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+rm -rf *.o libiofunc.a test_app core *~
+make[1]: Leaving directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+make -C ../GPIO/iofunc/ lib
+make[1]: Entering directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+gcc    -c -o iolib.o iolib.c
+iolib.c:14:0: warning: "IOLIB_DBG" redefined
+ #define IOLIB_DBG 1
+ ^
+In file included from iolib.c:12:0:
+iolib.h:8:0: note: this is the location of the previous definition
+ #define IOLIB_DBG 0
+ ^
+iolib.c: In function ‘iolib_setdir’:
+iolib.c:137:4: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 3 has type ‘volatile unsigned int *’ [-Wformat=]
+    printf("mmap region %d address is 0x%08x\n", i, gpio_addr[i]);
+    ^
+iolib.c:143:2: warning: format ‘%x’ expects argument of type ‘unsigned int’, but argument 2 has type ‘volatile unsigned int *’ [-Wformat=]
+  if (IOLIB_DBG) printf("address: %x\n",reg);
+  ^
+iolib.c: In function ‘iolib_delay_ms’:
+iolib.c:196:5: warning: format ‘%s’ expects argument of type ‘char *’, but argument 3 has type ‘int’ [-Wformat=]
+     fprintf(stderr, "delay_ms error: %s\n", strerror(errno));
+     ^
+ar -rs libiofunc.a iolib.o 
+ar: creating libiofunc.a
+make[1]: Leaving directory '/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/GPIO/iofunc'
+>> Compiling StepperMotor_Control sample
+gcc -Wall -c -o StepperMotor_Control.o StepperMotor_Control.c -I../GPIO/iofunc
+StepperMotor_Control.c: In function ‘main’:
+StepperMotor_Control.c:62:2: warning: implicit declaration of function ‘initGpio’ [-Wimplicit-function-declaration]
+  initGpio();
+  ^
+StepperMotor_Control.c:75:2: warning: statement with no effect [-Wunused-value]
+  for (i; i < CYCLES; i++) {
+  ^
+StepperMotor_Control.c:107:2: warning: implicit declaration of function ‘deinitGpio’ [-Wimplicit-function-declaration]
+  deinitGpio();
+  ^
+StepperMotor_Control.c: In function ‘setGPIOClock’:
+StepperMotor_Control.c:120:3: warning: ‘return’ with a value, in function returning void
+   return 0;
+   ^
+gcc -o StepperMotor_Control StepperMotor_Control.o -L../GPIO/iofunc -liofunc
+StepperMotor_Control.c: In function ‘deinitGpio’:
+StepperMotor_Control.c:176:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+20:20:12 **** Build of configuration Debug for project Testdriver ****
+make all 
+Building file: ../HAL/test.c
+Invoking: GCC C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"HAL/test.d" -MT"HAL/test.d" -o "HAL/test.o" "../HAL/test.c"
+../HAL/test.c:7:17: fatal error: lcd.h: No such file or directory
+ #include "lcd.h"
+HAL/subdir.mk:18: recipe for target 'HAL/test.o' failed
+                 ^
+compilation terminated.
+make: *** [HAL/test.o] Error 1
+20:20:13 **** Clean-only build of configuration Debug for project hcsr04 ****
+20:20:13 **** Clean-only build of configuration Debug for project hcsr04 ****
+rm -rf hcsr04.d hcsr04.o hcsr04 
+Cannot run program "rm": Unknown reason
+
+20:20:13 **** Clean-only build of configuration Debug for project hcsr04 ****
+20:20:13 **** Incremental Build of configuration Debug for project hcsr04 ****
+20:20:14 **** Incremental Build of configuration Debug for project lcd_kernel_module ****
+make all 
+Building file: ../st7565.c
+Invoking: GCC C Compiler
+arm-linux-gnueabi-gcc -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/arch/arm/include -I/media/Data2/Projects/linux-headers-3.14.22-ti-r31/arch/arm/include/generated/asm -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"st7565.d" -MT"st7565.d" -o "st7565.o" "../st7565.c"
+In file included from ../st7565.c:1:0:
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:153:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘load_default_modules’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:154:12: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘init_rootfs’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:254:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘parse_early_param’
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/init.h:255:13: error: expected ‘=’, ‘,’, ‘;’, ‘asm’ or ‘__attribute__’ before ‘parse_early_options’
+In file included from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/spinlock.h:50:0,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/seqlock.h:35,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/time.h:5,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/stat.h:18,
+                 from /media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/module.h:10,
+                 from ../st7565.c:2:
+/media/Data2/Projects/linux-headers-3.14.22-ti-r31/include/linux/preempt.h:20:25: fatal error: asm/preempt.h: No such file or directory
+compilation terminated.
+subdir.mk:25: recipe for target 'st7565.o' failed
+make: *** [st7565.o] Error 1
+13:07:58 **** Build of configuration Default for project GPIO ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:58 **** Build of configuration Debug for project Testdriver ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:58 **** Clean-only build of configuration Debug for project hcsr04 ****
+make clean 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:58 **** Incremental Build of configuration Debug for project hcsr04 ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:59 **** Incremental Build of configuration Debug for project lcd_kernel_module ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:59 **** Build of configuration Default for project stepperR ****
+make all 
+Cannot run program "make": Launching failed
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+13:07:59 **** Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:15:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:15:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:08:05 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:08:15 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:08:46 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:09:19 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:11:08 **** Build of configuration Debug for project test_ualarm ****
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:11:21 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:12:46 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:13:39 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:13:48 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+make: Nothing to be done for 'all'.
+13:16:32 **** Incremental Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:17:36 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:18:02 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:18:24 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:18:40 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:18:50 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:19:05 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:19:21 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:19:32 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:19:44 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:19:57 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:20:20 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:20:32 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:21:19 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+  printf ("%d\n",j);
+  ^
+../ualarm_test.c:16:2: warning: format '%d' expects argument of type 'int', but argument 2 has type 'long int' [-Wformat=]
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:21:35 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:21:58 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:22:18 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:22:40 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:23:00 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:24:15 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:17: warning: 'j' defined but not used [-Wunused-variable]
+ static long int j=0;
+                 ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:27:03 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:21: error: 'true' undeclared here (not in a function)
+ static int nextStep=true;
+                     ^
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:10:12: warning: 'nextStep' defined but not used [-Wunused-variable]
+ static int nextStep=true;
+            ^
+make: *** [ualarm_test.o] Error 1
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+13:27:46 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:27:59 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:28:20 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:28:46 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:29:12 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:29:53 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:30:34 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'signal_handler':
+../ualarm_test.c:16:3: error: 'offset' undeclared (first use in this function)
+   offset=50000;
+   ^
+../ualarm_test.c:16:3: note: each undeclared identifier is reported only once for each function it appears in
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+13:30:45 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:31:02 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:31:32 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:33:40 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:55:19: error: expected expression before 'void'
+   while(!nextStep)void(0);
+                   ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+13:33:49 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:55:26: error: expected ')' before numeric constant
+   while(!nextStep){(void(0))};
+                          ^
+../ualarm_test.c:55:29: error: expected ';' before '}' token
+   while(!nextStep){(void(0))};
+                             ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+make: *** [ualarm_test.o] Error 1
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+13:34:00 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:55:29: error: expected ';' before '}' token
+   while(!nextStep){((void)0)};
+                             ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+13:34:10 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:55:29: error: expected ';' before '}' token
+   while(!nextStep){((void)0)}
+                             ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+make: *** [ualarm_test.o] Error 1
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+13:34:21 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:34:57 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:37:45 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:38:09 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:39:51 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:40:18 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:40:49 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:41:00 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:41:22 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:42:40 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:43:42 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:44:53 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:46:44 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:12:31: warning: 'delayDisp' defined but not used [-Wunused-variable]
+ static int delayStep = 10000, delayDisp = 100000, offset;
+                               ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:49:20 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:49:57 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:58:4: error: expected ';' before 'usleep'
+    usleep(100);
+    ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+13:50:03 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:51:44 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:53:4: warning: implicit declaration of function 'prinf' [-Wimplicit-function-declaration]
+    prinf("disp\n");
+    ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/cygdrive/c/work_dju/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:53: undefined reference to `prinf'
+/cygdrive/c/work_dju/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:53:(.text+0x155): relocation truncated to fit: R_X86_64_PC32 against undefined symbol `prinf'
+collect2: error: ld returned 1 exit status
+makefile:29: recipe for target 'test_ualarm.exe' failed
+make: *** [test_ualarm.exe] Error 1
+13:51:58 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:9:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:56:38 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+13:57:50 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'pthread_create':
+../ualarm_test.c:20:33: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+ void signal_handler_step(int x) {
+                                 ^
+../ualarm_test.c:32:33: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+ void signal_handler_disp(int x) {
+                                 ^
+../ualarm_test.c:38:34: error: expected '=', ',', ';', 'asm' or '__attribute__' before '{' token
+ int main(int argc, char ** argv) {
+                                  ^
+../ualarm_test.c:70:1: error: number of arguments doesn't match prototype
+ }
+ ^
+In file included from ../ualarm_test.c:6:0:
+/usr/include/pthread.h:136:5: error: prototype declaration
+ int pthread_create (pthread_t *, const pthread_attr_t *,
+     ^
+../ualarm_test.c:70:1: error: expected '{' at end of input
+ }
+ ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:11:12: warning: 'nextStep' defined but not used [-Wunused-variable]
+ static int nextStep = 1;
+            ^
+../ualarm_test.c:12:12: warning: 'nextDisp' defined but not used [-Wunused-variable]
+ static int nextDisp = 1;
+            ^
+../ualarm_test.c:13:12: warning: 'delayStep' defined but not used [-Wunused-variable]
+ static int delayStep = 10000, delayDisp = 100000, offset;
+            ^
+../ualarm_test.c:13:31: warning: 'delayDisp' defined but not used [-Wunused-variable]
+ static int delayStep = 10000, delayDisp = 100000, offset;
+                               ^
+../ualarm_test.c:13:51: warning: 'offset' defined but not used [-Wunused-variable]
+ static int delayStep = 10000, delayDisp = 100000, offset;
+                                                   ^
+/usr/include/pthread.h: In function 'pthread_create':
+../ualarm_test.c:70:1: warning: control reaches end of non-void function [-Wreturn-type]
+ }
+ ^
+make: *** [ualarm_test.o] Error 1
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+13:58:04 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:00:57 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:01:16 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:01:56 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:02:27 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:03:05 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:04:45 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:05:53 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:08:01 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:08:33 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:09:41 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:10:36 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:11:01 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:11:28 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:17:13 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:7:18: fatal error: glib.h: No such file or directory
+ #include <glib.h>
+                  ^
+compilation terminated.
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+14:28:18 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+14:43:41 **** Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:9:55: fatal error: linux/module.h: No such file or directory
+ #include <linux/module.h>  /* Needed by all modules */
+                                                       ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:09:38 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:55: fatal error: linux/module.h: No such file or directory
+ #include <linux/module.h>  /* Needed by all modules */
+                                                       ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:09:44 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:55: fatal error: linux/module.h: No such file or directory
+ #include <linux/module.h>  /* Needed by all modules */
+                                                       ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:10:43 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:26: fatal error: linux/kernel.h: No such file or directory
+ #include <linux/kernel.h>
+                          ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:21:54 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:26: fatal error: linux/kernel.h: No such file or directory
+ #include <linux/kernel.h>
+                          ^
+compilation terminated.
+make: *** [kernel_timer.o] Error 1
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+15:22:02 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:26: fatal error: linux/kernel.h: No such file or directory
+ #include <linux/kernel.h>
+                          ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:23:14 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:26: fatal error: linux/kernel.h: No such file or directory
+ #include <linux/kernel.h>
+                          ^
+compilation terminated.
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+make: *** [kernel_timer.o] Error 1
+15:23:40 **** Auto Build of configuration Debug for project test_kernel_timer ****
+make all 
+Building file: ../kernel_timer.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"kernel_timer.d" -MT"kernel_timer.d" -o "kernel_timer.o" "../kernel_timer.c"
+../kernel_timer.c:14:26: fatal error: linux/kernel.h: No such file or directory
+ #include <linux/kernel.h>
+                          ^
+compilation terminated.
+make: *** [kernel_timer.o] Error 1
+subdir.mk:18: recipe for target 'kernel_timer.o' failed
+15:40:32 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:13:60: warning: 'heartbeat' defined but not used [-Wunused-variable]
+ static int delayStep = 200000, delayDisp = 500000, offset, heartbeat=1000;
+                                                            ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:41:10 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:41:59 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'threadStep':
+../ualarm_test.c:35:23: error: 'signal_handler_step' undeclared (first use in this function)
+  actStep.sa_handler = signal_handler_step;
+                       ^
+../ualarm_test.c:35:23: note: each undeclared identifier is reported only once for each function it appears in
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:83:21: error: 'signal_handler_disp' undeclared (first use in this function)
+  actHB.sa_handler = signal_handler_disp;
+                     ^
+../ualarm_test.c:85:21: warning: passing argument 2 of 'sigaction' from incompatible pointer type [-Wincompatible-pointer-types]
+  sigaction(SIGALRM, &actHB_handler, NULL);
+                     ^
+In file included from /usr/include/signal.h:4:0,
+                 from ../ualarm_test.c:1:
+/usr/include/sys/signal.h:191:5: note: expected 'const struct sigaction *' but argument is of type 'void (*)(int)'
+ int _EXFUN(sigaction, (int, const struct sigaction *, struct sigaction *));
+     ^
+../ualarm_test.c:81:19: warning: variable 'actHB' set but not used [-Wunused-but-set-variable]
+  struct sigaction actHB;
+                   ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+make: *** [ualarm_test.o] Error 1
+15:47:29 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:13:46: warning: 'offset' defined but not used [-Wunused-variable]
+ static int delayStep = 200, delayDisp = 500, offset, heartBeat = 1000, beats=0;
+                                              ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:51:27 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:13:46: warning: 'offset' defined but not used [-Wunused-variable]
+ static int delayStep = 200, delayDisp = 500, offset, heartBeat = 1000, beats=0;
+                                              ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:52:36 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:13:48: warning: 'offset' defined but not used [-Wunused-variable]
+ static int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:53:02 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:10:16: warning: 'buf' defined but not used [-Wunused-variable]
+ static jmp_buf buf;
+                ^
+../ualarm_test.c:13:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:54:13 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:54:37 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'main':
+../ualarm_test.c:86:3: error: expected ';' before 'while'
+   while (1) {
+   ^
+../ualarm_test.c: At top level:
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+make: *** [ualarm_test.o] Error 1
+subdir.mk:18: recipe for target 'ualarm_test.o' failed
+15:54:39 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:55:06 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:55:19 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:55:50 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:56:01 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 2000, delayDisp = 5000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:56:29 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 1000, delayDisp = 3000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:57:23 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:12:57: warning: 'offset' defined but not used [-Wunused-variable]
+ static unsigned int delayStep = 1000, delayDisp = 3000, offset, heartBeat = 1000, beats=0;
+                                                         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+15:59:33 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c:16:21: warning: 'beatDisp' defined but not used [-Wunused-variable]
+ static unsigned int beatDisp=0;
+                     ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:00:19 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:01:16 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:01:26 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:02:32 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:06:33 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:06:36 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:07:40 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:07:48 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:08:08 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:08:35 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:09:24 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:09:36 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:10:05 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:11:02 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:11:53 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'threadStep':
+../ualarm_test.c:38:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+../ualarm_test.c: In function 'threadDisp':
+../ualarm_test.c:53:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:20:01 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'threadStep':
+../ualarm_test.c:38:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+../ualarm_test.c: In function 'threadDisp':
+../ualarm_test.c:53:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:26:38 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+../ualarm_test.c: In function 'threadStep':
+../ualarm_test.c:38:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+../ualarm_test.c: In function 'threadDisp':
+../ualarm_test.c:53:9: warning: type defaults to 'int' in declaration of 'cnt' [-Wimplicit-int]
+  static cnt=0;
+         ^
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:28:42 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+16:46:55 **** Auto Build of configuration Debug for project test_ualarm ****
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+Finished building target: test_ualarm.exe
+ 
+
+**** Build of configuration Debug for project test_ualarm ****
+
+Nothing to build for project test_ualarm
+21:40:12 **** Clean-only build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make clean 
+rm -rf  ./ualarm_test.o  ./ualarm_test.d  test_ualarm.exe
+ 
+21:40:13 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:40:22 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:40:31 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:41:27 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:41:47 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:43:42 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:44:21 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:45:03 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+21:45:44 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+22:58:04 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Building file: ../ualarm_test.c
+Invoking: Cygwin C Compiler
+gcc -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"ualarm_test.d" -MT"ualarm_test.d" -o "ualarm_test.o" "../ualarm_test.c"
+Finished building: ../ualarm_test.c
+ 
+Building target: test_ualarm.exe
+Invoking: Cygwin C Linker
+gcc  -o "test_ualarm.exe"  ./ualarm_test.o   
+./ualarm_test.o: In function `main':
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:70: undefined reference to `pthread_create'
+makefile:29: recipe for target 'test_ualarm.exe' failed
+/media/Data3/dropbox/my_Dropbox/Dropbox/BBB_new/Projects/test_ualarm/Debug/../ualarm_test.c:75: undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make: *** [test_ualarm.exe] Error 1
+11:18:19 **** Clean-only build of configuration Debug for project test_kernel_timer ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make clean 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+11:18:19 **** Auto Build of configuration Debug for project test_kernel_timer ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+11:18:20 **** Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:15:40 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:15:58 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:16:14 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:17:34 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:19:01 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:19:14 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:19:56 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:20:00 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:20:57 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
+12:21:45 **** Auto Build of configuration Debug for project test_ualarm ****
+Info: Configuration "Debug" uses tool-chain "Cygwin GCC" that is unsupported on this system, attempting to build anyway.
+make all 
+Cannot run program "make": Unknown reason
+
+Error: Program "make" not found in PATH
+PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]

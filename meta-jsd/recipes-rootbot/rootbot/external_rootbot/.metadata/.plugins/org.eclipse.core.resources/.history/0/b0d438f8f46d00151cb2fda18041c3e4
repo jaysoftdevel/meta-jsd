@@ -1,0 +1,4 @@
+CC=gcc
+INC=-lpthread
+all: ualarm_test.c
+	$(CC) -s -o $@ $< $(INC)

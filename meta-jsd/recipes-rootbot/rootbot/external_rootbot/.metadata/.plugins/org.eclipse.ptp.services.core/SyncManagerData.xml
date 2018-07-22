@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sync-manager-data auto-sync="true">
+<project-to-sync-mode project="GPIO" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="hcsr04_3" sync-mode="NONE"/>
+<project-to-sync-mode project="stepperR" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="hcsr04" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="Testdriver" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="hcsr04_FL" sync-mode="NONE"/>
+<project-to-sync-mode project="lcd_kernel_module" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="test_ualarm" sync-mode="ACTIVE"/>
+<project-to-sync-mode project="testPrj" sync-mode="NONE"/>
+<project-to-sync-mode project="hcsr04_2" sync-mode="NONE"/>
+<project-to-sync-mode project="StepperMotor_R" sync-mode="NONE"/>
+<default-file-filter num-patterns="4">
+<pattern pattern-rank="0" pattern-type="EXCLUDE">
+<pattern class-name="org.eclipse.ptp.rdt.sync.core.PathResourceMatcher" path=".ptp-sync"/>
+</pattern>
+<pattern pattern-rank="1" pattern-type="EXCLUDE">
+<pattern class-name="org.eclipse.ptp.rdt.sync.core.PathResourceMatcher" path=".settings"/>
+</pattern>
+<pattern pattern-rank="2" pattern-type="EXCLUDE">
+<pattern class-name="org.eclipse.ptp.rdt.sync.core.PathResourceMatcher" path=".cproject"/>
+</pattern>
+<pattern pattern-rank="3" pattern-type="EXCLUDE">
+<pattern class-name="org.eclipse.ptp.rdt.sync.core.PathResourceMatcher" path=".project"/>
+</pattern>
+</default-file-filter>
+</sync-manager-data>

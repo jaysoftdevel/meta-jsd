@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;Testdriver/HAL/ualarm_test.c&apos; to &apos;scheduler.c&apos;" description="Rename resource &apos;ualarm_test.c&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="HAL/ualarm_test.c" name="scheduler.c" stamp="1444991000461" updateReferences="true"/>
+</session>

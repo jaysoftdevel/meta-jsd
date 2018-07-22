@@ -1,0 +1,3 @@
+CC=gcc
+all: ualarm_test.c
+	$(CC) -s -o $@
