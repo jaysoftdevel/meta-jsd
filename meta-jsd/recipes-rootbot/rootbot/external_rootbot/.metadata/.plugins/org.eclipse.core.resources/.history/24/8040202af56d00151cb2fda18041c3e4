@@ -1,5 +1,0 @@
-CC=gcc
-INC=-lpthread
-ualarm_test:
-	$(CC) -s -o $@b $< $(INC)
-all: ualarm_test

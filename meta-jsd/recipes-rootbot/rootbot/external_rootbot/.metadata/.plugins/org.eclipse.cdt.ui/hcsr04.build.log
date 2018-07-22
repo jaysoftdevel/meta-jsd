@@ -1,9 +1,0 @@
-13:07:58 **** Incremental Build of configuration Debug for project hcsr04 ****
-make all 
-Cannot run program "make": Launching failed
-
-Error: Program "make" not found in PATH
-PATH=[C:/Program Files/Java/jre8/bin/server;C:/Program Files/Java/jre8/bin;C:/Program Files/Java/jre8/lib/amd64;C:\Perl64\site\bin;C:\Perl64\bin;C:\ProgramData\Oracle\Java\javapath;C:\Windows\system32;C:\Windows;C:\Windows\System32\Wbem;C:\Windows\System32\WindowsPowerShell\v1.0\;C:\Program Files\Adobe\Adobe PDF iFilter 9 for 64-bit platforms\bin;C:\Program Files\TortoiseSVN\bin;C:\Program Files\MATLAB\R2014a\bin;C:\Program Files\AbsInt\Common\Bin;C:\data_dju\eclipse]
-
-13:07:59 Build Finished (took 117ms)
-
