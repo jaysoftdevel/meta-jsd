@@ -1,0 +1,31 @@
+CC = gcc
+CFLAGS = -Wall
+PRU_ASM = pasm
+DTC = dtc
+
+all: hcsr04_FL-00A0.dtbo hcsr04_FL.bin hcsr04_FR.bin hcsr04_FL
+
+hcsr04_FL-00A0.dtbo: hcsr04_FL.dts
+	@echo "\n>> Compiling Driver"
+	$(DTC) -O dtb -o hcsr04_FL-00A0.dtbo -b 0 -@ hcsr04_FL.dts
+
+hcsr04_FL.bin: hcsr04_FL.p
+	@echo "\n>> Generating PRU binary FL"
+	$(PRU_ASM) -b hcsr04_FL.p
+
+hcsr04_FR.bin: hcsr04_FR.p
+	@echo "\n>> Generating PRU binary FR"
+	$(PRU_ASM) -b hcsr04_FR.p
+
+hcsr04_FL: hcsr04_FL.c
+	@echo "\n>> Compiling HC-SR04_FL example"
+	$(CC) $(CFLAGS) -c -o hcsr04_FL.o hcsr04_FL.c
+	$(CC) -lpthread -lprussdrv -o hcsr04_FL hcsr04_FL.o
+
+clean:
+	rm -rf hcsr04_FL hcsr04_FL.o hcsr04_FL.bin hcsr04_FR.bin hcsr04_FL-00A0.dtbo 
+
+install: hcsr04_FL-00A0.dtbo hcsr04_FL.bin hcsr04_FR.bin hcsr04_FL 
+	cp hcsr04_FL-00A0.dtbo /lib/firmware
+	# echo hcsr04_FL > /sys/devices/bone_capemgr.9/slots
+	# cat /sys/devices/bone_capemgr.9/slots

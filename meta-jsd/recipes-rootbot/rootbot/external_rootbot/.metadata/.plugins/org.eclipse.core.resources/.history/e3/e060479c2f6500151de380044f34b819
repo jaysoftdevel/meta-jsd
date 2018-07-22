@@ -1,0 +1,271 @@
+/*
+ *
+ * StepperMotor_Control.c
+ *
+ * Possible items:
+ * H-Bridge: sn754410
+ * step motor: TMCM-MOTOR
+ *
+ * according to guide:
+ * http://www.instructables.com/id/Drive-a-Stepper-Motor-with-an-AVR-Microprocessor/?ALLSTEPS
+ *
+ */
+
+#include <stdio.h>
+#include <unistd.h>
+
+#include <fcntl.h>
+#include <sys/mman.h>
+
+#include "StepperMotor_Control.h"
+#include "iolib.h"
+
+#define DEBUG 1
+#define CYCLES 100000
+
+// default DIOs
+#define PORT_P8 8
+// GPIO2_22-25
+#define COIL_PIN_NORTH 27	// BLUE
+#define COIL_PIN_EAST 28	// RED
+#define COIL_PIN_SOUTH 29	// GREEN
+#define COIL_PIN_WEST 30	// BLACK
+///* Clockwise order */
+//#define BLACK	7	// coil A pin 1
+//#define GREEN	6	// coil A pin 2
+//#define RED		5	// coil B pin 1
+//#define BLUE	4	// coil B pin 2
+#define DELAY  1500 /* microseconds between steps */
+
+// use analoges
+//#define BLACK	A0	// coil A pin 1
+//#define GREEN	A1	// coil A pin 2
+//#define RED		A2	// coil B pin 1
+//#define BLUE	A3	// coil B pin 2
+// direct accessing registers for D7-D4 -> no time benefits measued
+// stop all motors
+//	*r_BLACK &= ~m_BLACK;
+//	*r_GREEN &= ~m_GREEN;
+//	*r_RED &= ~m_RED;
+//	*r_BLUE &= ~m_BLUE;
+
+// coil connections are
+// 		black <--> green
+// 		red   <--> blue
+
+int main(void) {
+     int delay=DELAY;
+	// init gpio
+#ifdef DEBUG
+	printf("setup gpio\n");
+#endif
+	initGpio();
+	int i = 0;
+#ifdef DEBUG
+	printf("wait to get started\n");
+#endif
+	pin_low(PORT_P8, COIL_PIN_NORTH);
+	pin_low(PORT_P8, COIL_PIN_EAST);
+	pin_low(PORT_P8, COIL_PIN_SOUTH);
+	pin_low(PORT_P8, COIL_PIN_WEST);
+	usleep(2000000);
+#ifdef DEBUG
+	printf("start...\n");
+#endif
+	for (i; i < CYCLES; i++) {
+		//printf("rtp %i delay: %i\n",i,delay);
+		// roundtippin
+		pin_high(PORT_P8, COIL_PIN_NORTH);
+		pin_low(PORT_P8, COIL_PIN_EAST);
+		pin_low(PORT_P8, COIL_PIN_SOUTH);
+		pin_low(PORT_P8, COIL_PIN_WEST);
+		usleep(delay);
+		pin_low(PORT_P8, COIL_PIN_NORTH);
+		pin_high(PORT_P8, COIL_PIN_EAST);
+		pin_low(PORT_P8, COIL_PIN_SOUTH);
+		pin_low(PORT_P8, COIL_PIN_WEST);
+		usleep(delay);
+		pin_low(PORT_P8, COIL_PIN_NORTH);
+		pin_low(PORT_P8, COIL_PIN_EAST);
+		pin_high(PORT_P8, COIL_PIN_SOUTH);
+		pin_low(PORT_P8, COIL_PIN_WEST);
+		usleep(delay);
+		pin_low(PORT_P8, COIL_PIN_NORTH);
+		pin_low(PORT_P8, COIL_PIN_EAST);
+		pin_low(PORT_P8, COIL_PIN_SOUTH);
+		pin_high(PORT_P8, COIL_PIN_WEST);
+		usleep(delay);
+	}
+	pin_low(PORT_P8, COIL_PIN_NORTH);
+	pin_low(PORT_P8, COIL_PIN_EAST);
+	pin_low(PORT_P8, COIL_PIN_SOUTH);
+	pin_low(PORT_P8, COIL_PIN_WEST);
+	// deinit gpio
+#ifdef DEBUG
+	printf("done roundtripping, deiniting...\n");
+#endif
+	deinitGpio();
+	return (0);
+}
+
+/* Global variables of the driver */
+#define CM_PER_BASE 0x44e00000
+#define CM_WKUP_BASE 0x44e00400
+#define GPIO0_CLK_CONFIG_OFFSET 0x8
+
+void setGPIOClock() {
+	int fd = open("/dev/mem", O_RDWR | O_SYNC);
+	if (fd < 0) {
+		printf("Could not open GPIO memory fd\n");
+		return 0;
+	}
+
+	unsigned int *clock_gpio2;
+	clock_gpio2 = (unsigned int *) mmap(NULL, 0x1000, PROT_READ | PROT_WRITE,
+			MAP_SHARED, fd, 0x44E00000);
+	// 0xb0 is CM_PER_GPIO2_CLKCTRL as given in the TRM, use 0xb4 for GPIO_3 (see the TRM)
+	int offsetInMemory = 0xb0;
+	// get the value, we divide by 4 because it is a byte offset
+	int memValue = clock_gpio2[(offsetInMemory / 4)];
+	// print it – it will probably be 0x030000 if the clock has never been enabled
+	printf("Value = %04x\n", memValue);
+	// now set it, this enables the memory
+	clock_gpio2[(offsetInMemory / 4)] = 0x02;
+	close(fd);
+
+}
+
+int initGpio() {
+	setGPIOClock();
+	if (iolib_init() != 0) {
+		printf("error initializing gpio lib\n");
+		return (-1);
+	}
+#ifdef DEBUG
+	printf("setting up pins\n");
+#endif
+	if (iolib_setdir(PORT_P8, COIL_PIN_NORTH, DIR_OUT)) {
+		printf("could not set pin %i on port %i with direction %i\n",
+				COIL_PIN_NORTH, PORT_P8, DIR_OUT);
+		return (-2);
+	}
+	if (iolib_setdir(PORT_P8, COIL_PIN_EAST, DIR_OUT)) {
+		printf("could not set pin %i on port %i with direction %i\n",
+				COIL_PIN_EAST, PORT_P8, DIR_OUT);
+		return (-2);
+	}
+	if (iolib_setdir(PORT_P8, COIL_PIN_SOUTH, DIR_OUT)) {
+		printf("could not set pin %i on port %i with direction %i\n",
+				COIL_PIN_SOUTH, PORT_P8, DIR_OUT);
+		return (-2);
+	}
+	if (iolib_setdir(PORT_P8, COIL_PIN_WEST, DIR_OUT)) {
+		printf("could not set pin %i on port %i with direction %i\n",
+				COIL_PIN_WEST, PORT_P8, DIR_OUT);
+		return (-2);
+	}
+#ifdef DEBUG
+	printf("pins ok\n");
+#endif
+
+	return (0);
+}
+
+int deinitGpio() {
+	iolib_free();
+}
+
+void setup() {
+//	Serial.begin(9600);
+//	pinMode(BLACK, OUTPUT);
+//	pinMode(GREEN, OUTPUT);
+//	pinMode(RED, OUTPUT);
+//	pinMode(BLUE, OUTPUT);
+}
+
+void loop() {
+//	DDRB = 0xff; /* Enable output on all of the B pins */
+//	PORTB = 0x00; /* Set them all to 0v */
+//	int i = 0;
+//	unsigned long start, stop;
+
+// definition of direct register access -> no time benefits measued
+	// start address of first output D4
+//	volatile uint8_t* r_BLACK = portOutputRegister(digitalPinToPort(7));
+//	volatile uint8_t* r_GREEN = portOutputRegister(digitalPinToPort(6));
+//	volatile uint8_t* r_RED = portOutputRegister(digitalPinToPort(5));
+//	volatile uint8_t* r_BLUE = portOutputRegister(digitalPinToPort(4));
+//	uint8_t m_BLACK = digitalPinToBitMask(7);
+//	uint8_t m_GREEN = digitalPinToBitMask(6);
+//	uint8_t m_RED = digitalPinToBitMask(5);
+//	uint8_t m_BLUE = digitalPinToBitMask(4);
+
+//	stop=millis();
+//	Serial.println("second 1000 runns: ");
+//	Serial.println(stop-start);
+//	Serial.println("digitalPinToPort(4): ");
+//	Serial.println(digitalPinToPort(4));
+//	Serial.println("digitalPinToPort(5): ");
+//	Serial.println(digitalPinToPort(5));
+//	Serial.println("digitalPinToPort(6): ");
+//	Serial.println(digitalPinToPort(6));
+//	Serial.println("digitalPinToPort(7): ");
+//	Serial.println(digitalPinToPort(7));
+//	Serial.println("portOutputRegister(4): ");
+//	Serial.println((unsigned int) portOutputRegister(digitalPinToPort(4)), HEX);
+//	Serial.println("portOutputRegister(5): ");
+//	Serial.println((unsigned int) portOutputRegister(digitalPinToPort(5)), HEX);
+//	Serial.println("portOutputRegister(6): ");
+//	Serial.println((unsigned int) portOutputRegister(digitalPinToPort(6)), HEX);
+//	Serial.println("portOutputRegister(7): ");
+//	Serial.println((unsigned int) portOutputRegister(digitalPinToPort(7)), HEX);
+
+//	i = 0;
+//	delay(5000);
+//	Serial.print("\nstart");
+//	start = millis();
+//	while (i < 1000) {
+//		// dalay of 1300µs seems as smoothest/fastest running delay
+//		int y = 1300;
+//		// should be four steps... with each 1.8 deg = 7.2 deg
+//		//first
+//		digitalWrite(BLACK, 0);
+//		digitalWrite(GREEN, 0);
+//		digitalWrite(RED, 0);
+//		digitalWrite(BLUE, 1);
+//		delayMicroseconds(y);
+//		//second
+//		digitalWrite(BLACK, 0);
+//		digitalWrite(GREEN, 0);
+//		digitalWrite(RED, 1);
+//		digitalWrite(BLUE, 0);
+//		delayMicroseconds(y);
+//		//third
+//		digitalWrite(BLACK, 0);
+//		digitalWrite(GREEN, 1);
+//		digitalWrite(RED, 0);
+//		digitalWrite(BLUE, 0);
+//		delayMicroseconds(y);
+//		//fourth
+//		digitalWrite(BLACK, 1);
+//		digitalWrite(GREEN, 0);
+//		digitalWrite(RED, 0);
+//		digitalWrite(BLUE, 0);
+//		delayMicroseconds(y);
+//		i++;
+//	}
+//	stop = millis();
+//	Serial.println("reference 1000 runns: ");
+//	Serial.println(stop - start);
+//
+//	// stop all motors
+//	digitalWrite(BLACK, 0);
+//	digitalWrite(GREEN, 0);
+//	digitalWrite(RED, 0);
+//	digitalWrite(BLUE, 0);
+//
+//	Serial.println("done");
+//	while (1)
+//		;
+}
+

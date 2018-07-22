@@ -1,0 +1,7 @@
+to get ready with distance sensor code for the hc-sr04 module the dtc (device tree compiler) library needs to be installed.
+Follow the flash instructions in .. HowTo_DebianSystem.txt
+
+TBD describe the mapping procedure to assign GPIO pins in the device tree file
+
+Disable EMMc and/or HDMI:
+open /boot/uEnv uncomment the according lines

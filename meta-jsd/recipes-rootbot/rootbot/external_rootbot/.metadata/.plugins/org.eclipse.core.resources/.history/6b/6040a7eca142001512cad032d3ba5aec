@@ -1,0 +1,15 @@
+/*
+ * main.c
+ *
+ *  Created on: Aug 14, 2015
+ *      Author: done
+ */
+
+
+void main(){
+	int i=0;
+	printf("testing cross compile and remote debugging...i is %i",i);
+	i++;
+	printf("\n now i is %i\n",i);
+	return;
+}
