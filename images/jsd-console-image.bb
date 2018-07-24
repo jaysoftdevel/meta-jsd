@@ -10,13 +10,11 @@ inherit core-image
 CORE_OS = " \
     openssh openssh-keygen openssh-sftp-server \
     psplash \
-    term-prompt \
     tzdata \
  "
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    load-modules \
  "
 
 WIFI_SUPPORT = " \
@@ -60,24 +58,21 @@ DEV_SDK_INSTALL = " \
 DEV_EXTRAS = " \
     ntp \
     ntp-tickadj \
-    serialecho \
-    spiloop \
     zeromq \
     zeromq-dev \
  "
 
 EXTRA_TOOLS_INSTALL = " \
+    rootbot \
     acpid \
     bc \
     bzip2 \
-    cursor-blink \
     devmem2 \
     dosfstools \
     ethtool \
     findutils \
     i2c-tools \
     iftop \
-    iperf \
     htop \
     less \
     memtester \
@@ -89,6 +84,7 @@ EXTRA_TOOLS_INSTALL = " \
     tcpdump \
     unzip \
     util-linux \
+    vim \
     wget \
     zip \
  "
