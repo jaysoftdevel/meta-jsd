@@ -63,7 +63,7 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
-    rootbot \
+    rootbot-gpio \
     acpid \
     bc \
     bzip2 \
