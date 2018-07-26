@@ -10,37 +10,33 @@ DEPENDS = "	\
 	"
 	
 PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
-EXTERNALSRC := "${PATH_PREFIX}/rootbot-gpio"
+EXTERNALSRC := "${PATH_PREFIX}/gpio/iofunc"
  
 S = "${WORKDIR}/git"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
-
-APPLICATION = "rootbot-gpio"
+APPLICATION = "libiofunc.a"
 INSTALL_PREFIX = "/opt"
-export DEST_PATH = "${INSTALL_PREFIX}/${APPLICATION}"
+DEST_PATH = "${INSTALL_PREFIX}"
+
+PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-staticdev"
 
 FILES_${PN} += " \
-	 ${DEST_PATH}/*	\
+	 ${DEST_PATH}/lib/*.a	\
 "
 
-FILES_${PN}-dbg += "\
-	${DEST_PATH}/bin/.debug \
-"
-
-
-
-#do_configure(){
-#	# use local source
-#	echo "** ${EXTERNALSRC} ** and ${PWD}"
-#	#cd ${EXTERNALSRC} 
-#	#make
-#}
-
-do_install() {
-	install -d ${D}${DEST_PATH}/bin
-	#cp ${PATH_PREFIX}/files/MANIFEST.json ${D}${DEST_PATH}/etc/MANIFEST.json	
-	install -m 0755 ${APPLICATION} ${D}${DEST_PATH}/bin/
+do_configure(){
+	# use local source
+	echo "** ${EXTERNALSRC} ** and ${PWD}"
+	cd ${EXTERNALSRC} 
+	make        
 }
+
+# no need to install the static lib, will just be linked against
+#do_install() {
+#	#install -d ${D}${DEST_PATH}/lib
+#	#cp ${PATH_PREFIX}/files/MANIFEST.json ${D}${DEST_PATH}/etc/MANIFEST.json	
+#	#echo "** ${EXTERNALSRC} ** and ${PWD}"
+#	#install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}/lib/
+#}
 
  
