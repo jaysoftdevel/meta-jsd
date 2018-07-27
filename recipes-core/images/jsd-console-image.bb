@@ -27,7 +27,7 @@ WIFI_SUPPORT = " \
     linux-firmware-rtl8192su \
     wireless-tools \
     wpa-supplicant \
- "
+ "                                                                                                                                               
 
 DEV_SDK_INSTALL = " \
     binutils \
