@@ -96,7 +96,12 @@ IMAGE_INSTALL += " \
     ${EXTRA_TOOLS_INSTALL} \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
+    rootbot-hcsr04 \
  "
+ 
+KERNEL_MODULE_AUTOLOAD += "\
+    rootbot-hcsr04 \
+    "
 
 set_local_timezone() {
     ln -sf /usr/share/zoneinfo/EST5EDT ${IMAGE_ROOTFS}/etc/localtime

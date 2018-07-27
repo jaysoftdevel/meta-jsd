@@ -8,12 +8,6 @@ SRC_URI = "git://github.com/jaysoftdevel/BBB_LRB_src.git;protocol=git;branch=mas
 
 S = "${WORKDIR}/git"
 
-#do_install() {
-#    #install -d ${D}${bindir}
-#    #install -m 0755 StepperMotor_Control ${D}${bindir}
-#    echo "skip install for now"
-#}
-
 # disable additional tasks
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
