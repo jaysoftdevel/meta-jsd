@@ -1,7 +1,9 @@
-FILESEXTRAPATHS_append := ":${THISDIR}/${PN}-4.16"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-4.16/:"
 
-SRC_URI += "file://hcsr04.dts"
+SRC_URI += "file://git/arch/arm/boot/dts/hcsr04.dts"
 
-KERNEL_DEVICETREE_beaglebone += " \
+KERNEL_DEVICETREE += " \
     hcsr04.dtb \
 "
+
+#DEPENDS_append_beaglebone = " initramfs-boot"
