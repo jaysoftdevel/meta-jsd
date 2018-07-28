@@ -32,11 +32,9 @@ do_configure(){
 }
 
 # no need to install the static lib, will just be linked against
-#do_install() {
-#	#install -d ${D}${DEST_PATH}/lib
-#	#cp ${PATH_PREFIX}/files/MANIFEST.json ${D}${DEST_PATH}/etc/MANIFEST.json	
-#	#echo "** ${EXTERNALSRC} ** and ${PWD}"
-#	#install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}/lib/
-#}
+do_install() {
+	install -d ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
+}
 
  
