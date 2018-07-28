@@ -1,12 +1,7 @@
-EXTERNALSRC := "${THISDIR}/arch2/arm/boot/dts/hcsr04"
-#SRC_URI += "file://hcsr04.dts"
+FILESEXTRAPATHS_append := ":${THISDIR}/${PN}-4.16"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/dts:"
+SRC_URI += "file://hcsr04.dts"
 
 KERNEL_DEVICETREE_beaglebone += " \
-    am335x-boneblack.dtb \
-    am335x-boneblack-wireless.dtb \
-    am335x-bonegreen.dtb \
-    am335x-bonegreen-wireless.dtb \
     hcsr04.dtb \
 "

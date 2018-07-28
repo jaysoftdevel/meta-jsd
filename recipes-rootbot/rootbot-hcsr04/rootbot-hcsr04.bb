@@ -6,26 +6,31 @@
 
 #RDEPENDS_kernel-base += "kernel-devicetree"
 
-inherit module externalsrc
+
+###############################################
+# THIS RECIPE HAS NO USE AT THE MOMENT!!!!!!! #
+###############################################
+
+#inherit module externalsrc
 
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-DEPENDS = "	\
-	rootbot-src \
-	"
+#DEPENDS = "	\
+#	rootbot-src \
+#	"
 	
-PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
-EXTERNALSRC := "${PATH_PREFIX}/hcsr04"
+#PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
+#EXTERNALSRC := "${PATH_PREFIX}/hcsr04"
 #SRC_URI = "${PATH_PREFIX}/hcrs04/hcsr04.dts"
  
-S = "${WORKDIR}/git"
+#S = "${WORKDIR}/git"
 
 #APPLICATION = "st7565.ko"
 #INSTALL_PREFIX = "/opt"
 #DEST_PATH = "${INSTALL_PREFIX}"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
+#PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
 #FILES_${PN} += " \
 #	 ${DEST_PATH}/lib/*.a	\

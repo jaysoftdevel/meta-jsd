@@ -1,7 +1,0 @@
-SRC_URI += "file://git/arch/arm/boot/dts/hcsr04.dts"
-
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}/dts:"
-
-KERNEL_DEVICETREE_beaglebone += " \
-    hcsr04.dtb \
-"
