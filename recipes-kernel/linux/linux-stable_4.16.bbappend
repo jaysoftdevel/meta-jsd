@@ -6,4 +6,3 @@ KERNEL_DEVICETREE += " \
     hcsr04.dtb \
 "
 
-#DEPENDS_append_beaglebone = " initramfs-boot"
