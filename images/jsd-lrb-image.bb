@@ -10,13 +10,11 @@ inherit core-image
 CORE_OS = " \
     openssh openssh-keygen openssh-sftp-server \
     psplash \
-    term-prompt \
     tzdata \
  "
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    load-modules \
  "
 
 WIFI_SUPPORT = " \
@@ -29,7 +27,7 @@ WIFI_SUPPORT = " \
     linux-firmware-rtl8192su \
     wireless-tools \
     wpa-supplicant \
- "
+ "                                                                                                                                               
 
 DEV_SDK_INSTALL = " \
     binutils \
@@ -39,10 +37,12 @@ DEV_SDK_INSTALL = " \
     cpp-symlinks \
     diffutils \
     file \
-    gcc \
-    gcc-symlinks \
     g++ \
     g++-symlinks \
+    gdb \
+    gdbserver \
+    gcc \
+    gcc-symlinks \
     gettext \
     git \
     ldd \
@@ -58,51 +58,49 @@ DEV_SDK_INSTALL = " \
 DEV_EXTRAS = " \
     ntp \
     ntp-tickadj \
-    serialecho \
-    spiloop \
+    zeromq \
+    zeromq-dev \
  "
 
 EXTRA_TOOLS_INSTALL = " \
+    rootbot-gpio \
+    rootbot-stepper-l \
+    rootbot-stepper-r \
+    rootbot-lcd-kmod \
+    rootbot-hcsr04 \
+    acpid \
     bc \
     bzip2 \
-    cursor-blink \
     devmem2 \
     dosfstools \
-    emmc-installer \
     ethtool \
     findutils \
     i2c-tools \
     iftop \
-    iperf \
     htop \
     less \
+    memtester \
     nano \
+    netcat \
     procps \
     rsync \
     sysfsutils \
     tcpdump \
     unzip \
     util-linux \
-    vim-tiny \
+    vim \
     wget \
     zip \
  "
 
-CAN_TOOLS = " \
-    canutils \
-    libsocketcan \
-    iproute2 \
- "
-
 IMAGE_INSTALL += " \
-    ${CAN_TOOLS} \
     ${CORE_OS} \
     ${DEV_SDK_INSTALL} \
     ${DEV_EXTRAS} \
     ${EXTRA_TOOLS_INSTALL} \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
- "
+"
 
 set_local_timezone() {
     ln -sf /usr/share/zoneinfo/EST5EDT ${IMAGE_ROOTFS}/etc/localtime
@@ -117,5 +115,5 @@ ROOTFS_POSTPROCESS_COMMAND += " \
     disable_bootlogd ; \
  "
 
-export IMAGE_BASENAME = "can-console-image"
+export IMAGE_BASENAME = "jsd-lrb-image"
 

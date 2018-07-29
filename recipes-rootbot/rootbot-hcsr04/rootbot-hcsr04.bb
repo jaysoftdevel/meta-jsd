@@ -7,6 +7,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 DEPENDS = "	\
 	rootbot-src \
+	rootbot-gpio \
+	pasm-compiler \
 	"
 	
 PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
@@ -25,16 +27,22 @@ FILES_${PN} += " \
 	${DEST_PATH}/*	\
 "
 
-#do_configure(){#
+#do_configure(){
 #	# use local source
-#	echo "** ${EXTERNALSRC} ** and ${PWD}"
-#	cd ${EXTERNALSRC} 
+	
 #	make        
 #}
 
+do_compile(){
+	export PASM_PATH="`pwd`/../../../pasm-compiler/1.0-r0/git/pru_sw/utils"
+	cd ${EXTERNALSRC} 
+	echo "**** ${EXTERNALSRC}"
+	make
+}
+
 # no need to install the static lib, will just be linked against
 do_install() {
-	#install -d ${D}${DEST_PATH}
+	install -d ${D}${DEST_PATH}
 	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
 }
 

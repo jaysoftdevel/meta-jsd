@@ -32,9 +32,9 @@ do_configure(){
 }
 
 # no need to install the static lib, will just be linked against
-do_install() {
-	install -d ${D}${DEST_PATH}
-	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
-}
+#do_install() {
+#	install -d ${D}${DEST_PATH}
+#	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
+#}
 
  
