@@ -21,12 +21,12 @@ DEST_PATH = "${INSTALL_PREFIX}"
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
 FILES_${PN} += " \
-	 ${DEST_PATH}/lib/*.a	\
+	${DEST_PATH} \
+	${DEST_PATH}/${APPLICATION}	\
 "
 
 do_configure(){
 	# use local source
-	echo "** ${EXTERNALSRC} ** and ${PWD}"
 	cd ${EXTERNALSRC} 
 	make        
 }
