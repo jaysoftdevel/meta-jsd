@@ -20,27 +20,21 @@ APPLICATION = "hcsr04"
 INSTALL_PREFIX = "/opt"
 DEST_PATH = "${INSTALL_PREFIX}"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
+TARGET_CC_ARCH += "${LDFLAGS}"
+
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}"
 
 FILES_${PN} += " \
 	${DEST_PATH} \
-	${DEST_PATH}/*	\
+	${DEST_PATH}/${APPLICATION}	\
 "
-
-#do_configure(){
-#	# use local source
-	
-#	make        
-#}
 
 do_compile(){
 	export PASM_PATH="`pwd`/../../../pasm-compiler/1.0-r0/git/pru_sw/utils"
 	cd ${EXTERNALSRC} 
-	echo "**** ${EXTERNALSRC}"
 	make
 }
 
-# no need to install the static lib, will just be linked against
 do_install() {
 	install -d ${D}${DEST_PATH}
 	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
