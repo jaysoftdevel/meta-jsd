@@ -18,23 +18,24 @@ APPLICATION = "stepperL"
 INSTALL_PREFIX = "/opt"
 DEST_PATH = "${INSTALL_PREFIX}"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
+TARGET_CC_ARCH += "${LDFLAGS}"
 
-#FILES_${PN} += " \
-#	${DEST_PATH}/lib/*.a	\
-#"
+PACKAGES = "${PN}-dbg ${PN}-dev ${PN}"
 
-do_configure(){
+FILES_${PN} += " \
+	${DEST_PATH} \
+	${DEST_PATH}/${APPLICATION}	\
+"
+
+do_compile(){
 	# use local source
-	echo "** ${EXTERNALSRC} ** and ${PWD}"
 	cd ${EXTERNALSRC} 
 	make        
 }
 
-# no need to install the static lib, will just be linked against
-#do_install() {
-#	install -d ${D}${DEST_PATH}
-#	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
-#}
+do_install() {
+	install -d ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
+}
 
  

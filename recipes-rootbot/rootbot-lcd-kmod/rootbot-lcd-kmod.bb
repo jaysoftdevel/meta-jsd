@@ -1,42 +1,63 @@
 # STUFF TO BE PLACED HERE ... #
 
-inherit externalsrc
+inherit module externalsrc
 
 LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
-DEPENDS = "	\
-	rootbot-src \
-	"
+SRC_URI =   "file://st7565.c \
+			file://Makefile \
+			file://COPYING \
+			"
+
+S = "${WORKDIR}"
+
+FILES_${PN} = " \
+	/lib \
+	/lib/modules \
+"
+
+##############################################################################################
+# The following section was originally created to build the kernel module user mode/context. #
+# Build fails when inheriting module. Build works as standalone based on its Makefile but    #
+# currently only for the host machine. Switch to target cross compiling fails....            #
+##############################################################################################
+
+#DEPENDS = "	\
+#	rootbot-src \
+#	"
 	
-PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
-EXTERNALSRC := "${PATH_PREFIX}/lcd_kernel_module"
+#PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
+#EXTERNALSRC := "${PATH_PREFIX}/lcd_kernel_module"
  
-S = "${WORKDIR}/git"
+#S = "${WORKDIR}/git"
 
-APPLICATION = "st7565.ko"
-INSTALL_PREFIX = "/opt"
-DEST_PATH = "${INSTALL_PREFIX}"
+#APPLICATION = "st7565.ko"
+#INSTALL_PREFIX = "/opt"
+#DEST_PATH = "${INSTALL_PREFIX}"
 
-PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
+#TARGET_CC_ARCH += "${LDFLAGS}"
+
+#PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
 
 #FILES_${PN} += " \
-#	 ${DEST_PATH}/lib/*.a	\
+#	${DEST_PATH} \
+#	${DEST_PATH}/${APPLICATION}	\
 #"
 
-do_configure(){
-	# use local source
-	echo "** ${EXTERNALSRC} ** and ${PWD}"
-	cd ${EXTERNALSRC} 
-	make        
-}
+#do_compile() {
+#	# use local source
+#	echo "##### compile"
+#	export LCDKMOD_PATH="${EXTERNALSRC}"
+#	echo "##### $LCDKMOD_PATH"
+#	cd ${EXTERNALSRC} 
+#	make       
+#}
 
-# no need to install the static lib, will just be linked against
 #do_install() {
-#	#install -d ${D}${DEST_PATH}/lib
-#	#cp ${PATH_PREFIX}/files/MANIFEST.json ${D}${DEST_PATH}/etc/MANIFEST.json	
-#	echo "** ${EXTERNALSRC} ** and ${PWD}"
-#	#install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}/lib/
+#	install -d ${D}${DEST_PATH}/lib
+#	echo "##### install"
+#	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
 #}
 
  
