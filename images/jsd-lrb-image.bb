@@ -63,10 +63,12 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
+    rootbot-src \
     rootbot-gpio \
     rootbot-stepper-l \
     rootbot-stepper-r \
     rootbot-lcd-kmod \
+    pasm-compiler \
     rootbot-hcsr04 \
     acpid \
     bc \
