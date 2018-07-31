@@ -95,7 +95,6 @@ IMAGE_INSTALL += " \
     rootbot-stepper-l \
     rootbot-stepper-r \
     rootbot-lcd-kmod \
-    pasm-compiler \
     rootbot-hcsr04 \
     \
     ${CORE_OS} \
