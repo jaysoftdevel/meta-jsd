@@ -89,9 +89,6 @@ EXTRA_TOOLS_INSTALL = " \
  "
 
 IMAGE_INSTALL += " \
-	rootbot-src \
-    rootbot-gpio \
-    pasm-compiler \
     rootbot-stepper-l \
     rootbot-stepper-r \
     rootbot-lcd-kmod \
