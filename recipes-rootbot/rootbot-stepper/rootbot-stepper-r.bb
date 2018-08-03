@@ -10,11 +10,11 @@ DEPENDS = "	\
 	"
 	
 PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
-EXTERNALSRC := "${PATH_PREFIX}/stepperL"
+EXTERNALSRC := "${PATH_PREFIX}/stepperR"
  
 S = "${WORKDIR}/git"
 
-APPLICATION = "stepperL"
+APPLICATION = "stepperR"
 INSTALL_PREFIX = "/opt"
 DEST_PATH = "${INSTALL_PREFIX}"
 

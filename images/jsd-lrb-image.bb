@@ -15,6 +15,8 @@ CORE_OS = " \
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
+    rootbot-lcd-kmod \
+    hello-mod \
  "
 
 WIFI_SUPPORT = " \
@@ -66,7 +68,6 @@ EXTRA_TOOLS_INSTALL = " \
     rootbot-gpio \
     rootbot-stepper-l \
     rootbot-stepper-r \
-    rootbot-lcd-kmod \
     rootbot-hcsr04 \
     acpid \
     bc \
