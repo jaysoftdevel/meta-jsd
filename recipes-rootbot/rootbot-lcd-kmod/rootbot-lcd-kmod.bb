@@ -1,27 +1,26 @@
 # STUFF TO BE PLACED HERE ... #
+SUMMARY = "Example of how to build an external Linux kernel module"
+LICENSE = "GPLv2"
+LIC_FILES_CHKSUM = "file://COPYING;md5=12f884d2ae1ff87c09e5b7ccc2c4ca7e"
 
-inherit module externalsrc
-
-LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
+inherit module
 
 SRC_URI =   "file://st7565.c \
+			file://font.h \
+			file://lcd.h \
 			file://Makefile \
 			file://COPYING \
 			"
 
+PR = "r0"
 S = "${WORKDIR}"
-
-FILES_${PN} = " \
-	/lib \
-	/lib/modules \
-"
 
 ##############################################################################################
 # The following section was originally created to build the kernel module user mode/context. #
 # Build fails when inheriting module. Build works as standalone based on its Makefile but    #
 # currently only for the host machine. Switch to target cross compiling fails....            #
 ##############################################################################################
+#inherit externalsrc
 
 #DEPENDS = "	\
 #	rootbot-src \

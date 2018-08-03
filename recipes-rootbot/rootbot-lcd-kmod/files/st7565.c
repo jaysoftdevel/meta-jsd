@@ -18,9 +18,14 @@
 #include <linux/delay.h>
 #include "font.h"
 #include "lcd.h"
+                   
 
 // prototypes
+//static int __init st7565_init(void);
+//static void __exit st7565_exit(void)
+
 void st7565_init_lcd(void);
+
 void lcd_ascii5x7_string(unsigned int xPos, unsigned int yPos,
 		unsigned char * str);
 void lcd_ascii5x7(unsigned int xPos, unsigned int yPos, unsigned char c);
@@ -32,7 +37,20 @@ long lcd_control(struct file *f, unsigned int control, unsigned long value);
 void lcd_intro(void);
 void lcd_write_banner(void);
 void lcd_setup_working_mode_frame(void);
+
 void st7565_deinit(void);
+          
+/*int init_module(void)
+{
+	printk("BLUB Hello World!\n");
+	return 0;
+}
+
+void cleanup_module(void)
+{
+	printk("BLUB Goodbye Cruel World!\n");
+} */
+
 
 // macro to convert bank and gpio into pin number
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
@@ -119,7 +137,8 @@ static ssize_t st7565_write(struct file *f, const char __user *buf, size_t len,
 	return len;
 }
 
-void lcd_intro(void/*int x, int y, int v*/) {
+//void lcd_intro(int x, int y, int v) {
+void lcd_intro(void) {
 	unsigned char i = 1, j = 0, val = 0x55;
 	for (i = 0; i < LCD_COLS; i++) {
 		for (j = 0; j < LCD_PAGES; j++) {
@@ -301,145 +320,144 @@ static int __init st7565_init(void)
 		rx_buffer = kmalloc(BUFFER_SIZE,  GFP_KERNEL);
 		memset(rx_buffer, 0, BUFFER_SIZE);
 
-// register a character device
-if (alloc_chrdev_region(&first, 0, 1, "st7565") < 0)
-		{
-			return -1;
+	// register a character device
+	if (alloc_chrdev_region(&first, 0, 1, "st7565") < 0)
+			{
+				return -1;
+			}
+			if ((cl = class_create(THIS_MODULE, "chardrv")
+	) == NULL)
+	{
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
+	if (device_create(cl, NULL, first, NULL, "st7565") == NULL)
+	{
+		class_destroy(cl);
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
+	cdev_init(&c_dev, &pugs_fops);
+	if (cdev_add(&c_dev, first, 1) == -1)
+	{
+		device_destroy(cl, first);
+		class_destroy(cl);
+		unregister_chrdev_region(first, 1);
+		return -1;
+	}
+
+	// request access to GPIO, set them all as outputs (initially low)
+	int err, i = 0;
+	for(i = 0; i < st7565_gpio_pin_info.num_pins; i++) {
+		err = gpio_request(st7565_gpio_pins[i].gpio, st7565_gpio_pins[i].name);
+		if(err) {
+			printk("Could not get access to GPIO %i, error code: %i\n", st7565_gpio_pins[i].gpio, err);
 		}
-		if ((cl = class_create(THIS_MODULE, "chardrv")
-) == NULL)
-{
-	unregister_chrdev_region(first, 1);
-	return -1;
-}
-if (device_create(cl, NULL, first, NULL, "st7565") == NULL)
-{
-	class_destroy(cl);
-	unregister_chrdev_region(first, 1);
-	return -1;
-}
-cdev_init(&c_dev, &pugs_fops);
-if (cdev_add(&c_dev, first, 1) == -1)
-{
-	device_destroy(cl, first);
-	class_destroy(cl);
-	unregister_chrdev_region(first, 1);
-	return -1;
-}
-
-// request access to GPIO, set them all as outputs (initially low)
-int err, i = 0;
-for(i = 0; i < st7565_gpio_pin_info.num_pins; i++) {
-	err = gpio_request(st7565_gpio_pins[i].gpio, st7565_gpio_pins[i].name);
-	if(err) {
-		printk("Could not get access to GPIO %i, error code: %i\n", st7565_gpio_pins[i].gpio, err);
+		err = gpio_direction_output(st7565_gpio_pins[i].gpio, 0);
+		if(err) {
+			printk("Could not set value of GPIO %i, error code: %i\n", st7565_gpio_pins[i].gpio, err);
+		}
 	}
-	err = gpio_direction_output(st7565_gpio_pins[i].gpio, 0);
-	if(err) {
-		printk("Could not set value of GPIO %i, error code: %i\n", st7565_gpio_pins[i].gpio, err);
-	}
-}
 
-// initialize display
-st7565_init_lcd();
+	// initialize display
+	st7565_init_lcd();
 
-lcd_intro();
+	lcd_intro();
 
-lcd_ascii5x7_string(0,10,"not connected...");
-// ready to go!
-printk("st7565 registered!\n");
+	lcd_ascii5x7_string(0,10,"not connected...");
+	// ready to go!
+	printk("st7565 registered!\n");
 
-return 0;
+	return 0;
 }
 
 static void __exit st7565_exit(void)
 {
-lcd_ascii5x7_string(0,1,"shutting down...");
-// release buffer
-if (rx_buffer) {
-	kfree(rx_buffer);
-}
+	lcd_ascii5x7_string(0,1,"shutting down...");
+	// release buffer
+	if (rx_buffer) {
+		kfree(rx_buffer);
+	}
 
-// release GPIO
-int i = 0;
-for(i = 0; i < st7565_gpio_pin_info.num_pins; i++) {
-	gpio_free(st7565_gpio_pins[i].gpio);
-}
+	// release GPIO
+	int i = 0;
+	for(i = 0; i < st7565_gpio_pin_info.num_pins; i++) {
+		gpio_free(st7565_gpio_pins[i].gpio);
+	}
 
-// unregister character device
-cdev_del(&c_dev);
-device_destroy(cl, first);
-class_destroy(cl);
-unregister_chrdev_region(first, 1);
-printk("st7565 unregistered\n");
+	// unregister character device
+	cdev_del(&c_dev);
+	device_destroy(cl, first);
+	class_destroy(cl);
+	unregister_chrdev_region(first, 1);
+	printk("st7565 unregistered\n");
 }
 
 void st7565_deinit(void) {
-#ifdef DEBUG
-printk("deiniting...\n");
-#endif
-lcd_clear();
-gpio_set_value(ST7565_AP, 1);
-gpio_set_value(ST7565_RST, 0);
+	#ifdef DEBUG
+	printk("deiniting...\n");
+	#endif
+	lcd_clear();
+	gpio_set_value(ST7565_AP, 1);
+	gpio_set_value(ST7565_RST, 0);
 }
 
 void st7565_init_lcd(void) {
-printk("configuring st7565\n");
-gpio_set_value(ST7565_CS, 0);
-/**/
-//gpio_set_value(ST7565_CS, 0);
-/**/
+	printk("configuring st7565\n");
+	gpio_set_value(ST7565_CS, 0);
+	
+	//gpio_set_value(ST7565_CS, 0);
 
-// set color pin
-gpio_set_value(ST7565_AP, 1);
-gpio_set_value(ST7565_RST, 0);
-gpio_set_value(ST7565_RST, 1);
+	// set color pin
+	gpio_set_value(ST7565_AP, 1);
+	gpio_set_value(ST7565_RST, 0);
+	gpio_set_value(ST7565_RST, 1);
 
-lcd_transfer_data(0xe2, 0); //Internal reset
+	lcd_transfer_data(0xe2, 0); //Internal reset
 
-lcd_transfer_data(0xa2, 0); //Sets the LCD drive voltage bias ratio
-//A2: 1/9 bias
-//A3: 1/7 bias (ST7565V)
+	lcd_transfer_data(0xa2, 0); //Sets the LCD drive voltage bias ratio
+	//A2: 1/9 bias
+	//A3: 1/7 bias (ST7565V)
 
-lcd_transfer_data(0xa0, 0); //Sets the display RAM address SEG output correspondence
-//A0: normal
-//A1: reverse
+	lcd_transfer_data(0xa0, 0); //Sets the display RAM address SEG output correspondence
+	//A0: normal
+	//A1: reverse
 
-lcd_transfer_data(0xc8, 0);	   //#Select COM output scan direction
-//C0~C7: normal direction
-//C8~CF: reverse direction
+	lcd_transfer_data(0xc8, 0);	   //#Select COM output scan direction
+	//C0~C7: normal direction
+	//C8~CF: reverse direction
 
-lcd_transfer_data(0xa4, 0);	   //#Display all points ON/OFF
-//A4: normal display
-//A5: all points ON
+	lcd_transfer_data(0xa4, 0);	   //#Display all points ON/OFF
+	//A4: normal display
+	//A5: all points ON
 
-lcd_transfer_data(0xa6, 0);   //#Sets the LCD display normal/reverse
-//A6: normal
-//A7: reverse
+	lcd_transfer_data(0xa6, 0);   //#Sets the LCD display normal/reverse
+	//A6: normal
+	//A7: reverse
 
-lcd_transfer_data(0x2F, 0);   //#select internal power supply operating mode
-//28~2F: Operating mode
+	lcd_transfer_data(0x2F, 0);   //#select internal power supply operating mode
+	//28~2F: Operating mode
 
-lcd_transfer_data(0x40, 0);   //#Display start line set
-//40~7F Display start address
+	lcd_transfer_data(0x40, 0);   //#Display start line set
+	//40~7F Display start address
 
-lcd_transfer_data(0x20, 0);	//#V5 voltage regulator internal resistor ratio set(contrast)
-//20~27 small~large
+	lcd_transfer_data(0x20, 0);	//#V5 voltage regulator internal resistor ratio set(contrast)
+	//20~27 small~large
 
-lcd_transfer_data(0x81, 0);	   //#Electronic volume mode set
-//81: Set the V5 output voltage
+	lcd_transfer_data(0x81, 0);	   //#Electronic volume mode set
+	//81: Set the V5 output voltage
 
-lcd_transfer_data(0x30, 0);	   //#Electronic volume register set
-//00~3F: electronic volume register
+	lcd_transfer_data(0x30, 0);	   //#Electronic volume register set
+	//00~3F: electronic volume register
 
-lcd_transfer_data(0xaf, 0);  //#Display ON/OFF
-//AF: ON
-//AE: OFF
-/**/
-//gpio_set_value(ST7565_CS, 1);
-/**/
-lcd_clear();
-printk("st7565 configured\n");
+	lcd_transfer_data(0xaf, 0);  //#Display ON/OFF
+	//AF: ON
+	//AE: OFF
+	
+	//gpio_set_value(ST7565_CS, 1);
+	
+	lcd_clear();
+	printk("st7565 configured\n");
 }
 
 void lcd_ascii5x7_string(unsigned int xPos, unsigned int yPos,
@@ -754,6 +772,7 @@ gpio_set_value(ST7565_CS, 1);
 }
 
 module_init(st7565_init);
-module_exit(st7565_exit);
-MODULE_LICENSE("GPL")
-;
+module_exit(st7565_exit); 
+
+MODULE_LICENSE("GPL");
+

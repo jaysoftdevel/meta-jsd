@@ -1,6 +1,7 @@
 #!/bin/bash
 
 MACHINE=beaglebone
+REL_SRC_DIR=../../build/tmp/deploy/images/${MACHINE}
 
 if [ "x${1}" = "x" ]; then
 	echo -e "\nUsage: ${0} <block device>\n"
@@ -26,19 +27,19 @@ else
 	SRCDIR=${OETMP}/deploy/images/${MACHINE}
 fi 
 
-if [ ! -f ${SRCDIR}/MLO-${MACHINE} ]; then
+if [ ! -f ${SRCDIR}/${REL_SRC_DIR}/MLO-${MACHINE} ]; then
 	echo -e "File not found: ${SRCDIR}/MLO-${MACHINE}\n"
 	exit 1
 fi
 
-if [ ! -f ${SRCDIR}/u-boot-${MACHINE}.img ]; then
+if [ ! -f ${SRCDIR}/${REL_SRC_DIR}/u-boot-${MACHINE}.img ]; then
 	echo -e "File not found: ${SRCDIR}/u-boot-${MACHINE}.img\n"
 	exit 1
 fi
-
-DEV=/dev/${1}1
-
-if [ -b $DEV ]; then
+        
+DEV="/dev/${1}1"
+if [ -b "$DEV" ]; then
+echo "###"
 	echo "Formatting FAT partition on $DEV"
 	sudo mkfs.vfat -F 32 ${DEV} -n BOOT
 
@@ -46,15 +47,17 @@ if [ -b $DEV ]; then
 	sudo mount ${DEV} /media/card
 
 	echo "Copying MLO"
-	sudo cp ${SRCDIR}/MLO-${MACHINE} /media/card/MLO
+	sudo cp ${SRCDIR}/${REL_SRC_DIR}/MLO-${MACHINE} /media/card/MLO
 
 	echo "Copying u-boot"
-	sudo cp ${SRCDIR}/u-boot-${MACHINE}.img /media/card/u-boot.img
+	sudo cp ${SRCDIR}/${REL_SRC_DIR}/u-boot-${MACHINE}.img /media/card/u-boot.img
 
 	if [ -f ${SRCDIR}/uEnv.txt ]; then
 		echo "Copying ${SRCDIR}/uEnv.txt to /media/card"
-		sudo cp ${SRCDIR}/uEnv.txt /media/card
-	elif [ -f ./uEnv.txt ]; then
+		sudo cp ${SRCDIR}/${REL_SRC_DIR}/uEnv.txt /media/card
+	fi
+	#el
+	if [ -f ./uEnv.txt ]; then
 		echo "Copying ./uEnv.txt to /media/card"
 		sudo cp ./uEnv.txt /media/card
 	fi
