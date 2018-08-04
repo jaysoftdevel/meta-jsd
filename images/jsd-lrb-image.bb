@@ -65,6 +65,9 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
+    rootbot-stepper-l \
+    rootbot-stepper-r \
+    rootbot-hcsr04 \
     acpid \
     bc \
     bzip2 \
@@ -91,11 +94,6 @@ EXTRA_TOOLS_INSTALL = " \
  "
 
 IMAGE_INSTALL += " \
-    rootbot-stepper-l \
-    rootbot-stepper-r \
-    rootbot-lcd-kmod \
-    rootbot-hcsr04 \
-    \
     ${CORE_OS} \
     ${DEV_SDK_INSTALL} \
     ${DEV_EXTRAS} \
