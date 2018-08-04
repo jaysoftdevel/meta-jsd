@@ -21,9 +21,6 @@
                    
 
 // prototypes
-//static int __init st7565_init(void);
-//static void __exit st7565_exit(void)
-
 void st7565_init_lcd(void);
 
 void lcd_ascii5x7_string(unsigned int xPos, unsigned int yPos,
@@ -39,18 +36,6 @@ void lcd_write_banner(void);
 void lcd_setup_working_mode_frame(void);
 
 void st7565_deinit(void);
-          
-/*int init_module(void)
-{
-	printk("BLUB Hello World!\n");
-	return 0;
-}
-
-void cleanup_module(void)
-{
-	printk("BLUB Goodbye Cruel World!\n");
-} */
-
 
 // macro to convert bank and gpio into pin number
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
@@ -771,8 +756,8 @@ lcd_transfer_data(0xE0, 1);
 gpio_set_value(ST7565_CS, 1);
 }
 
-module_init(st7565_init);
-module_exit(st7565_exit); 
+// module_init(st7565_init);
+// module_exit(st7565_exit); 
 
 MODULE_LICENSE("GPL");
 
