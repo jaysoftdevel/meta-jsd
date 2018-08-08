@@ -10,7 +10,7 @@ DEPENDS = "	\
 	"
 	
 PATH_PREFIX = "${WORKDIR}/../../rootbot-src/${PV}-r0/git"
-EXTERNALSRC := "${PATH_PREFIX}/gpio/iofunc"
+EXTERNALSRC := "${PATH_PREFIX}/gpio"
  
 S = "${WORKDIR}/git"
 
@@ -21,7 +21,7 @@ DEST_PATH = "${INSTALL_PREFIX}"
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-staticdev"
 
 FILES_${PN} += " \
-	 ${DEST_PATH}/lib/*.a	\
+	 ${DEST_PATH}/*.a	\
 "
 
 do_configure(){
