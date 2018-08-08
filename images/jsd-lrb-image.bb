@@ -68,6 +68,9 @@ EXTRA_TOOLS_INSTALL = " \
     rootbot-stepper-l \
     rootbot-stepper-r \
     rootbot-hcsr04 \
+    \
+    opkg \
+    \
     acpid \
     bc \
     bzip2 \
