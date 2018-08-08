@@ -6,6 +6,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/jaysoftdevel/BBB_LRB_src.git;protocol=git;branch=master"          
 
+PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
+
 S = "${WORKDIR}/git"
 
 # disable additional tasks

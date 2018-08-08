@@ -1,6 +1,6 @@
 FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${PV}/:"
 
-SRC_URI += "file://git/arch/arm/boot/dts/hcsr04.dts"
+SRC_URI += "file://git/arch/arm/boot/dts/hcsr04.dtsi"
 
 COMPATIBLE_MACHINE += "|rootbot-bbb|beaglebone"
 
