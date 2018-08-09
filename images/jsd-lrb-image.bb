@@ -65,11 +65,12 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
-    rootbot-stepper-l \
+    rootbot-stepper-l-kmod \
     rootbot-stepper-r \
     rootbot-hcsr04 \
     \
     opkg \
+    devmem2 \
     \
     acpid \
     bc \
