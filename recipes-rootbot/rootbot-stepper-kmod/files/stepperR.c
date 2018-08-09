@@ -10,8 +10,8 @@
  * http://www.instructables.com/id/Drive-a-Stepper-Motor-with-an-AVR-Microprocessor/?ALLSTEPS
  *
  */
-#ifndef STEPPERMOTOR_CONTROL_L_C
-#define STEPPERMOTOR_CONTROL_L_C
+#ifndef STEPPERMOTOR_CONTROL_R_C
+#define STEPPERMOTOR_CONTROL_R_C
 
 #define DEBUG
 
@@ -35,7 +35,7 @@
 #include <linux/gpio.h>
 #include <linux/delay.h>
                    
-#include "stepperL.h"
+#include "stepperR.h"
 
 
 static struct tPos coilPos;
@@ -47,7 +47,7 @@ static struct tPos coilPos;
 //#ifdef DEBUG
 	//printk("setup gpio\n");
 //#endif
-	//initStepperLGpio();
+	//initstepperRGpio();
 	//int i = 0;
 //#ifdef DEBUG
 	//printk("wait to get started\n");
@@ -88,12 +88,12 @@ static struct tPos coilPos;
 //#ifdef DEBUG
 	//printk("done roundtripping, deiniting...\n");
 //#endif
-	//deinitStepperLGpio();
+	//deinitstepperRGpio();
 	//return (0);
 //}
 #endif /*TESTSTEPPER*/
 
-int stepFwdL(void) {
+int stepFwdR(void) {
 	int i;
 	for(i=0;i<NUM_OF_COILS;i++){
 #ifdef DEBUG
@@ -118,7 +118,7 @@ int stepFwdL(void) {
 	return (0);
 }
 
-int stepRevL(void) {
+int stepRevR(void) {
 	int i;
 	for(i=0;i<NUM_OF_COILS;i++){
 #ifdef DEBUG
@@ -143,7 +143,7 @@ int stepRevL(void) {
 	return (0);
 }
 
-int stepLNone(void){
+int stepRNone(void){
 	//pin_low(PORT_P8, COIL_PIN_NORTH);
 	//pin_low(PORT_P8, COIL_PIN_EAST);
 	//pin_low(PORT_P8, COIL_PIN_SOUTH);
@@ -184,7 +184,7 @@ int stepLNone(void){
 //}
 
 
-//int initStepperLGpio() {
+//int initstepperRGpio() {
 
 //#ifdef DEBUG
 	//printk("setting up pins\n");
@@ -220,20 +220,20 @@ int stepLNone(void){
 	//return (0);
 //}
 
-//int deinitStepperLGpio() {
+//int deinitstepperRGpio() {
 	//iolib_free();
 	//return (0);
 //}
 
-long stepperL_control(struct file *f, unsigned int control, unsigned long value);
-static ssize_t stepperL_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
+long stepperR_control(struct file *f, unsigned int control, unsigned long value);
+static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
 
 static dev_t second; // Global variable for the second device number 
 static struct cdev c_dev; // Global variable for the character device structure
 static struct class *cl; // Global variable for the device class
 
 static struct file_operations pugs_fops = { .owner = THIS_MODULE,
-		.unlocked_ioctl = stepperL_control, .write = stepperL_write };
+		.unlocked_ioctl = stepperR_control, .write = stepperR_write };
 		
 // Struct for each GPIO pin
 struct gpio_pin {
@@ -248,50 +248,50 @@ struct gpio_platform_data {
 };
 
 // Struct for interface definition
-static struct gpio_pin stepperL_gpio_pins[] = { { .name = "stepperL::north", .gpio =
-COIL_PIN_NORTH, }, { .name = "stepperL::east", .gpio = COIL_PIN_EAST, }, { .name =
-		"stepperL::south", .gpio = COIL_PIN_SOUTH, }, { .name = "stepperL::west", .gpio =
+static struct gpio_pin stepperR_gpio_pins[] = { { .name = "stepperR::north", .gpio =
+COIL_PIN_NORTH, }, { .name = "stepperR::east", .gpio = COIL_PIN_EAST, }, { .name =
+		"stepperR::south", .gpio = COIL_PIN_SOUTH, }, { .name = "stepperR::west", .gpio =
 COIL_PIN_WEST, }, };
 
-static struct gpio_platform_data stepperL_gpio_pin_info = { .pins =
-		stepperL_gpio_pins, .num_pins = ARRAY_SIZE(stepperL_gpio_pins), };
+static struct gpio_platform_data stepperR_gpio_pin_info = { .pins =
+		stepperR_gpio_pins, .num_pins = ARRAY_SIZE(stepperR_gpio_pins), };
 
 
 // used for buffer
 char * rx_buffer;
 int BUFFER_SIZE = 8;
 
-static int __init stepperL_init(void)
+static int __init stepperR_init(void)
 {
-	printk("[%s] initializiing stepperL\n",__FUNCTION__);
+	printk("[%s] initializiing stepperR\n",__FUNCTION__);
 	// allocate a buffer and zero it out
 	rx_buffer = kmalloc(BUFFER_SIZE,  GFP_KERNEL);
 	memset(rx_buffer, 0, BUFFER_SIZE);
 #ifdef DEBUG
-	printk("[%s] registering stepperL chr dev\n",__FUNCTION__);
+	printk("[%s] registering stepperR chr dev\n",__FUNCTION__);
 #endif //DEBUG
 	// register a character device
-	if (alloc_chrdev_region(&second, 0, 1, "stepperL") < 0)
+	if (alloc_chrdev_region(&second, 0, 1, "stepperR") < 0)
 			{
 				return -1;
 			}
-			if ((cl = class_create(THIS_MODULE, "chardrv2")
+			if ((cl = class_create(THIS_MODULE, "chardrv3")
 	) == NULL)
 	{
 		unregister_chrdev_region(second, 1);
 		return -1;
 	}
 #ifdef DEBUG
-	printk("[%s] creating stepperL device\n",__FUNCTION__);
+	printk("[%s] creating stepperR device\n",__FUNCTION__);
 #endif //DEBUG
-	if (device_create(cl, NULL, second, NULL, "stepperL") == NULL)
+	if (device_create(cl, NULL, second, NULL, "stepperR") == NULL)
 	{
 		class_destroy(cl);
 		unregister_chrdev_region(second, 1);
 		return -1;
 	}
 #ifdef DEBUG
-	printk("[%s] stepperL cdev init\n",__FUNCTION__);
+	printk("[%s] stepperR cdev init\n",__FUNCTION__);
 #endif //DEBUG
 	cdev_init(&c_dev, &pugs_fops);
 	if (cdev_add(&c_dev, second, 1) == -1)
@@ -303,34 +303,34 @@ static int __init stepperL_init(void)
 	}
 
 	// request access to GPIO, set them all as outputs (initially low)
-	printk("[%s] registering stepperL gpio pins\n",__FUNCTION__);
+	printk("[%s] registering stepperR gpio pins\n",__FUNCTION__);
 	int err, i;
 	i = 0;
-	for(i = 0; i < stepperL_gpio_pin_info.num_pins; i++) {
-		printk("[%s] register pin %d with gpio %d with name %s\n",__FUNCTION__,i,stepperL_gpio_pins[i].gpio, stepperL_gpio_pins[i].name);
-		err = gpio_request(stepperL_gpio_pins[i].gpio, stepperL_gpio_pins[i].name);
+	for(i = 0; i < stepperR_gpio_pin_info.num_pins; i++) {
+		printk("[%s] register pin %d with gpio %d with name %s\n",__FUNCTION__,i,stepperR_gpio_pins[i].gpio, stepperR_gpio_pins[i].name);
+		err = gpio_request(stepperR_gpio_pins[i].gpio, stepperR_gpio_pins[i].name);
 		if(err) {
-			printk("[%s] Could not get access to GPIO %i, error code: %i\n",__FUNCTION__, stepperL_gpio_pins[i].gpio, err);
+			printk("[%s] Could not get access to GPIO %i, error code: %i\n",__FUNCTION__, stepperR_gpio_pins[i].gpio, err);
 		}
-		err = gpio_direction_output(stepperL_gpio_pins[i].gpio, 0);
+		err = gpio_direction_output(stepperR_gpio_pins[i].gpio, 0);
 		if(err) {
-			printk("[%s] Could not set value of GPIO %i, error code: %i\n",__FUNCTION__, stepperL_gpio_pins[i].gpio, err);
+			printk("[%s] Could not set value of GPIO %i, error code: %i\n",__FUNCTION__, stepperR_gpio_pins[i].gpio, err);
 		}
 	}
 	// ready to go!
-	printk("[%s] stepperL registered!\n",__FUNCTION__);
+	printk("[%s] stepperR registered!\n",__FUNCTION__);
 
 	return 0;
 }
 
-long stepperL_control(struct file *f, unsigned int control, unsigned long value) {
+long stepperR_control(struct file *f, unsigned int control, unsigned long value) {
 #ifdef DEBUG
 	printk("[%s] controlling\n",__FUNCTION__);
 #endif
 	return 0;
 }
 
-static ssize_t stepperL_write(struct file *f, const char __user *buf, size_t len, loff_t *off) {
+static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len, loff_t *off) {
 #ifdef DEBUG
 	printk("[%s] start printing\n",__FUNCTION__);
 #endif
@@ -338,7 +338,7 @@ static ssize_t stepperL_write(struct file *f, const char __user *buf, size_t len
 return len;
 }
 
-static void __exit stepperL_exit(void)
+static void __exit stepperR_exit(void)
 {
 	printk("[%s] shutting down...",__FUNCTION__);
 	// release buffer
@@ -348,8 +348,8 @@ static void __exit stepperL_exit(void)
 
 	// release GPIO
 	int i = 0;
-	for(i = 0; i < stepperL_gpio_pin_info.num_pins; i++) {
-		gpio_free(stepperL_gpio_pins[i].gpio);
+	for(i = 0; i < stepperR_gpio_pin_info.num_pins; i++) {
+		gpio_free(stepperR_gpio_pins[i].gpio);
 	}
 
 	// unregister character device
@@ -357,30 +357,30 @@ static void __exit stepperL_exit(void)
 	device_destroy(cl, second);
 	class_destroy(cl);
 	unregister_chrdev_region(second, 1);
-	printk("[%s] stepperL unregistered\n",__FUNCTION__);
+	printk("[%s] stepperR unregistered\n",__FUNCTION__);
 }
 
 /********************/
 
 int init_module(void)
 {
-	printk("Hello World stepperL!\n");
-	stepperL_init();
+	printk("Hello World stepperR!\n");
+	stepperR_init();
 	msleep(1000);
-	stepFwdL();
+	stepFwdR();
 	msleep(1000);
-	stepFwdL();
+	stepFwdR();
 	//msleep(1000);
-	//stepLNone();
+	//stepRNone();
 	return 0;
 }
 
 void cleanup_module(void)
 {
-	stepperL_exit();
-	printk("Goodbye Cruel World stepperL!\n");
+	stepperR_exit();
+	printk("Goodbye Cruel World stepperR!\n");
 }
 
 MODULE_LICENSE("GPL");
 
-#endif /* STEPPERMOTOR_CONTROL_L_H */
+#endif /* STEPPERMOTOR_CONTROL_R_H */

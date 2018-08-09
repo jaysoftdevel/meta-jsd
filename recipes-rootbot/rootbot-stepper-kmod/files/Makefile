@@ -1,4 +1,4 @@
-obj-m := stepperL.o
+obj-m := stepperR.o stepperL.o
 
 SRC := $(shell pwd)
 

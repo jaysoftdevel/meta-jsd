@@ -4,8 +4,8 @@
 // - extern variable definitions
 // In the appropriate section
 
-#ifndef STEPPERMOTOR_CONTROL_L_H
-#define STEPPERMOTOR_CONTROL_L_H
+#ifndef STEPPERMOTOR_CONTROL_R_H
+#define STEPPERMOTOR_CONTROL_R_H
 
 //#include <stdio.h>
 //#include <unistd.h>
@@ -21,20 +21,20 @@
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
 
 // Data and control lines
-#define COIL_PIN_NORTH	GPIO_TO_PIN(2, 16)	// P8_36, blue
-#define COIL_PIN_EAST	GPIO_TO_PIN(0, 8)	// P8_35  red
-#define COIL_PIN_SOUTH	GPIO_TO_PIN(2, 17)	// P8_34, green
-#define COIL_PIN_WEST	GPIO_TO_PIN(0, 9)	// P8_33, black
+#define COIL_PIN_NORTH	GPIO_TO_PIN(2, 22)	// P8_27, blue
+#define COIL_PIN_EAST	GPIO_TO_PIN(2, 24)	// P8_28  red
+#define COIL_PIN_SOUTH	GPIO_TO_PIN(2, 23)	// P8_29, green
+#define COIL_PIN_WEST	GPIO_TO_PIN(2, 25)	// P8_30, black
+
 
 //// default DIOs
 //#define PORT_P8 8
-//// GPIO2_8, GPIO2_9, GPIO2_16, GPIO2_17
-//// arranged controvers to stepper R
-//#define COIL_PIN_NORTH 36	// BLUE
-//#define COIL_PIN_EAST 35	// RED
-//#define COIL_PIN_SOUTH 34	// GREEN
-//#define COIL_PIN_WEST 33	// BLACK
-#define COIL_PIN_OFFSET COIL_PIN_WEST	// offset for base pin in iolib
+//// GPIO2_22-25
+//#define COIL_PIN_NORTH 27	// BLUE
+//#define COIL_PIN_EAST 28	// RED
+//#define COIL_PIN_SOUTH 29	// GREEN
+//#define COIL_PIN_WEST 30	// BLACK
+#define COIL_PIN_OFFSET COIL_PIN_NORTH	// offset for base pin in iolib
 #define NUM_OF_COILS 4	// for the 4 coil stepper motor
 #define DELAY  1500 /* microseconds between steps */
 
@@ -53,8 +53,8 @@ typedef struct tPos{
 //int initStepperRGpio(void);
 //int deinitStepperRGpio(void);
 int stepRNone(void);
-int stepFwdLR(void);
+int stepFwdR(void);
 int stepRevR(void);
 
 //Do not add code below this line
-#endif /* STEPPERMOTOR_CONTROL_L_H */
+#endif /* STEPPERMOTOR_CONTROL_R_H */
