@@ -34,6 +34,7 @@
 #include <linux/cdev.h>
 #include <linux/gpio.h>
 #include <linux/delay.h>
+#include <asm/delay.h>
                    
 #include "stepperR.h"
 
@@ -364,14 +365,43 @@ static void __exit stepperR_exit(void)
 
 int init_module(void)
 {
+	int i;
 	printk("Hello World stepperR!\n");
 	stepperR_init();
 	msleep(1000);
 	stepFwdR();
 	msleep(1000);
 	stepFwdR();
-	//msleep(1000);
-	//stepRNone();
+	msleep(2000);
+	for(i=0;i<50;i++){
+		printk("5 wait for %i\n",i);
+		udelay(500);
+		stepFwdR();
+	}
+	msleep(2000);
+	for(i=0;i<100;i++){
+		printk("2 wait for %i\n",i);
+		udelay(200);
+		stepFwdR();
+	}
+	msleep(2000);
+	for(i=0;i<200;i++){
+		printk("1 wait for %i\n",i);
+		udelay(100);
+		stepFwdR();
+	}
+	msleep(2000);
+	for(i=0;i<200;i++){
+		printk("1 wait for %i\n",i);
+		udelay(50);
+		stepFwdR();
+	}
+	msleep(2000);
+	for(i=0;i<400;i++){
+		printk("1 wait for %i\n",i);
+		ndelay(20);
+		stepFwdR();
+	}
 	return 0;
 }
 

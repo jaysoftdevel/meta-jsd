@@ -65,7 +65,8 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
-    rootbot-stepper-l-kmod \
+    rootbot-stepper-kmod \
+    rootbot-stepper-l \
     rootbot-stepper-r \
     rootbot-hcsr04 \
     \
