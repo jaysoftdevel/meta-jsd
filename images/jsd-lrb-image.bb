@@ -66,9 +66,7 @@ DEV_EXTRAS = " \
 
 EXTRA_TOOLS_INSTALL = " \
     rootbot-stepper-kmod \
-    rootbot-stepper-l \
-    rootbot-stepper-r \
-    rootbot-hcsr04 \
+    rootbot-hcsr04-kmod \
     \
     opkg \
     devmem2 \
