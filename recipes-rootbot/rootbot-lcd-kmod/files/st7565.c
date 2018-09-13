@@ -108,7 +108,7 @@ static ssize_t st7565_write(struct file *f, const char __user *buf, size_t len,
 	memset(rx_buffer, 0, BUFFER_SIZE);
 
 	// copy the incoming data from userspace to a buffer in kernel space
-	int retval = copy_from_user(rx_buffer, buf, len);
+	int retval = raw_copy_from_user(rx_buffer, buf, len);
 
 	// display the data on the LCD
 	lcd_ascii5x7_string(0, 1, rx_buffer);
@@ -247,7 +247,7 @@ long lcd_control(struct file *f, unsigned int control, unsigned long value) {
 		printk("[%s] received ioctl: control %x value %s\n",__FUNCTION__, control, (char*) value);
 #endif
 		memset(rx_buffer, 0, strlen((char* )value));
-		copy_from_user(rx_buffer, (char*) value, strlen((char*) value));
+		raw_copy_from_user(rx_buffer, (char*) value, strlen((char*) value));
 		lcd_ascii5x7_string(0, 10, rx_buffer);
 	} else if (control == IOCTL_LCD_CLEAR_ALL) {
 #ifdef DEBUG
@@ -267,7 +267,7 @@ long lcd_control(struct file *f, unsigned int control, unsigned long value) {
 		lcd_setup_working_mode_frame();
 	} else if (control == IOCTL_LCD_WORKING_MODE) {
 		static DisplayData dd;
-		copy_from_user(&dd, (void*) value, sizeof(DisplayData));
+		raw_copy_from_user(&dd, (void*) value, sizeof(DisplayData));
 #ifdef DEBUG
 		printk(
 				"[%s] Display values: FL %x FC %x FR %x RL %x RR %x\nPing %x conStat %x\nML %x MR %x\ncurrentLoad %x\n",__FUNCTION__,

@@ -17,7 +17,7 @@ do_configure(){
 	./linuxbuild
 	cd ..
 	# export var to another recipe (hcsr04) does not work somehow...
-	export PASM_PATH="${S}/blub"
+	export PASM_PATH="${S}/"
 }
 
 do_compile[noexec] = "1"

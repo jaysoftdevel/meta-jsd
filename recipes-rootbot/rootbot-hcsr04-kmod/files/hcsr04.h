@@ -8,6 +8,9 @@
 #ifndef HCSR04_H_
 #define HCSR04_H_
 
+#include "prussdrv.h"
+#include "pruss_intc_mapping.h"
+
 //#define DEBUG
 #define IOLIB_DBG
 #define CYCLES 500
@@ -44,6 +47,8 @@ float getDistanceFC(void);
 float getDistanceFR(void);
 float getDistanceRL(void);
 float getDistanceRR(void);
+
+//extern int prussdrv_open(unsigned int host_interrupt);
 
 
 #endif /* HCSR04_H_ */

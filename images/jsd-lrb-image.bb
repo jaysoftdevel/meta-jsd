@@ -15,9 +15,16 @@ CORE_OS = " \
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
+    rootbot-hcsr04-kmod \
     rootbot-lcd-kmod \
+    rootbot-stepper-kmod \
     hello-mod \
  "
+ 
+PRU_SUPPOER = " \
+    pruss-lld.bb \
+    pruss-lld-test.bb \
+"
 
 WIFI_SUPPORT = " \
     crda \
@@ -65,8 +72,6 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
-    rootbot-stepper-kmod \
-    rootbot-hcsr04-kmod \
     \
     opkg \
     devmem2 \
@@ -103,6 +108,7 @@ IMAGE_INSTALL += " \
     ${EXTRA_TOOLS_INSTALL} \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
+    ${PRU_SUPPORT} \
 "
 
 set_local_timezone() {

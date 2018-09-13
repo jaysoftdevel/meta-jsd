@@ -23,9 +23,6 @@
 
 #include "hcsr04.h"
 
-#include "prussdrv.h"
-#include "pruss_intc_mapping.h"
-
 //#include <time.h>
 //#include <fcntl.h>
 //#include <sys/mman.h>
@@ -34,6 +31,8 @@
 
 static void *pruDataMem;
 static volatile unsigned int *pruData;
+
+extern int prussdrv_open(unsigned int host_interrupt);
 
 #define TESTHCSR04
 
