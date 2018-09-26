@@ -1,5 +1,4 @@
 SUMMARY = "A console development image with some C/C++ dev tools"
-HOMEPAGE = "http://www.jumpnowtek.com"
 LICENSE = "MIT"
 
 IMAGE_FEATURES += "package-management"
@@ -15,13 +14,15 @@ CORE_OS = " \
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    rootbot-hcsr04-kmod \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
     hello-mod \
- "
+"
+
+#rootbot-hcsr04-kmod
+    
  
-PRU_SUPPOER = " \
+PRU_SUPPORT = " \
     pruss-lld.bb \
     pruss-lld-test.bb \
 "
@@ -108,8 +109,11 @@ IMAGE_INSTALL += " \
     ${EXTRA_TOOLS_INSTALL} \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
-    ${PRU_SUPPORT} \
-"
+"    
+
+#${PRU_SUPPORT} \
+#
+#"
 
 set_local_timezone() {
     ln -sf /usr/share/zoneinfo/EST5EDT ${IMAGE_ROOTFS}/etc/localtime
