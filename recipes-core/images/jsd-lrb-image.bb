@@ -16,12 +16,10 @@ KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
+    rootbot-hcsr04-kmod \
     hello-mod \
 "
-
-#rootbot-hcsr04-kmod
     
- 
 PRU_SUPPORT = " \
     pruss-lld.bb \
     pruss-lld-test.bb \
