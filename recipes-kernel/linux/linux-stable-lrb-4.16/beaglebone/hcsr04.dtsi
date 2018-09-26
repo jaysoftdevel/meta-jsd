@@ -1,5 +1,3 @@
-/dts-v1/;
-/plugin/;
 / {
   compatible = "ti,rootbot-bbb", "ti,beaglebone", "ti,beaglebone-black";
 
