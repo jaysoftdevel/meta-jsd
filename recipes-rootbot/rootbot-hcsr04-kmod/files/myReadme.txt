@@ -1,6 +1,9 @@
 to get ready with distance sensor code for the hc-sr04 module the dtc (device tree compiler) library needs to be installed.
 Follow the flash instructions in .. HowTo_DebianSystem.txt
 
+# source of this module was mainly based on this repo which addresses a debian image as starting point
+https://github.com/luigif/hcsr04
+
 Disable HDMI (NOT eMMC!):
 open /boot/uEnv uncomment the according lines
 

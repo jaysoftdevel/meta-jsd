@@ -5,9 +5,12 @@ IMAGE_FEATURES += "package-management"
 IMAGE_LINGUAS = "en-us"
 
 inherit core-image
+#inherit populate_sdk
 
 CORE_OS = " \
-    openssh openssh-keygen openssh-sftp-server \
+    openssh \
+    openssh-keygen \
+    openssh-sftp-server \
     psplash \
     tzdata \
  "
@@ -18,11 +21,12 @@ KERNEL_EXTRA_INSTALL = " \
     rootbot-stepper-kmod \
     rootbot-hcsr04-kmod \
     hello-mod \
+    uio-module-drv \
 "
-    
+
 PRU_SUPPORT = " \
-    pruss-lld.bb \
-    pruss-lld-test.bb \
+    pru-icss \
+    pruss-lld \
 "
 
 WIFI_SUPPORT = " \
@@ -107,11 +111,8 @@ IMAGE_INSTALL += " \
     ${EXTRA_TOOLS_INSTALL} \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
-"    
-
-#${PRU_SUPPORT} \
-#
-#"
+    ${PRU_SUPPORT} \
+"
 
 set_local_timezone() {
     ln -sf /usr/share/zoneinfo/EST5EDT ${IMAGE_ROOTFS}/etc/localtime

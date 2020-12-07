@@ -5,6 +5,10 @@
 #include "am335x-bone-common.dtsi"
 #include "am335x-boneblack-common.dtsi"
 #include "hcsr04.dtsi"
+// JSD: not found in kernel repo!
+// -> tried several pru and uio dts
+// from https://github.com/RobertCNelson/bb.org-overlays
+//#include "am335x-pru-uio.dtsi"
 
 // JSD: potentially copy pru dtsi source from meta-ti
 //#include "am335x-boneblack-prucape.dtsi"
