@@ -2,7 +2,7 @@ require recipes-kernel/linux/linux-yocto.inc
 
 inherit kernel
 
-COMPATIBLE_MACHINE = "beaglebone|qemux86"
+COMPATIBLE_MACHINE = "beaglebone|qemux86|rootbot-bbb"
 
 PROVIDES += "virtual/kernel"
 
@@ -10,15 +10,6 @@ RDEPENDS_kernel-base += "kernel-devicetree"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 
-KERNEL_DEVICETREE ?= " \
-    am335x-boneblack.dtb \
-    am335x-boneblack-wireless.dtb \
-    bbb-jsd-lrb.dtb \
-    \
-    uio_pruss_enable-00A0.dtb \
-    am33x-pru-rproc-4-9-ti-prucape-00A0.dtb \
-    am33x-pru-uio-00A0.dtb \
-"
 LINUX_VERSION = "4.16"
 LINUX_VERSION_EXTENSION = "-jsd"
 

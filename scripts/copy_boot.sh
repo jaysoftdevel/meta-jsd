@@ -52,10 +52,10 @@ echo "###"
 	echo "Copying u-boot"
 	sudo cp ${SRCDIR}/${REL_SRC_DIR}/u-boot-${MACHINE}.img /media/card/u-boot.img
 
-	if [ -f ${SRCDIR}/uEnv.txt ]; then
-		echo "Copying ${SRCDIR}/uEnv.txt to /media/card"
-		sudo cp ${SRCDIR}/${REL_SRC_DIR}/uEnv.txt /media/card
-	fi
+	#if [ -f ${SRCDIR}/uEnv.txt ]; then
+	#	echo "Copying ${SRCDIR}/uEnv.txt to /media/card"
+	#	sudo cp ${SRCDIR}/${REL_SRC_DIR}/uEnv.txt /media/card
+	#fi
 	#el
 	if [ -f ./uEnv.txt ]; then
 		echo "Copying ./uEnv.txt to /media/card"

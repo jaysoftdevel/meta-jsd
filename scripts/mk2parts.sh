@@ -12,10 +12,10 @@ else
 	exit 1
 fi
 
-if [ "$DRIVE" = "/dev/sda" ] ; then
-	echo "Sorry, not going to format $DRIVE"
-	exit 1
-fi
+#if [ "$DRIVE" = "/dev/sda" ] ; then
+#	echo "Sorry, not going to format $DRIVE"
+#	exit 1
+#fi
 
 
 echo -e "\nWorking on $DRIVE\n"

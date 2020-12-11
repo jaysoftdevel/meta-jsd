@@ -24,6 +24,7 @@ SRC_URI = "file://Makefile \
 "
 
 S = "${WORKDIR}"
+
 export PASM_PATH = "${S}/../../../cortexa8hf-neon-poky-linux-gnueabi/pasm-compiler/1.0-r0/git/pru_sw/utils/"
 
 FILES_${PN} += " \

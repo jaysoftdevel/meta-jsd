@@ -1,15 +1,10 @@
-obj-m += hcsr04.o
+obj-m := hcsr04-kmod.o
+hcsr04-kmod-objs := hcsr04.o libprussdrv.a
 
-#hcsr04-src := hcsr04.c
-#hcsr04-c-objs += hcsr04.o
-#hcsr04-objs := hcsr04.o libprussdrv.a
-#hcsr04-libs += ./libprussdrv.a
-#hcsr04-objs += $(hcsr04-libs)
 SRC := $(shell pwd)
 PRU_ASM=pasm
 # import from rootbot-hcsr04 recipe
 IPASM_PATH=$(PASM_PATH)
-
 
 all:
 	$(MAKE) -C $(KERNEL_SRC) M=$(SRC)

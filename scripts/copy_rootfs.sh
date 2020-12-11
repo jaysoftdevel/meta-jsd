@@ -44,8 +44,8 @@ fi
 echo -e "HOSTNAME: $TARGET_HOSTNAME\n"
 
 
-if [ ! -f "${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.xz" ]; then
-        echo "File not found: ${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.xz"
+if [ ! -f "${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.bz2" ]; then
+        echo "File not found: ${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.bz2"
         exit 1
 fi
 
@@ -58,8 +58,8 @@ if [ -b $DEV ]; then
 	echo "Mounting $DEV"
 	sudo mount $DEV /media/card
 
-	echo "Extracting ${IMAGE}-image-${MACHINE}.tar.xz to /media/card"
-	sudo tar -C /media/card -xJf ${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.xz
+	echo "Extracting ${IMAGE}-image-${MACHINE}.tar.bz2 to /media/card"
+	sudo tar -C /media/card -xvf ${SRCDIR}/${REL_SRC_DIR}/${IMAGE}-image-${MACHINE}.tar.bz2
 
 	echo "Writing hostname to /etc/hostname"
 	export TARGET_HOSTNAME

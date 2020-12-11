@@ -6,12 +6,17 @@
   version = "00A0";
 
   exclusive-use =
-"P8.46","gpio2_7",
-"P8.41","gpio2_10",
-"P8.45","gpio2_6",
+"P8.37","gpio2_14",
+"P8.38","gpio2_15",
+"P8.39","gpio2_12",
 "P8.40","gpio2_13",
+"P8.41","gpio2_10",
+"P8.42","gpio2_11",
+"P8.43","gpio2_8",
 "P8.44","gpio2_9",
-"P8.39","gpio2_12";
+"P8.45","gpio2_6",
+"P8.46","gpio2_7";
+
 
 
   fragment@10 {
@@ -49,7 +54,7 @@ pinctrl-single,pins = <
                     
                     /* RR */
                     0x138 0x07 /* Trigger: P8_37 gpio2[14] GPIO78 out pulldown Mode: 7 */
-                    0x12C 0x27 /* Echo: P8_37 gpio2[11] GPIO75 in pulldown Mode: 7 */
+                    0x12C 0x27 /* Echo: P8_42 gpio2[11] GPIO75 in pulldown Mode: 7 */
                     
   
   >;
