@@ -43,4 +43,3 @@ do_install_append() {
     install -m 0644 hcsr04_RR.bin ${D}/lib/modules/${KERNEL_VERSION}/extra/hcsr04_RR.bin
     install -m 0644 hcsr04_RL.bin ${D}/lib/modules/${KERNEL_VERSION}/extra/hcsr04_RL.bin
 }
-

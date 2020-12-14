@@ -26,9 +26,8 @@ FILES_${PN} += " \
 
 do_configure(){
 	# use local source
-	echo "** ${EXTERNALSRC} ** and ${PWD}"
 	cd ${EXTERNALSRC} 
-	make        
+	make
 }
 
 # no need to install the static lib, will just be linked against

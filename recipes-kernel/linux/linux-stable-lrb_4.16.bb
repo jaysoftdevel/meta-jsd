@@ -13,7 +13,10 @@ PACKAGE_ARCH = "${MACHINE_ARCH}"
 LINUX_VERSION = "4.16"
 LINUX_VERSION_EXTENSION = "-jsd"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}-${LINUX_VERSION}:"
+# Not yet tested...
+#LINUX_KERNEL_TYPE = "preempt-rt"
+
+FILESEXTRAPATHS_prepend := "${THISDIR}/beaglebone:"
 
 S = "${WORKDIR}/git"
 
@@ -29,3 +32,5 @@ SRC_URI += " \
     file://am33x-pru-rproc-4-9-ti-prucape-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
     file://am33x-pru-uio-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
+
+

@@ -38,8 +38,8 @@
 
 /* function prototypes*/
 int initPru1(void);
-int initPins(void);
-int initHcsr04Gpio(void);
+//int initPins(void);
+//int initHcsr04Gpio(void);
 int deinitPru1(void);
 int getDistancePRU1(char* pruBin, int index);
 float getDistanceFL(void);

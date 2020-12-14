@@ -58,7 +58,7 @@ int main(void) {
 	/* stop clock stuff*/
 
 	printk("initializing pins...\n");
-	initHcsr04Gpio();
+	//initHcsr04Gpio();
 	initPru1();
 	for (i; i > 0; i--) {
 //		gettimeofday(&start,0);

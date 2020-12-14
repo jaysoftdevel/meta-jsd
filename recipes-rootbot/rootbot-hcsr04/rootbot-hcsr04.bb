@@ -17,8 +17,7 @@ EXTERNALSRC := "${PATH_PREFIX}/hcsr04"
 S = "${WORKDIR}/git"
 
 APPLICATION = "hcsr04"
-INSTALL_PREFIX = "/opt"
-DEST_PATH = "${INSTALL_PREFIX}"
+DEST_PATH = "${ROOT_HOME}"
 
 TARGET_CC_ARCH += "${LDFLAGS}"
 
@@ -30,7 +29,7 @@ FILES_${PN} += " \
 "
 
 do_compile(){
-	export PASM_PATH="`pwd`/../../../pasm-compiler/1.0-r0/git/pru_sw/utils"
+	export PASM_PATH="`pwd`/../../../pasm-compiler/1.0-r0/git/pru_sw/utils/"
 	cd ${EXTERNALSRC} 
 	make
 }

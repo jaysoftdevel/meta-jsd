@@ -1,5 +1,6 @@
-obj-m := hcsr04-kmod.o
-hcsr04-kmod-objs := hcsr04.o libprussdrv.a
+obj-m += hcsr04-kmod.o
+hcsr04-kmod-objs := hcsr04.o libprussdrv.a $(hcsr04-kmod-src:.c=.o)
+hcsr04-kmod-src := hcsr04.c
 
 SRC := $(shell pwd)
 PRU_ASM=pasm
@@ -7,7 +8,7 @@ PRU_ASM=pasm
 IPASM_PATH=$(PASM_PATH)
 
 all:
-	$(MAKE) -C $(KERNEL_SRC) M=$(SRC)
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules
 
 modules_install: hcsr04_FL.bin hcsr04_FC.bin hcsr04_FR.bin hcsr04_RL.bin hcsr04_RR.bin
 	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules_install
