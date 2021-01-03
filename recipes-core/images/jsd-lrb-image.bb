@@ -7,30 +7,48 @@ IMAGE_LINGUAS = "en-us"
 inherit core-image
 #inherit populate_sdk
 
+
+IMAGE_INSTALL += " \
+    ${CORE_OS} \
+    ${DEV_SDK_INSTALL} \
+    ${DEV_EXTRAS} \
+    ${EXTRA_TOOLS_INSTALL} \
+    ${KERNEL_EXTRA_INSTALL} \
+    ${WIFI_SUPPORT} \
+    ${PRU_SUPPORT} \
+"
+
 CORE_OS = " \
     openssh \
     openssh-keygen \
     openssh-sftp-server \
     psplash \
     tzdata \
-    rootbot-hcsr04 \
-    rootbot-hcsr04-dev \
-    rootbot-hcsr04-dbg \
+    rootbot-hcsr04-app \
  "
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
+    hello-mod \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
     rootbot-hcsr04-kmod \
-    hello-mod \
-    uio-module-drv \
-"
+    "
+    
+#    beaglescope \
+#
 
 PRU_SUPPORT = " \
     pru-icss \
     pruss-lld \
-"
+    ti-cgt-pru \
+    pru-LED0-sample \
+  "   
+# UIO drivers are no longer supported by TI
+#uio-test-pruss \
+#uio-module-drv \
+#libuio \
+#
 
 WIFI_SUPPORT = " \
     crda \
@@ -107,16 +125,6 @@ EXTRA_TOOLS_INSTALL = " \
     zip \
  "
 
-IMAGE_INSTALL += " \
-    ${CORE_OS} \
-    ${DEV_SDK_INSTALL} \
-    ${DEV_EXTRAS} \
-    ${EXTRA_TOOLS_INSTALL} \
-    ${KERNEL_EXTRA_INSTALL} \
-    ${WIFI_SUPPORT} \
-    ${PRU_SUPPORT} \
-"
-
 set_local_timezone() {
     ln -sf /usr/share/zoneinfo/EST5EDT ${IMAGE_ROOTFS}/etc/localtime
 }
@@ -127,7 +135,6 @@ disable_bootlogd() {
 
 ROOTFS_POSTPROCESS_COMMAND += " \
     set_local_timezone ; \
-    disable_bootlogd ; \
  "
 
 export IMAGE_BASENAME = "jsd-lrb-image"

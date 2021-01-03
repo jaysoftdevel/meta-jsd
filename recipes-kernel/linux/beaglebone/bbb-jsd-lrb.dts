@@ -4,8 +4,7 @@
 #include "am33xx.dtsi"
 #include "am335x-bone-common.dtsi"
 #include "am335x-boneblack-common.dtsi"
-#include "hcsr04.dtsi"
-#include "AM335X-PRU-UIO-00A0.dts"
+//#include "hcsr04.dtsi"
 // JSD: not found in kernel repo!
 // -> tried several pru and uio dts
 // from https://github.com/RobertCNelson/bb.org-overlays
@@ -23,6 +22,18 @@
 	regulator-min-microvolt = <1800000>;
 	regulator-max-microvolt = <1800000>;
 	regulator-always-on;
+};
+
+&mmc1 {
+	vmmc-supply = <&vmmcsd_fixed>;
+};
+
+&mmc2 {
+	vmmc-supply = <&vmmcsd_fixed>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&emmc_pins>;
+	bus-width = <8>;
+	status = "okay";
 };
 
 &rtc {

@@ -27,10 +27,6 @@ SRC_URI += " \
     file://defconfig \
     file://hcsr04.dtsi;subdir=git/arch/${ARCH}/boot/dts \
     file://bbb-jsd-lrb.dts;subdir=git/arch/${ARCH}/boot/dts \
-    \
-    file://uio_pruss_enable-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
-    file://am33x-pru-rproc-4-9-ti-prucape-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
-    file://am33x-pru-uio-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
 
 
