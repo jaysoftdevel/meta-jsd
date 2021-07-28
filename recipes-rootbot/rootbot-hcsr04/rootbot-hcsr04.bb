@@ -30,7 +30,7 @@ FILES_${PN} += " \
 
 do_compile(){
 	export PASM_PATH="`pwd`/../../../pasm-compiler/1.0-r0/git/pru_sw/utils/"
-	cd ${EXTERNALSRC} 
+	cd ${EXTERNALSRC}
 	make
 }
 

@@ -1,17 +1,24 @@
-FILESEXTRAPATHS_prepend := "${THISDIR}/beaglebone:"
+inherit kernel-devicetree
 
-#require  recipes-kernel/linux/ti-uio.inc
-FILESEXTRAPATHS_prepend := "${THISDIR}/../../recipes-rootbot/test/bbb-pru-blinky/:"
+FILESEXTRAPATHS_prepend := "${THISDIR}/files/dts:${THISDIR}/files/beaglebone:"
 
+LINUX_VERSION_EXTENSION = "-jsd"
 
 SRC_URI += " \
-    file://bbb-jsd-lrb.dts;subdir=git/arch/${ARCH}/boot/dts \
-    file://AM335X-PRU-UIO-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \  
-    file://AM335X-PRU-RPROC-4-14-TI-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
+    file://bbb-pru-minimal.dts;subdir=git/arch/${ARCH}/boot/dts \
+    file://am33xx.dtsi \
     file://defconfig \
-    file://pru.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
 
+#    
+#    \
+#    file://bbb-jsd-lrb.dts;subdir=git/arch/${ARCH}/boot/dts \
+#    \
+#    file://pru-P8-11-P8-12.dtsi;subdir=git/arch/${ARCH}/boot/dts \
+#    file://bb-gpio-hcsr04.dtsi;subdir=git/arch/${ARCH}/boot/dts \
 #    file://hcsr04.dtsi;subdir=git/arch/${ARCH}/boot/dts \
-#    file://am335x-pru-uio.dtsi;subdir=git/arch/${ARCH}/boot/dts \
 #
+
+KERNEL_DEVICETREE = " \
+   bbb-pru-minimal.dtb \
+"

@@ -1,0 +1,2 @@
+SSID ?= "-|-SPAM-|-"
+PSK ?= "HubSchrauberPilot"

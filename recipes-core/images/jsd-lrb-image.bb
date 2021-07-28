@@ -5,8 +5,15 @@ IMAGE_FEATURES += "package-management"
 IMAGE_LINGUAS = "en-us"
 
 inherit core-image
-#inherit populate_sdk
 
+# minimize amount of outputs during development
+IMAGE_FSTYPES = "tar.xz"
+
+DISTRO_FEATUES_append = " \
+    bluez5 \
+    bluetooth \
+    wifi \
+"
 
 IMAGE_INSTALL += " \
     ${CORE_OS} \
@@ -34,22 +41,27 @@ KERNEL_EXTRA_INSTALL = " \
     rootbot-stepper-kmod \
     rootbot-hcsr04-kmod \
     "
-    
-#    beaglescope \
-#
 
+# Check wheather PRU modules are required at all, since its enabled in kernel already!
+# FYI, pruss-lld depends on the osal extensions (uncommitted yet)
 PRU_SUPPORT = " \
     pru-icss \
     pruss-lld \
-    ti-cgt-pru \
-    pru-LED0-sample \
-  "   
+  "
+# disabled for now...
+#    ti-cgt-pru \
+#    pru-Led0-sample \
+#    pru-hcsr04 \
+#    pru-hcsr04-all \
+#
+
 # UIO drivers are no longer supported by TI
 #uio-test-pruss \
 #uio-module-drv \
 #libuio \
 #
 
+# to be checked!
 WIFI_SUPPORT = " \
     crda \
     iw \
@@ -136,6 +148,10 @@ disable_bootlogd() {
 ROOTFS_POSTPROCESS_COMMAND += " \
     set_local_timezone ; \
  "
+ 
+#PREFERRED_PROVIDER_virtual/kernel = "linux-stable-lrb"
+PREFERRED_PROVIDER_virtual/kernel = "linux-ti-staging"
+KERNEL_IMAGETYPE = "zImage"
 
 export IMAGE_BASENAME = "jsd-lrb-image"
 
