@@ -1,0 +1,12 @@
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 7949c213a434..fe2513074893 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -610,6 +610,7 @@ dtb-$(CONFIG_SOC_TI81XX) += \
+ 	dm8168-evm.dtb \
+ 	dra62x-j5eco-evm.dtb
+ dtb-$(CONFIG_SOC_AM33XX) += \
++	AM335X-PRU-UIO-00A0.dtbo \
+ 	am335x-baltos-ir2110.dtb \
+ 	am335x-baltos-ir3220.dtb \
+ 	am335x-baltos-ir5221.dtb \
