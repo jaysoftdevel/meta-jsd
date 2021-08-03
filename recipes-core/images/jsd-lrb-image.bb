@@ -17,12 +17,12 @@ DISTRO_FEATUES_append = " \
 
 IMAGE_INSTALL += " \
     ${CORE_OS} \
+    ${KERNEL_EXTRA_INSTALL} \
+    ${PRU_SUPPORT} \
     ${DEV_SDK_INSTALL} \
     ${DEV_EXTRAS} \
     ${EXTRA_TOOLS_INSTALL} \
-    ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
-    ${PRU_SUPPORT} \
 "
 
 CORE_OS = " \
@@ -40,6 +40,7 @@ KERNEL_EXTRA_INSTALL = " \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
     rootbot-hcsr04-kmod \
+    pru-devicetree-overlay \
     "
 
 # Check wheather PRU modules are required at all, since its enabled in kernel already!
@@ -70,9 +71,10 @@ WIFI_SUPPORT = " \
     linux-firmware-rtl8192ce \
     linux-firmware-rtl8192cu \
     linux-firmware-rtl8192su \
-    wireless-tools \
     wpa-supplicant \
- "                                                                                                                                               
+"
+#    wireless-tools \
+#
 
 DEV_SDK_INSTALL = " \
     binutils \
@@ -97,7 +99,6 @@ DEV_SDK_INSTALL = " \
     make \
     perl-modules \
     pkgconfig \
-    python-modules \
  "
 
 DEV_EXTRAS = " \
@@ -148,9 +149,7 @@ disable_bootlogd() {
 ROOTFS_POSTPROCESS_COMMAND += " \
     set_local_timezone ; \
  "
- 
-#PREFERRED_PROVIDER_virtual/kernel = "linux-stable-lrb"
-PREFERRED_PROVIDER_virtual/kernel = "linux-ti-staging"
+
 KERNEL_IMAGETYPE = "zImage"
 
 export IMAGE_BASENAME = "jsd-lrb-image"

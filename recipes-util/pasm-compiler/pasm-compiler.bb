@@ -10,6 +10,9 @@ SRC_URI = "git://github.com/beagleboard/am335x_pru_package.git;protocol=git;bran
 
 inherit pkgconfig
 
+# to prevent dependency build issues
+DEPENDS += "rootbot-src"
+
 S = "${WORKDIR}/git"
 
 do_configure(){
@@ -30,3 +33,14 @@ do_package_write_rpm[noexec] = "1"
 do_package_write_deb[noexec] = "1"
 do_package_write_ipk[noexec] = "1"
 do_populate[noexec] = "1" 
+
+
+deltask do_compile
+deltask do_install
+deltask do_package
+deltask do_packagedata
+deltask do_package_write_rpm
+deltask do_package_write_deb
+deltask do_package_write_ipk
+deltask do_package_write_tar
+deltask do_populate
