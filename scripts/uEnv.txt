@@ -19,3 +19,6 @@ loadfdt=run findfdtfile; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
 loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
 uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
 
+# enable and activate PRU devictree overlay
+enable_uboot_overlays=1
+uboot_overlay_pru=/boot/overlays/AM335X-PRU-UIO-00A0.dtbo 

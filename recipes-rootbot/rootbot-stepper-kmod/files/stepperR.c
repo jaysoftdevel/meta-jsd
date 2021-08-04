@@ -154,6 +154,7 @@ int stepRNone(void){
 	gpio_set_value(COIL_PIN_EAST, 0);
 	gpio_set_value(COIL_PIN_SOUTH, 0);
 	gpio_set_value(COIL_PIN_WEST, 0);
+	return (0);
 }
 /**
  *

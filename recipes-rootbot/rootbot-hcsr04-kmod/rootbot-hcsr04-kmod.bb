@@ -6,9 +6,7 @@ inherit module
 
 DISTRO_EXTRA_RDEPENDS ?= "pasm-compiler"
 
-DEPENDS = "	\
-    pasm-compiler \
-"   
+DEPENDS = "pasm-compiler"
 
 SRC_URI = "file://Makefile \
     file://hcsr04.c \
@@ -25,7 +23,7 @@ SRC_URI = "file://Makefile \
 
 S = "${WORKDIR}"
 
-export PASM_PATH = "${S}/../../../cortexa8hf-neon-poky-linux-gnueabi/pasm-compiler/1.0-r0/git/pru_sw/utils/"
+export PASM_PATH = "${BASE_WORKDIR}/${TUNE_PKGARCH}-poky-${TARGET_OS}/pasm-compiler/1.0-r0/git/pru_sw/utils/"
 
 FILES_${PN} += " \
     /lib/modules/${KERNEL_VERSION}/extra/hcsr04_FR.bin	\
