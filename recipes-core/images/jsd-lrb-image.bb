@@ -39,9 +39,11 @@ KERNEL_EXTRA_INSTALL = " \
     hello-mod \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
-    rootbot-hcsr04-kmod \
     pru-devicetree-overlay \
     "
+# hcsr04 cannot work as kernel module since it uses user space features (e.g. file access)!!!
+#    rootbot-hcsr04-kmod \
+#
 
 # Check wheather PRU modules are required at all, since its enabled in kernel already!
 # FYI, pruss-lld depends on the osal extensions (uncommitted yet)
