@@ -2,10 +2,29 @@
 
 #include "am33xx.dtsi"
 #include "am335x-bone-common.dtsi"
-/* #include "am33xx-pruss-uio.dtsi" */
 
 / {
-        compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+};
+
+&pruss {
+	status = "okay";
+};
+
+&pruss_intc {
+	status = "okay";
+};
+
+&pru0 {
+	status = "okay";
+};
+
+&pru1 {
+	status = "okay";
+};
+
+&pruss_mdio {
+	status = "okay";
 };
 
 &ldo3_reg {

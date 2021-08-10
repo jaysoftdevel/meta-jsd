@@ -10,8 +10,3 @@ SRC_URI = " \
 S = "${WORKDIR}/git/overlays"
 
 COMPATIBLE_MACHINE = ".*(ti33x|beaglebone).*"
-
-#do_install_append(){
-#	install -d ${D}/boot/devicetree/
-#	install -m 0644 ${S}/AM335X-PRU-UIO-00A0.dtbo ${D}/boot/devicetree/
-#}

@@ -21,4 +21,6 @@ uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run 
 
 # enable and activate PRU devictree overlay
 enable_uboot_overlays=1
-uboot_overlay_pru=/boot/overlays/AM335X-PRU-UIO-00A0.dtbo 
+# uboot_overlay_pru=/boot/overlays/AM335X-PRU-UIO-00A0.dtbo
+disable_uboot_overlay_video=1
+disable_uboot_overlay_audio=1
