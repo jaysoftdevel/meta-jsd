@@ -6,8 +6,6 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 SRCREV = "${AUTOREV}"
 SRC_URI = "git://github.com/jaysoftdevel/BBB_LRB_src.git;protocol=git;branch=pru_lib_from_source"          
 
-#PACKAGES = "${PN}-dbg ${PN} ${PN}-dev"
-
 S = "${WORKDIR}/git"
 
 # disable additional tasks
@@ -27,3 +25,5 @@ deltask do_package_write_deb
 deltask do_package_write_ipk
 deltask do_package_write_tar
 deltask do_populate
+
+BBCLASSEXTEND = "native nativesdk" 

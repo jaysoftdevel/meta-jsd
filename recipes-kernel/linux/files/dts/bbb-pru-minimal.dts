@@ -1,30 +1,51 @@
 /dts-v1/;
+/plugin/;
 
 #include "am33xx.dtsi"
 #include "am335x-bone-common.dtsi"
 
 / {
-	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx";
+	compatible = "ti,am335x-bone-black", "ti,am335x-bone", "ti,am33xx", "ti,beaglebone", "ti,beaglebone-black";
+	
+	exclusive-use =
+    "P8.12", "P8.11",
+    "GPIO44", "GPIO45",
+    "gpio1","gpio2",
+    "gpio1_12","gpio1_13";
+
+  fragment@4 {
+    target = <&am33xx_pinmux>;
+    __overlay__ {
+		status = "okay";
+		bb_p8_11_p8_12_pins: pinmux_bb_p8_11_p8_12_pins {
+			pinctrl-single,pins = <
+						0x30 0x06
+						0x34 0x06
+			  >;
+      };
+    };
+  };
+  
+  fragment@5 {
+	target = <&ocp>;
+	__overlay__ {
+		bb_p8_11_p8_12_pins_helper: helper{
+        compatible = "bone-pinmux-helper";
+        pinctrl-names = "default";
+        pinctrl-0 = <&bb_p8_11_p8_12_pins>;
+        status = "okay";
+	};
+	};
+  };
 };
 
-&pruss {
-	status = "okay";
-};
-
-&pruss_intc {
-	status = "okay";
-};
-
-&pru0 {
-	status = "okay";
-};
-
-&pru1 {
-	status = "okay";
-};
-
-&pruss_mdio {
-	status = "okay";
+&ocp {
+	bb_p8_11_p8_12_pins{
+        compatible = "bone-pinmux-helper";
+        status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&bb_p8_11_p8_12_pins>;
+	};
 };
 
 &ldo3_reg {

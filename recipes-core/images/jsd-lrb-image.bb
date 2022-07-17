@@ -31,7 +31,7 @@ CORE_OS = " \
     openssh-sftp-server \
     psplash \
     tzdata \
-    rootbot-hcsr04-app \
+    rootbot-hcsr04 \
  "
 
 KERNEL_EXTRA_INSTALL = " \
@@ -39,7 +39,7 @@ KERNEL_EXTRA_INSTALL = " \
     hello-mod \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
-    pru-devicetree-overlay \
+    pru-dtbo \
     "
 # hcsr04 cannot work as kernel module since it uses user space features (e.g. file access)!!!
 #    rootbot-hcsr04-kmod \
@@ -48,20 +48,11 @@ KERNEL_EXTRA_INSTALL = " \
 # Check wheather PRU modules are required at all, since its enabled in kernel already!
 # FYI, pruss-lld depends on the osal extensions (uncommitted yet)
 PRU_SUPPORT = " \
-    pru-icss \
     pruss-lld \
+    pru-icss \
   "
-# disabled for now...
+# TI Code generation tool
 #    ti-cgt-pru \
-#    pru-Led0-sample \
-#    pru-hcsr04 \
-#    pru-hcsr04-all \
-#
-
-# UIO drivers are no longer supported by TI
-#uio-test-pruss \
-#uio-module-drv \
-#libuio \
 #
 
 # to be checked!

@@ -5,7 +5,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 inherit module
 
-SRC_URI =   "file://st7565.c \
+SRC_URI = "file://st7565.c \
 			file://font.h \
 			file://lcd.h \
 			file://Makefile \

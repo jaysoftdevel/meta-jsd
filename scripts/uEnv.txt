@@ -4,23 +4,36 @@
 # will be the default. (Hard coded in u-boot).
 bootpart=0:2
 bootdir=/boot
+bootenvfile=uEnv.txt
+overlaydir=/boot/devicetree
 bootfile=zImage
-console=ttyO0,115200n8
+console=ttyS0,115200n8
 fdtaddr=0x88000000
+#fdtfile=am335x-boneblack.dtb
 fdtfile=bbb-pru-minimal.dtb
 loadaddr=0x82000000
 mmcroot=/dev/mmcblk0p2 ro
 mmcrootfstype=ext4 rootwait
 optargs=consoleblank=0
-nohdmi=bbb-pru-minimal.dtb
 mmcargs=setenv bootargs console=${console} ${optargs} root=${mmcroot} rootfstype=${mmcrootfstype}
-findfdtfile=if test -e mmc ${bootpart} ${bootdir}/nohdmi; then setenv fdtfile ${nohdmi}; fi;
-loadfdt=run findfdtfile; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
+loadfdt=echo loading ${bootdir}/${fdtfile}; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
+dtbofile=AM335X-PRU-RPROC-00A0.dtbo
+#dtbofile=AM335X-PRU-UIO-00A0.dtbo
+loaddtbo=echo loading ${overlaydir}/${dtbofile}; load ${devtype} ${bootpart} ${rdaddr} ${overlaydir}/${dtbofile};
+
+fdt addr ${fdtaddr}; fdt resize ${fdt_buffer}; fdt apply ${rdaddr}; fdt resize ${fdt_buffer};
 loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
-uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
+uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loaddtbo; then echo Loaded dtbo ${dtbofile};if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi; fi;
 
 # enable and activate PRU devictree overlay
 enable_uboot_overlays=1
-# uboot_overlay_pru=/boot/overlays/AM335X-PRU-UIO-00A0.dtbo
+#uboot_overlay_pru=${overlaydir}/AM335X-PRU-UIO-00A0.dtbo
+#uboot_overlay_pru=${overlaydir}/AM335X-PRU-RPROC-00A0.dtbo
+#enable_uboot_cape_universal=1
+#uboot_cape_universal_bbb=1
+#uboot_try_cape_universal=1
 disable_uboot_overlay_video=1
 disable_uboot_overlay_audio=1
+disable_uboot_overlay_wireless=1
+disable_uboot_overlay_adc=1
+disable_uboot_overlay_emmc=1

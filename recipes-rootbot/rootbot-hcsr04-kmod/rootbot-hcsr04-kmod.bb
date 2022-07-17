@@ -6,7 +6,7 @@ inherit module
 
 DISTRO_EXTRA_RDEPENDS ?= "pasm-compiler"
 
-DEPENDS = "pasm-compiler"
+DEPENDS = "pasm-compiler-native"
 
 SRC_URI = "file://Makefile \
     file://hcsr04.c \
