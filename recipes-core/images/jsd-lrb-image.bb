@@ -31,7 +31,7 @@ CORE_OS = " \
     openssh-sftp-server \
     psplash \
     tzdata \
-    rootbot-hcsr04 \
+    hcsr04 \
  "
 
 KERNEL_EXTRA_INSTALL = " \

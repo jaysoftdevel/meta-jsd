@@ -8,6 +8,8 @@ LINUX_VERSION_EXTENSION = "-jsd"
 # no need to add defconfig as its already part of SRC_URI
 SRC_URI += " \
     file://bbb-pru-minimal.dts;subdir=git/arch/${ARCH}/boot/dts \
+    file://am335x-boneblack-pruadc.dts;subdir=git/arch/${ARCH}/boot/dts \
+    file://am335x-boneblack-pruswuart.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
 #    file://AM335X-PRU-RPROC-00A0.dts;subdir=git/arch/${ARCH}/boot/dts \
 #    file://hcsr04.dts;subdir=git/arch/${ARCH}/boot/dts \
@@ -15,8 +17,10 @@ SRC_URI += " \
 
 KERNEL_DEVICETREE = " \
    bbb-pru-minimal.dtb \
+   am335x-boneblack-pruadc.dtb \
+   am335x-boneblack-pruswuart.dtb \
 "
-#   AM335X-PRU-RPROC-00A0.dtb \
+#   AM335X-PRU-RPROC-00A0.dtbo \
 #   hcsr04.dtb \
 #
 
@@ -27,17 +31,10 @@ KERNEL_MODULE_AUTOLOAD += " \
 	irq-pruss-intc \
 	pruss \
 "
-#	uio \
-#	uio_pruss \
-#	uio-pdrv \
-#
+
 DISTRO_FEATURES += " \
 	kernel-module-st7565 \
 	kernel-module-pru-rproc \
 	kernel-module-irq-pruss-intc \
 	kernel-module-pruss \
 "
-#	kernel-module-uio \
-#	kernel-module-uio_pruss \
-#	kernel-module-uio-pdrv \
-#
