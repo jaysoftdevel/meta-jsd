@@ -3,11 +3,10 @@ inherit devicetree
 
 FILESEXTRAPATHS_prepend := "${THISDIR}/files/dts:"
 
-#SRC_URI = " \
-#    file://am335x-boneblack-pruadc.dts;subdir=git/overlays \
-#    file://am335x-boneblack-pruswuart.dts;subdir=git/overlays \
-#    file://AM335X-PRU-RPROC-00A0.dts;subdir=git/overlays \
-#"
+# only list overlays, not blobs!
+SRC_URI = " \
+    file://am335x-boneblack-PRU-P8-11-15.dts;subdir=git/overlays \
+"
 
 #file://BB-GPIO-HCSR04.dts;subdir=git/overlays \
 #

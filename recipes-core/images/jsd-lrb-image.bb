@@ -28,15 +28,15 @@ IMAGE_INSTALL += " \
 CORE_OS = " \
     openssh \
     openssh-keygen \
-    openssh-sftp-server \
-    psplash \
-    tzdata \
-    hcsr04 \
- "
+    rootbot-hcsr04 \
+"
+#    psplash \
+#    openssh-sftp-server \
+#    tzdata \
+#
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    hello-mod \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
     pru-dtbo \

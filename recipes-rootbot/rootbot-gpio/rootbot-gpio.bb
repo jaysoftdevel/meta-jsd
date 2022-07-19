@@ -24,7 +24,7 @@ FILES_${PN} += " \
 
 do_configure(){
 	# use local source
-	cd ${EXTERNALSRC} 
+	cd ${EXTERNALSRC}
 	make
 }
 

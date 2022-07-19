@@ -7,23 +7,30 @@ bootdir=/boot
 bootenvfile=uEnv.txt
 overlaydir=/boot/devicetree
 bootfile=zImage
+ipaddr=192.168.5.10
+serverip=192.168.5.1
+netmask=255.255.255.0
 console=ttyS0,115200n8
 fdtaddr=0x88000000
 #fdtfile=am335x-boneblack.dtb
-fdtfile=bbb-pru-minimal.dtb
+fdtfile=am335x-boneblack-rootbot.dtb
+#fdtfile=am335x-boneblack-pruswuart.dtb
 loadaddr=0x82000000
 mmcroot=/dev/mmcblk0p2 ro
 mmcrootfstype=ext4 rootwait
 optargs=consoleblank=0
 mmcargs=setenv bootargs console=${console} ${optargs} root=${mmcroot} rootfstype=${mmcrootfstype}
 loadfdt=echo loading ${bootdir}/${fdtfile}; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
-dtbofile=AM335X-PRU-RPROC-00A0.dtbo
-#dtbofile=AM335X-PRU-UIO-00A0.dtbo
+dtbofile=NONE_DEFINED_AND_USED
 loaddtbo=echo loading ${overlaydir}/${dtbofile}; load ${devtype} ${bootpart} ${rdaddr} ${overlaydir}/${dtbofile};
 
 fdt addr ${fdtaddr}; fdt resize ${fdt_buffer}; fdt apply ${rdaddr}; fdt resize ${fdt_buffer};
 loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
-uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loaddtbo; then echo Loaded dtbo ${dtbofile};if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi; fi;
+
+# Use below to append dt overlay, if needed
+#uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loaddtbo; then echo Loaded dtbo ${dtbofile};if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi; fi;
+# Use below without dtbo file
+uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
 
 # enable and activate PRU devictree overlay
 enable_uboot_overlays=1
