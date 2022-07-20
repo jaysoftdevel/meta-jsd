@@ -27,6 +27,7 @@ do_configure(){
 	cd ${EXTERNALSRC}
 	make
 }
+do_configure[depends] = "rootbot-src:do_unpack"
 
 # no need to install the static lib, will just be linked against
 do_install() {

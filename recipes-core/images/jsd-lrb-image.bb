@@ -29,6 +29,7 @@ CORE_OS = " \
     openssh \
     openssh-keygen \
     rootbot-hcsr04 \
+    hcsr04 \
 "
 #    psplash \
 #    openssh-sftp-server \
