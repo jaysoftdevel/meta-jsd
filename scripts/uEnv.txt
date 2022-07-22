@@ -2,6 +2,8 @@
 # like I did here with findfdtfile.
 # If you do not provide an uEnv.txt, then am335x-boneblack.dtb
 # will be the default. (Hard coded in u-boot).
+bootargs=rw root=/dev/nfs nfsroot=192.168.5.1:/opt/nfs ip=192.168.5.10 console=ttyO0,115200n8
+bootcmd=tftp 0x81000000 zImage; tftp ${loadaddr} am335x-boneblack-rootbot.dtb;bootz 0x81000000 - ${loadaddr}
 bootpart=0:2
 bootdir=/boot
 bootenvfile=uEnv.txt
@@ -30,7 +32,9 @@ loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
 # Use below to append dt overlay, if needed
 #uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loaddtbo; then echo Loaded dtbo ${dtbofile};if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi; fi;
 # Use below without dtbo file
-uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
+#uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
+# Use below for TFTP and NFS boot
+run bootcmd
 
 # enable and activate PRU devictree overlay
 enable_uboot_overlays=1

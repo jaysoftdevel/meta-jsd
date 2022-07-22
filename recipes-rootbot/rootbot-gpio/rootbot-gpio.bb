@@ -34,5 +34,3 @@ do_install() {
 	install -d ${D}${DEST_PATH}
 	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
 }
-
- 
