@@ -18,9 +18,13 @@ DEST_PATH = "${INSTALL_PREFIX}"
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-staticdev"
 
+FILES_${PN}-dev += "iolib.h"
+
 FILES_${PN} += " \
 	 ${DEST_PATH}/lib/*.a	\
 "
+
+EXTRA_OECMAKE += "-DDEBUG=ON"
 
 do_configure(){
 	# use local source
@@ -33,4 +37,6 @@ do_configure[depends] = "rootbot-src:do_unpack"
 do_install() {
 	install -d ${D}${DEST_PATH}
 	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
+	install -d ${D}${includedir}
+	install -m 0755 ${S}/iolib.h ${D}${includedir}/
 }

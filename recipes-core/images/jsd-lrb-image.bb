@@ -9,9 +9,10 @@ inherit core-image
 # minimize amount of outputs during development
 IMAGE_FSTYPES = "tar.xz"
 
-DISTRO_FEATUES_append = " \
-    bluez5 \
-    bluetooth \
+DISTRO_FEATURES = " \
+    nfs \
+    ipv4 \
+    largefile \
     wifi \
 "
 
@@ -29,7 +30,8 @@ CORE_OS = " \
     openssh \
     openssh-keygen \
     rootbot-hcsr04 \
-    hcsr04 \
+    hcsr04-rpmsg \
+    hcsr04-gpio \
 "
 #    psplash \
 #    openssh-sftp-server \
