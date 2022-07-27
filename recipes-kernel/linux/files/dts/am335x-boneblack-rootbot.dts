@@ -12,8 +12,8 @@
 	pru_hcsr04_bone_pins: pru_hcsr04_bone_pins {
 		pinctrl-single,pins = <
 			/* FOR FURTHER TESTING PURPOSES */
-			0x030 0x07 0x0 /* P8_12 gpio1[12] pin12 GPIO44 out pulldown Mode: 7 */
-			0x034 0x27 0x0 /* P8_11 gpio1[13] pin13 GPIO45 in pulldown Mode: 7 */
+			0x030 0x06 0x0 /* P8_12 gpio1[12] pin12 GPIO44 out PRU mode: 6 */
+			0x034 0x26 0x0 /* P8_11 gpio1[13] pin13 GPIO45 in PRU mode: 6 */
 
 			// these pins cause the eth0 not to work any more, don't know why
 			/* FL */

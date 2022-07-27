@@ -22,27 +22,28 @@ IMAGE_INSTALL += " \
     ${PRU_SUPPORT} \
     ${DEV_SDK_INSTALL} \
     ${DEV_EXTRAS} \
-    ${EXTRA_TOOLS_INSTALL} \
     ${WIFI_SUPPORT} \
 "
+#    ${EXTRA_TOOLS_INSTALL} \
+#
 
 CORE_OS = " \
     openssh \
     openssh-keygen \
-    rootbot-hcsr04 \
-    hcsr04-rpmsg \
     hcsr04-gpio \
 "
 #    psplash \
 #    openssh-sftp-server \
 #    tzdata \
+#    rootbot-hcsr04 \
+#    hcsr04-rpmsg \
 #
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
-    pru-dtbo \
+    hcsr04-gpio-kmod \
     "
 # hcsr04 cannot work as kernel module since it uses user space features (e.g. file access)!!!
 #    rootbot-hcsr04-kmod \

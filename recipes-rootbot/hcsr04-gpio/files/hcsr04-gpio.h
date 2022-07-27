@@ -1,0 +1,35 @@
+#ifndef HCSR04_GPIO_H
+#define HCSR04_GPIO_H
+
+// macro to convert bank and gpio into pin number
+#define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
+
+// Data and control lines
+#define TRIGGER_FL	GPIO_TO_PIN(2, 10)	// P8_41, grey
+#define ECHO_FL		GPIO_TO_PIN(2, 7)	// P8_46  grey
+
+#define TRIGGER_FC	GPIO_TO_PIN(2, 13)	// P8_40, white
+#define ECHO_FC		GPIO_TO_PIN(2, 6)	// P8_45, white
+
+#define TRIGGER_FR	GPIO_TO_PIN(2, 12)	// P8_39, black
+#define ECHO_FR		GPIO_TO_PIN(2, 9)	// P8_44, black
+
+#define TRIGGER_RL	GPIO_TO_PIN(2, 15)	// P8_38, brown
+#define ECHO_RL		GPIO_TO_PIN(2, 8)	// P8_43, brown
+
+#define TRIGGER_RR	GPIO_TO_PIN(2, 14)	// P8_37, red
+#define ECHO_RR		GPIO_TO_PIN(2, 11)	// P8_42, red
+
+// 
+
+long hcsr04_control(struct file *f, unsigned int control, unsigned long value);
+static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
+int gpio_init_test(void);
+
+int getDistanceFL(void);
+int getDistanceFC(void);
+int getDistanceFR(void);
+int getDistanceRL(void);
+int getDistanceRR(void);
+
+#endif

@@ -37,6 +37,11 @@ do_compile[depends] = "pasm-compiler:do_configure"
 do_install() {
 	install -d ${D}${DEST_PATH}
 	install -m 0755 ${EXTERNALSRC}/${APPLICATION} ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/hcsr04_FC ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/hcsr04_FL ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/hcsr04_FR ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/hcsr04_RL ${D}${DEST_PATH}
+	install -m 0755 ${EXTERNALSRC}/hcsr04_RR ${D}${DEST_PATH}
 }
 
  

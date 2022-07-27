@@ -52,9 +52,9 @@ typedef struct tPos{
 
 //int initStepperRGpio(void);
 //int deinitStepperRGpio(void);
-int stepRNone(void);
-int stepFwdLR(void);
-int stepRevR(void);
+int stepLNone(void);
+int stepFwdL(void);
+int stepRevL(void);
 
 //Do not add code below this line
 #endif /* STEPPERMOTOR_CONTROL_L_H */
