@@ -21,6 +21,9 @@ static dev_t second; // Global variable for the second device number
 static struct cdev c_dev; // Global variable for the character device structure
 static struct class *cl; // Global variable for the device class
 
+static unsigned long start, end;
+int duration; // used for time measurements
+
 static struct file_operations pugs_fops = { .owner = THIS_MODULE,
 		.unlocked_ioctl = hcsr04_control, .write = hcsr04_write };
 
@@ -73,14 +76,19 @@ static struct gpio_platform_data hcsr04_gpio_pin_info = { .pins =
 char * rx_buffer;
 int BUFFER_SIZE = 5*4; // 4 bytes for each HCSR04 sensor
 
+int echoToDistance(int duration){
+	return (int) duration / 58440;
+}
+
 // trigger FL
 int getDistanceFL(void){
-	unsigned long start, end, duration;
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
+	// not sure if the echo pin may be set to 0!
 	gpio_set_value(hcsr04_gpio_pins[1].gpio, 0);
 	msleep(10);
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 1);
-	msleep(1);
+	msleep(2);
+	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
 	while(gpio_get_value(hcsr04_gpio_pins[1].gpio)!=1){
 		// define exit strategy
 	}
@@ -89,9 +97,10 @@ int getDistanceFL(void){
 		// define exit strategy
 	}
 	end = ktime_get_ns();
-	duration = end -start;
-	printk("### first measurement: %lu #\n", duration);
-	return 0;
+	duration = (int) end - start;
+	// !!! use copy to user mechanism!
+	printk("### measurement: %u #\n", echoToDistance(duration));
+	return duration;
 }
 
 // trigger FC
@@ -178,12 +187,24 @@ static int __init chardev_init(void)
 	}
 	// ready to go!
 	printk("[%s] HCSR04 registered!\n",__FUNCTION__);
-
+	// set all triggers to low!
+	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
+	gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
+	gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
+	gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
+	gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
+	// set all echos to input!
+	gpio_direction_input(hcsr04_gpio_pins[1].gpio);
+	gpio_direction_input(hcsr04_gpio_pins[3].gpio);
+	gpio_direction_input(hcsr04_gpio_pins[5].gpio);
+	gpio_direction_input(hcsr04_gpio_pins[7].gpio);
+	gpio_direction_input(hcsr04_gpio_pins[9].gpio);
 	return 0;
 }
 
 int gpio_init_test(void){
 	printk("First test!!!\n");
+	msleep(200);
 	getDistanceFL();
 	printk("done..\n");
 	return 0;
@@ -194,6 +215,7 @@ long hcsr04_control(struct file *f, unsigned int control, unsigned long value) {
 	printk("[%s] controlling: control = %x and value = %lx\n",__FUNCTION__, control, value);
 #endif
 	printk("#### also without DEBUG flag in control\n");
+	getDistanceFL();
 	return 0;
 }
 

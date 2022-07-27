@@ -25,6 +25,7 @@
 long hcsr04_control(struct file *f, unsigned int control, unsigned long value);
 static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
 int gpio_init_test(void);
+int echoToDistance(int duration);
 
 int getDistanceFL(void);
 int getDistanceFC(void);
