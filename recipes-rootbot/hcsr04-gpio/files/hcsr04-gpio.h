@@ -20,12 +20,12 @@
 #define TRIGGER_RR	GPIO_TO_PIN(2, 14)	// P8_37, red
 #define ECHO_RR		GPIO_TO_PIN(2, 11)	// P8_42, red
 
-// 
-
 long hcsr04_control(struct file *f, unsigned int control, unsigned long value);
 static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
-int gpio_init_test(void);
-int echoToDistance(int duration);
+long echoToDistance(long duration);
+
+// Interrupts not used, too unprecise!
+//static irqreturn_t MeasureISR(int irq, void *dev);
 
 int getDistanceFL(void);
 int getDistanceFC(void);
@@ -33,4 +33,4 @@ int getDistanceFR(void);
 int getDistanceRL(void);
 int getDistanceRR(void);
 
-#endif
+#endif // HCSR04_GPIO_H
