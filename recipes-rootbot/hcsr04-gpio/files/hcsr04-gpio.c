@@ -136,6 +136,7 @@ int getDistanceFL(void){
 	//gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
 	//gpio_set_value(hcsr04_gpio_pins[1].gpio, 0);
 	//msleep(10);
+	printk("waiting for %s pin\n",hcsr04_gpio_pins[1].name);
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
@@ -160,6 +161,7 @@ int getDistanceFC(void){
 	// gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[3].gpio, 0);
 	// msleep(10);
+	printk("waiting for %s pin\n",hcsr04_gpio_pins[3].name);
 	gpio_set_value(hcsr04_gpio_pins[2].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
@@ -184,6 +186,7 @@ int getDistanceFR(void){
 	// gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[5].gpio, 0);
 	// msleep(10);
+	printk("waiting for %s pin\n",hcsr04_gpio_pins[5].name);
 	gpio_set_value(hcsr04_gpio_pins[4].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
@@ -203,11 +206,12 @@ int getDistanceFR(void){
 	return duration;
 }
 
-// trigger LL
-int getDistanceLL(void){
+// trigger RL
+int getDistanceRL(void){
 	// gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[7].gpio, 0);
 	// msleep(10);
+	printk("waiting for %s pin\n",hcsr04_gpio_pins[7].name);
 	gpio_set_value(hcsr04_gpio_pins[6].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
@@ -222,16 +226,17 @@ int getDistanceLL(void){
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
 	#ifdef DEBUG
-	printk("### LL: %u mm#\n", echoToDistance(duration));
+	printk("### RL: %u mm#\n", echoToDistance(duration));
 	#endif
 	return duration;
 }
 
-// trigger LR
-int getDistanceLR(void){
+// trigger RR
+int getDistanceRR(void){
 	// gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[9].gpio, 0);
 	// msleep(10);
+	printk("waiting for %s pin\n",hcsr04_gpio_pins[9].name);
 	gpio_set_value(hcsr04_gpio_pins[8].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
@@ -246,7 +251,7 @@ int getDistanceLR(void){
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
 	#ifdef DEBUG
-	printk("### FL: %u mm#\n", echoToDistance(duration));
+	printk("### RR: %u mm#\n", echoToDistance(duration));
 	#endif
 	return duration;
 }
@@ -407,9 +412,14 @@ int init_module(void)
 	printk("Hello World HCSR04!\n");
 	chardev_init();
 #ifdef DEBUG
+	printk("starting loop over all hcsr04 devices..\n");
 	for (i = 0; i < 20; i++)
 	{
 		getDistanceFL();
+		getDistanceFC();
+		getDistanceFR();
+		getDistanceRL();
+		getDistanceRR();
 		msleep(2000);
 	}
 #endif
