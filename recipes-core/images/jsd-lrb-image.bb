@@ -34,6 +34,7 @@ CORE_OS = " \
     scheduler \
     openssh \
     openssh-keygen \
+    boot-state \
 "
 
 DISTRO_FEATURES += " \

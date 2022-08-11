@@ -1,0 +1,10 @@
+[Unit]
+Description=Boot state checking service
+After=systemd-modules-load.service
+
+[Service]
+#Type=simple
+ExecStart=/usr/libexec/boot-state.sh
+
+[Install]
+WantedBy=multi-user.target
