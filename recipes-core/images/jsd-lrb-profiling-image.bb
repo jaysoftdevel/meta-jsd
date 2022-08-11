@@ -9,7 +9,7 @@ inherit core-image
 # minimize amount of outputs during development
 IMAGE_FSTYPES = "tar.xz"
 
-DISTRO_FEATURES = " \
+DISTRO_FEATURES += " \
     nfs \
     ipv4 \
     largefile \
@@ -19,14 +19,13 @@ DISTRO_FEATURES = " \
 IMAGE_INSTALL += " \
     ${CORE_OS} \
     ${KERNEL_EXTRA_INSTALL} \
+    ${PRU_SUPPORT} \
+    ${DEV_SDK_INSTALL} \
+    ${DEV_EXTRAS} \
     ${WIFI_SUPPORT} \
+    ${PROFILING} \
 "
-
-#    ${PRU_SUPPORT} \
-#    ${DEV_SDK_INSTALL} \
-#    ${DEV_EXTRAS} \
 #    ${EXTRA_TOOLS_INSTALL} \
-#    ${PROFILING} \
 #
 
 CORE_OS = " \
@@ -35,12 +34,16 @@ CORE_OS = " \
     hcsr04-gpio \
 "
 
+
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
     hcsr04-gpio-kmod \
     "
+# hcsr04 cannot work as kernel module since it uses user space features (e.g. file access)!!!
+#    rootbot-hcsr04-kmod \
+#
 
 # Check wheather PRU modules are required at all, since its enabled in kernel already!
 # FYI, pruss-lld depends on the osal extensions (uncommitted yet)
@@ -48,6 +51,9 @@ PRU_SUPPORT = " \
     pruss-lld \
     pru-icss \
   "
+# TI Code generation tool
+#    ti-cgt-pru \
+#
 
 # to be checked!
 WIFI_SUPPORT = " \
@@ -63,6 +69,10 @@ WIFI_SUPPORT = " \
 #    wireless-tools \
 #
 
+PROFILING = " \
+	perf \
+	bootchart \
+"
 DEV_SDK_INSTALL = " \
     binutils \
     binutils-symlinks \
@@ -139,5 +149,5 @@ ROOTFS_POSTPROCESS_COMMAND += " \
 
 KERNEL_IMAGETYPE = "zImage"
 
-export IMAGE_BASENAME = "jsd-lrb-image"
+export IMAGE_BASENAME = "${PN}"
 

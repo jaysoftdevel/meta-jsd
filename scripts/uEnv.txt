@@ -2,7 +2,7 @@
 # like I did here with findfdtfile.
 # If you do not provide an uEnv.txt, then am335x-boneblack.dtb
 # will be the default. (Hard coded in u-boot).
-bootargs=rw root=/dev/nfs nfsroot=192.168.5.1:/opt/nfs ip=192.168.5.10 console=ttyO0,115200n8
+bootargs=rw root=/dev/nfs nfsroot=192.168.5.1:/opt/nfs,vers=4 ip=192.168.5.10 console=ttyO0,115200n8
 bootcmd=tftp 0x81000000 zImage; tftp ${loadaddr} am335x-boneblack-rootbot.dtb;bootz 0x81000000 - ${loadaddr}
 bootpart=0:2
 bootdir=/boot
@@ -14,9 +14,7 @@ serverip=192.168.5.1
 netmask=255.255.255.0
 console=ttyS0,115200n8
 fdtaddr=0x88000000
-#fdtfile=am335x-boneblack.dtb
 fdtfile=am335x-boneblack-rootbot.dtb
-#fdtfile=am335x-boneblack-pruswuart.dtb
 loadaddr=0x82000000
 mmcroot=/dev/mmcblk0p2 ro
 mmcrootfstype=ext4 rootwait
@@ -34,15 +32,10 @@ loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
 # Use below without dtbo file
 #uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
 # Use below for TFTP and NFS boot
-run bootcmd
+uenvcmd=echo booting TFTP and NFS ${serverip}; run bootcmd
 
 # enable and activate PRU devictree overlay
 enable_uboot_overlays=1
-#uboot_overlay_pru=${overlaydir}/AM335X-PRU-UIO-00A0.dtbo
-#uboot_overlay_pru=${overlaydir}/AM335X-PRU-RPROC-00A0.dtbo
-#enable_uboot_cape_universal=1
-#uboot_cape_universal_bbb=1
-#uboot_try_cape_universal=1
 disable_uboot_overlay_video=1
 disable_uboot_overlay_audio=1
 disable_uboot_overlay_wireless=1

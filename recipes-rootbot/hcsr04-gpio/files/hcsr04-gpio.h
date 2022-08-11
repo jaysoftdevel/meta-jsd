@@ -12,7 +12,7 @@
 #define ECHO_FC		GPIO_TO_PIN(2, 6)	// P8_45, white
 
 #define TRIGGER_FR	GPIO_TO_PIN(2, 12)	// P8_39, black
-#define ECHO_FR		GPIO_TO_PIN(2, 9)	// P8_44, black
+#define ECHO_FR		GPIO_TO_PIN(0, 11)	// P8_32, black, instead of P8_44 which is a boot pin!
 
 #define TRIGGER_RL	GPIO_TO_PIN(2, 15)	// P8_38, brown
 #define ECHO_RL		GPIO_TO_PIN(2, 8)	// P8_43, brown

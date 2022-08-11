@@ -22,7 +22,8 @@
 			
 			/* FR */
 			0xB8 0x07 0x0 /* Trigger: P8_39 gpio2[12] pin46 GPIO76 out pulldown Mode: 7 */
-			0xAC 0x27 0x0 /* Echo: P8_44 gpio2[9] pin43 GPIO73 in pulldown Mode: 7 */
+			/* When connected P8_44 prevents BBB from booting!! Therefore use P8_32 */
+			0xDC 0x27 0x0 /* Echo: P8_32 gpio0[11] pin55 GPIO11 in pulldown Mode: 7 */
 			
 			/* RL */
 			0xC4 0x07 0x0 /* Trigger: P8_38 gpio2[15] pin49 GPIO79 out pulldown Mode: 7 */
@@ -33,14 +34,24 @@
 			0xB4 0x27 0x0 /* Echo: P8_42 gpio2[11] pin45 GPIO75 in pulldown Mode: 7 */
 
 			/* LCD st7565 panel pins */
-			0x34 0x0F 0x0 /* CS: P8_11 gpio1[13] pin 13 GPIO23 out floating Mode: 7 */
-			0x8c 0x0F 0x0 /* RST: P8_18 gpio2[1] pin 35 GPIO65 out floating Mode: 7 */
-			0x24 0x0F 0x0 /* AP: P8_13 gpio0[23] pin 9 GPIO23 out floating Mode: 7 */
-			0x28 0x0F 0x0 /* A0: P8_14 gpio0[26] pin 10 GPIO26 out floating Mode: 7 */
-			0x3c 0x0F 0x0 /* CLK: P8_15 gpio1[15] pin 15 GPIO47 out floating Mode: 7 */
-			0x38 0x0F 0x0 /* SI: P8_16 gpio1[14] pin 14 GPIO46 out floating Mode: 7 */
+			0x34 0x07 0x0 /* CS: P8_11 gpio1[13] pin 13 GPIO23 out floating Mode: 7 */
+			0x8C 0x07 0x0 /* RST: P8_18 gpio2[1] pin 35 GPIO65 out floating Mode: 7 */
+			0x24 0x07 0x0 /* AP: P8_13 gpio0[23] pin 9 GPIO23 out floating Mode: 7 */
+			0x28 0x07 0x0 /* A0: P8_14 gpio0[26] pin 10 GPIO26 out floating Mode: 7 */
+			0x3C 0x07 0x0 /* CLK: P8_15 gpio1[15] pin 15 GPIO47 out floating Mode: 7 */
+			0x38 0x07 0x0 /* SI: P8_16 gpio1[14] pin 14 GPIO46 out floating Mode: 7 */
 
-			/* 2DO: also add pins for steppers */
+			/* Stepper motor Left */
+			0xE0 0x07 0x0 /* North: P8_27 gpio2[22] pin 56 GPIO86 out floating Mode: 7 */
+			0xE8 0x07 0x0 /* East: P8_28 gpio2[24] pin 58 GPIO88 out floating Mode: 7 */
+			0xE4 0x07 0x0 /* South: P8_29 gpio2[23] pin 57 GPIO87 out floating Mode: 7 */
+			0xEC 0x07 0x0 /* West: P8_30 gpio2[25] pin 59 GPIO89 out floating Mode: 7 */
+
+			/* Stepper motor Right */
+			0xD4 0x07 0x0 /* North: P8_33 gpio0[9] pin 53 GPIO9 out floating Mode: 7 */
+			0xCC 0x07 0x0 /* East: P8_34 gpio2[17] pin 51 GPIO81 out floating Mode: 7 */
+			0xD0 0x07 0x0 /* South: P8_35 gpio0[8] pin 52 GPIO8 out floating Mode: 7 */
+			0xC8 0x07 0x0 /* West: P8_36 gpio2[16] pin 50 GPIO80 out floating Mode: 7 */
 		>;
 	};
 };

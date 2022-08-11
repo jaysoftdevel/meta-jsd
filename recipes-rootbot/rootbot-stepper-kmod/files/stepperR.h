@@ -7,15 +7,11 @@
 #ifndef STEPPERMOTOR_CONTROL_R_H
 #define STEPPERMOTOR_CONTROL_R_H
 
-//#include <stdio.h>
-//#include <unistd.h>
-
-//#include <fcntl.h>
-//#include <sys/mman.h>
-
-//#include "iolib.h"
-
-#define CYCLES 100000
+/* Right after startup kernel and system are still quite busy
+* which could cause even with "lower" rates to stumble.
+* After system is stable a best practice value is 1300ms.
+* Safe value would be around 1500µs or 1400µs. */
+#define STEPPER_R_INTERVAL 1300
 
 // macro to convert bank and gpio into pin number
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
@@ -26,14 +22,6 @@
 #define COIL_PIN_SOUTH	GPIO_TO_PIN(2, 23)	// P8_29, green
 #define COIL_PIN_WEST	GPIO_TO_PIN(2, 25)	// P8_30, black
 
-
-//// default DIOs
-//#define PORT_P8 8
-//// GPIO2_22-25
-//#define COIL_PIN_NORTH 27	// BLUE
-//#define COIL_PIN_EAST 28	// RED
-//#define COIL_PIN_SOUTH 29	// GREEN
-//#define COIL_PIN_WEST 30	// BLACK
 #define COIL_PIN_OFFSET COIL_PIN_NORTH	// offset for base pin in iolib
 #define NUM_OF_COILS 4	// for the 4 coil stepper motor
 #define DELAY  1500 /* microseconds between steps */
@@ -43,11 +31,11 @@
 #define CM_WKUP_BASE 0x44e00400
 #define GPIO0_CLK_CONFIG_OFFSET 0x8
 
-
 //add your function definitions for the project Ultrtasonic_Distance_Simple here
 typedef unsigned char uint8;
 typedef struct tPos{
-	uint8 pos :2;
+	uint8 coils[4];
+	uint8 pos :2; // use 2bit field, to check for coil number, just use the overrun of the bitfield
 }tPos;
 
 //int initStepperRGpio(void);
