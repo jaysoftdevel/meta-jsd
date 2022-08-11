@@ -221,6 +221,9 @@ void lcd_setup_working_mode_frame(void)
 	lcd_ascii5x7_string(7, 1 * TOKENSIZE, "Ping");
 	lcd_ascii5x7_string(7, 10 * TOKENSIZE, "CS");
 	lcd_ascii5x7_string(0, 1 * TOKENSIZE, "load");
+	// credits!
+	lcd_ascii5x7_string(2, 5 * TOKENSIZE, "github.com/");
+	lcd_ascii5x7_string(3, 4 * TOKENSIZE, "jaysoftdevel");
 }
 
 void lcd_update_display_data(DisplayData dd)
@@ -408,7 +411,7 @@ static int __init st7565_init(void)
 #endif // DEBUG
 	lcd_intro();
 
-	lcd_ascii5x7_string(0, 10, "not connected...");
+	//lcd_ascii5x7_string(0, 10, "not connected...");
 	// ready to go!
 	printk("[%s] st7565 registered!\n", __FUNCTION__);
 
