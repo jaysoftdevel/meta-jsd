@@ -11,7 +11,11 @@
 
 #define DEBUG
 
-#define IOCTL_LCD_TEXT_MODE _IOW(6, 0, unsigned long)
+/* Dont support text mode in IOCTL!!
+	-> length of data cannot be determined
+	and therefore buffer length is unknown!
+*/
+//#define IOCTL_LCD_TEXT_MODE _IOW(6, 0, unsigned long)
 #define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
 #define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
 #define IOCTL_LCD_CLEAR_ALL _IOW(6, 3, unsigned long)

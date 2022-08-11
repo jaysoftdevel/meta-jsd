@@ -12,9 +12,10 @@ IMAGE_FSTYPES = "tar.xz"
 DISTRO_FEATURES = " \
     nfs \
     ipv4 \
-    largefile \
     wifi \
 "
+#    largefile \
+#
 
 IMAGE_INSTALL += " \
     ${CORE_OS} \
@@ -30,10 +31,21 @@ IMAGE_INSTALL += " \
 #
 
 CORE_OS = " \
+    scheduler \
     openssh \
     openssh-keygen \
-    hcsr04-gpio \
 "
+
+DISTRO_FEATURES += " \
+	kernel-module-st7565 \
+	kernel-module-hcsr04-gpio \
+	kernel-module-stepperL \
+	kernel-module-stepperR \
+"
+#	kernel-module-pru-rproc \
+#	kernel-module-irq-pruss-intc \
+#	kernel-module-pruss \
+#
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \

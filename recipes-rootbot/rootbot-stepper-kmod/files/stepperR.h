@@ -38,6 +38,11 @@ typedef struct tPos{
 	uint8 pos :2; // use 2bit field, to check for coil number, just use the overrun of the bitfield
 }tPos;
 
+long stepperR_control(struct file *f, unsigned int control, unsigned long value);
+static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
+static int stepperR_open(struct inode *i, struct file *f);
+static int stepperR_close(struct inode *i, struct file *f);
+
 //int initStepperRGpio(void);
 //int deinitStepperRGpio(void);
 int stepRNone(void);

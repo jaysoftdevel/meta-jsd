@@ -20,8 +20,11 @@
 #define TRIGGER_RR	GPIO_TO_PIN(2, 14)	// P8_37, red
 #define ECHO_RR		GPIO_TO_PIN(2, 11)	// P8_42, red
 
+static int hcsr04_open(struct inode *i, struct file *f);
+static ssize_t hcsr04_read(struct file *f, char __user *buf, size_t len, loff_t *off);
 long hcsr04_control(struct file *f, unsigned int control, unsigned long value);
 static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
+static int hcsr04_close(struct inode *i, struct file *f);
 long echoToDistance(long duration);
 
 // Interrupts not used, too unprecise!

@@ -13,12 +13,14 @@
 #ifndef STEPPERMOTOR_CONTROL_R_C
 #define STEPPERMOTOR_CONTROL_R_C
 
-//#define DEBUG
+#define DEBUG
 
 /* Kernel Programming */
 #define MODULE
 #define LINUX
 #define __KERNEL__
+
+#define DEBUG
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -36,6 +38,65 @@
 
 // Keep this order!!
 static struct tPos coilPins = {COIL_PIN_NORTH, COIL_PIN_SOUTH, COIL_PIN_EAST, COIL_PIN_WEST};
+
+static dev_t second;	  // Global variable for the second device number
+static struct cdev c_dev; // Global variable for the character device structure
+static struct class *cl;  // Global variable for the device class
+
+// used for buffer
+char *rx_buffer;
+int BUFFER_SIZE = 8;
+
+static struct file_operations pugs_fops = {
+	.owner = THIS_MODULE,
+	.open = stepperR_open,
+	.unlocked_ioctl = stepperR_control,
+	.write = stepperR_write,
+	.release = stepperR_close,
+};
+
+// Struct for each GPIO pin
+struct gpio_pin
+{
+	const char *name;
+	unsigned gpio;
+};
+
+// Struct to point to all GPIO pins
+struct gpio_platform_data
+{
+	struct gpio_pin *pins;
+	int num_pins;
+};
+
+// Struct for interface definition
+static struct gpio_pin stepperR_gpio_pins[] = {
+	{
+		.name = "stepperR::north",
+		.gpio =
+			COIL_PIN_NORTH,
+	},
+	{
+		.name = "stepperR::east",
+		.gpio = COIL_PIN_EAST,
+	},
+	{
+		.name =
+			"stepperR::south",
+		.gpio = COIL_PIN_SOUTH,
+	},
+	{
+		.name = "stepperR::west",
+		.gpio =
+			COIL_PIN_WEST,
+	},
+};
+
+static struct gpio_platform_data stepperR_gpio_pin_info = {
+	.pins =
+		stepperR_gpio_pins,
+	.num_pins = ARRAY_SIZE(stepperR_gpio_pins),
+};
 
 /**
  * @brief
@@ -108,64 +169,6 @@ int stepRNone(void)
 	return (0);
 }
 
-long stepperR_control(struct file *f, unsigned int control, unsigned long value);
-static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len, loff_t *off);
-
-static dev_t second;	  // Global variable for the second device number
-static struct cdev c_dev; // Global variable for the character device structure
-static struct class *cl;  // Global variable for the device class
-
-static struct file_operations pugs_fops = {.owner = THIS_MODULE,
-										   .unlocked_ioctl = stepperR_control,
-										   .write = stepperR_write};
-
-// Struct for each GPIO pin
-struct gpio_pin
-{
-	const char *name;
-	unsigned gpio;
-};
-
-// Struct to point to all GPIO pins
-struct gpio_platform_data
-{
-	struct gpio_pin *pins;
-	int num_pins;
-};
-
-// Struct for interface definition
-static struct gpio_pin stepperR_gpio_pins[] = {
-	{
-		.name = "stepperR::north",
-		.gpio =
-			COIL_PIN_NORTH,
-	},
-	{
-		.name = "stepperR::east",
-		.gpio = COIL_PIN_EAST,
-	},
-	{
-		.name =
-			"stepperR::south",
-		.gpio = COIL_PIN_SOUTH,
-	},
-	{
-		.name = "stepperR::west",
-		.gpio =
-			COIL_PIN_WEST,
-	},
-};
-
-static struct gpio_platform_data stepperR_gpio_pin_info = {
-	.pins =
-		stepperR_gpio_pins,
-	.num_pins = ARRAY_SIZE(stepperR_gpio_pins),
-};
-
-// used for buffer
-char *rx_buffer;
-int BUFFER_SIZE = 8;
-
 static int __init stepperR_init(void)
 {
 	printk("[%s] initializiing stepperR\n", __FUNCTION__);
@@ -230,10 +233,18 @@ static int __init stepperR_init(void)
 	return 0;
 }
 
+static int stepperR_open(struct inode *i, struct file *f)
+{
+#ifdef DEBUG
+	printk("[%s] opening stepperR\n", __FUNCTION__);
+#endif
+	return 0;
+}
+
 long stepperR_control(struct file *f, unsigned int control, unsigned long value)
 {
 #ifdef DEBUG
-	printk("[%s] controlling\n", __FUNCTION__);
+	printk("[%s] control: %x value: %x\n", __FUNCTION__, control, value);
 #endif
 	return 0;
 }
@@ -241,10 +252,24 @@ long stepperR_control(struct file *f, unsigned int control, unsigned long value)
 static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len, loff_t *off)
 {
 #ifdef DEBUG
-	printk("[%s] start printing\n", __FUNCTION__);
+	printk("[%s] write len: %x\n", __FUNCTION__, len);
 #endif
+	// zero the input buffer
+	memset(rx_buffer, 0, BUFFER_SIZE);
 
+	// copy the incoming data from userspace to a buffer in kernel space
+	int retval = raw_copy_from_user(rx_buffer, buf, len);
+
+	printk("[%s] Received data: %s length: %x\n", __FUNCTION__, rx_buffer, len);
 	return len;
+}
+
+static int stepperR_close(struct inode *i, struct file *f)
+{
+#ifdef DEBUG
+	printk("[%s] closing stepperR\n", __FUNCTION__);
+#endif
+	return 0;
 }
 
 static void __exit stepperR_exit(void)
@@ -278,18 +303,17 @@ int init_module(void)
 	int i, j;
 	printk("Hello World stepperR!\n");
 	stepperR_init();
-	msleep(1000);
 	stepFwdR();
-	msleep(1000);
-	stepFwdR();
-	printk("Prepare for max speed test\n");
-	printk("cycle time STEPPER_R_INTERVAL %i us\n", STEPPER_R_INTERVAL);
-	msleep(2000);
-	for (i = 0;i<10000;i++)
-	{
-		udelay(STEPPER_R_INTERVAL);
-		stepFwdR();
-	}
+	msleep(50);
+	stepRevR();
+	// printk("Prepare for max speed test\n");
+	// printk("cycle time STEPPER_R_INTERVAL %i us\n", STEPPER_R_INTERVAL);
+	// msleep(2000);
+	// for (i = 0;i<10000;i++)
+	// {
+	// 	udelay(STEPPER_R_INTERVAL);
+	// 	stepFwdR();
+	// }
 	stepRNone();
 	return 0;
 }

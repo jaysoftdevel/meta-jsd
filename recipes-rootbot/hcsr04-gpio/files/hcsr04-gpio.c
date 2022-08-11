@@ -1,7 +1,11 @@
 #ifndef HCSR04_GPIO_C
 #define HCSR04_GPIO_C
 
+/* Kernel Programming */
+#define MODULE
 #define LINUX
+#define __KERNEL__
+
 #define DEBUG
 
 #include <linux/kernel.h>
@@ -26,9 +30,16 @@ static struct class *cl;  // Global variable for the device class
 static ktime_t start, end; // track sonar echo
 static int duration;	   // used for time measurements
 
+// used for buffer
+char *rx_buffer;
+
 static struct file_operations pugs_fops = {.owner = THIS_MODULE,
+										   .open = hcsr04_open,
+										   .release = hcsr04_close,
 										   .unlocked_ioctl = hcsr04_control,
-										   .write = hcsr04_write};
+										   .write = hcsr04_write,
+										   .read = hcsr04_read};
+
 
 // Struct for each GPIO pin
 struct gpio_pin
@@ -133,10 +144,9 @@ long echoToDistance(long duration)
 
 // trigger FL
 int getDistanceFL(void){
-	//gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
-	//gpio_set_value(hcsr04_gpio_pins[1].gpio, 0);
-	//msleep(10);
+#ifdef DEBUG
 	printk("waiting for %s pin\n",hcsr04_gpio_pins[1].name);
+#endif
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
@@ -150,9 +160,9 @@ int getDistanceFL(void){
 	end = ktime_get_ns();
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
-	#ifdef DEBUG
+#ifdef DEBUG
 	printk("### FL: %u mm#\n", echoToDistance(duration));
-	#endif
+#endif
 	return duration;
 }
 
@@ -161,7 +171,9 @@ int getDistanceFC(void){
 	// gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[3].gpio, 0);
 	// msleep(10);
+#ifdef DEBUG
 	printk("waiting for %s pin\n",hcsr04_gpio_pins[3].name);
+#endif
 	gpio_set_value(hcsr04_gpio_pins[2].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
@@ -175,9 +187,9 @@ int getDistanceFC(void){
 	end = ktime_get_ns();
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
-	#ifdef DEBUG
+#ifdef DEBUG
 	printk("### FC: %u mm#\n", echoToDistance(duration));
-	#endif
+#endif
 	return duration;
 }
 
@@ -186,7 +198,9 @@ int getDistanceFR(void){
 	// gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[5].gpio, 0);
 	// msleep(10);
+#ifdef DEBUG
 	printk("waiting for %s pin\n",hcsr04_gpio_pins[5].name);
+#endif
 	gpio_set_value(hcsr04_gpio_pins[4].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
@@ -200,9 +214,9 @@ int getDistanceFR(void){
 	end = ktime_get_ns();
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
-	#ifdef DEBUG
+#ifdef DEBUG
 	printk("### FR: %u mm#\n", echoToDistance(duration));
-	#endif
+#endif
 	return duration;
 }
 
@@ -211,7 +225,9 @@ int getDistanceRL(void){
 	// gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[7].gpio, 0);
 	// msleep(10);
+#ifdef DEBUG
 	printk("waiting for %s pin\n",hcsr04_gpio_pins[7].name);
+#endif
 	gpio_set_value(hcsr04_gpio_pins[6].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
@@ -225,9 +241,9 @@ int getDistanceRL(void){
 	end = ktime_get_ns();
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
-	#ifdef DEBUG
+#ifdef DEBUG
 	printk("### RL: %u mm#\n", echoToDistance(duration));
-	#endif
+#endif
 	return duration;
 }
 
@@ -236,7 +252,9 @@ int getDistanceRR(void){
 	// gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
 	// gpio_set_value(hcsr04_gpio_pins[9].gpio, 0);
 	// msleep(10);
+#ifdef DEBUG
 	printk("waiting for %s pin\n",hcsr04_gpio_pins[9].name);
+#endif
 	gpio_set_value(hcsr04_gpio_pins[8].gpio, 1);
 	msleep(2);
 	gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
@@ -250,14 +268,14 @@ int getDistanceRR(void){
 	end = ktime_get_ns();
 	duration = (int) end - start;
 	// !!! use copy to user mechanism!
-	#ifdef DEBUG
+#ifdef DEBUG
 	printk("### RR: %u mm#\n", echoToDistance(duration));
-	#endif
+#endif
 	return duration;
 }
 
 // init GPIOs
-static int __init chardev_init(void)
+static int __init hcsr04_init(void)
 {
 	int err, i, irq;
 	printk("[%s] initializiing GPIOs\n", __FUNCTION__);
@@ -359,24 +377,53 @@ static int __init chardev_init(void)
 
 long hcsr04_control(struct file *f, unsigned int control, unsigned long value)
 {
-#ifdef DEBUG
+//#ifdef DEBUG
 	printk("[%s] controlling: control = %x and value = %lx\n", __FUNCTION__, control, value);
-#endif
-	printk("#### also without DEBUG flag in control\n");
+//#endif
 	getDistanceFL();
+	return 0;
+}
+
+static int hcsr04_open(struct inode *i, struct file *f)
+{
+#ifdef DEBUG
+	printk("[%s] opening hcsr04\n", __FUNCTION__);
+#endif
+	return 0;
+}
+
+static int hcsr04_close(struct inode *i, struct file *f)
+{
+#ifdef DEBUG
+	printk("[%s] closing hcsr04\n", __FUNCTION__);
+#endif
 	return 0;
 }
 
 static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, loff_t *off)
 {
 #ifdef DEBUG
-	printk("[%s] start printing: %s\n", __FUNCTION__, buf);
+	printk("[%s] length: %x\n", __FUNCTION__, len);
 #endif
-	printk("#### also without DEBUG flag in write\n");
+	// zero the input buffer
+	memset(rx_buffer, 0, BUFFER_SIZE);
+
+	// copy the incoming data from userspace to a buffer in kernel space
+	int retval = raw_copy_from_user(rx_buffer, buf, len);
+
+	printk("[%s] Received data: %s length: %x\n", __FUNCTION__, rx_buffer, len);
 	return len;
 }
 
-static void __exit hcsr04_exit(void)
+static ssize_t hcsr04_read(struct file *f, char __user *buf, size_t len, loff_t *off)
+	{
+		// fix access to *buf! copy from user space to kernel space first!
+		buf = "HCSR04 returning string!!!";
+		len = 27;
+		return 0;
+	}
+
+static void __exit hcsr04_deinit(void)
 {
 	int i;
 	printk("[%s] shutting down...", __FUNCTION__);
@@ -410,25 +457,25 @@ int init_module(void)
 {
 	int i = 0;
 	printk("Hello World HCSR04!\n");
-	chardev_init();
-#ifdef DEBUG
-	printk("starting loop over all hcsr04 devices..\n");
-	for (i = 0; i < 20; i++)
-	{
-		getDistanceFL();
-		getDistanceFC();
-		getDistanceFR();
-		getDistanceRL();
-		getDistanceRR();
-		msleep(2000);
-	}
-#endif
+	hcsr04_init();
+// #ifdef DEBUG
+// 	printk("starting loop over all hcsr04 devices..\n");
+// 	for (i = 0; i < 20; i++)
+// 	{
+// 		getDistanceFL();
+// 		getDistanceFC();
+// 		getDistanceFR();
+// 		getDistanceRL();
+// 		getDistanceRR();
+// 		msleep(2000);
+// 	}
+// #endif
 	return 0;
 }
 
 void cleanup_module(void)
 {
-	hcsr04_exit();
+	hcsr04_deinit();
 	printk("Goodbye Cruel World HCSR04!\n");
 }
 

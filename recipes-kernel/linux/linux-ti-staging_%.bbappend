@@ -17,14 +17,11 @@ KERNEL_DEVICETREE = " \
 # not yet working, to be fixed!
 KERNEL_MODULE_AUTOLOAD += " \
 	st7565 \
-	pru-rproc \
-	irq-pruss-intc \
-	pruss \
+	hcsr04-gpio \
+	stepperL \
+	stepperR \
 "
-
-DISTRO_FEATURES += " \
-	kernel-module-st7565 \
-	kernel-module-pru-rproc \
-	kernel-module-irq-pruss-intc \
-	kernel-module-pruss \
-"
+#	pru-rproc \
+#	irq-pruss-intc \
+#	pruss \
+#
