@@ -42,7 +42,7 @@ static int st7565_close(struct inode *i, struct file *f);
 #define LINUX
 #define __KERNEL__
 
-#define DEBUG
+//#define DEBUG
 
 // macro to convert bank and gpio into pin number
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
@@ -143,9 +143,9 @@ static int st7565_close(struct inode *i, struct file *f)
 
 static ssize_t st7565_write(struct file *f, const char __user *buf, size_t len, loff_t *off)
 {
-	//#ifdef DEBUG
+#ifdef DEBUG
 	printk("[%s] length: %i\n", __FUNCTION__, len);
-	//#endif
+#endif
 	// zero the input buffer
 	memset(rx_buffer, 0, BUFFER_SIZE);
 
@@ -169,7 +169,7 @@ void lcd_intro(void /*int x, int y, int v*/)
 		for (j = 0; j < LCD_PAGES; j++)
 		{
 			lcd_set_page(j, i);
-			udelay(300);
+			udelay(500);
 			lcd_transfer_data(val, 1);
 		}
 		// invert
@@ -181,7 +181,7 @@ void lcd_intro(void /*int x, int y, int v*/)
 		for (j = 0; j < LCD_PAGES; j++)
 		{
 			lcd_set_page(j, i);
-			udelay(300);
+			udelay(500);
 			lcd_transfer_data(0x0, 1);
 		}
 	}
@@ -199,7 +199,7 @@ void lcd_intro(void /*int x, int y, int v*/)
 		for (j = 0; j < LCD_PAGES; j++)
 		{
 			lcd_set_page(j, i);
-			udelay(300);
+			udelay(500);
 			lcd_transfer_data(0x0, 1);
 		}
 	}
@@ -277,7 +277,7 @@ void lcd_update_display_data(DisplayData dd)
 #endif
 	if (dd.connectionStatus.connectionStatus == true)
 	{
-		lcd_ascii5x7_string(7, 1 + 14 * TOKENSIZE, "up");
+		lcd_ascii5x7_string(7, 1 + 14 * TOKENSIZE, "up  "); // use trailing spaces to overwrite "down" completely!
 	}
 	else
 	{
@@ -302,7 +302,7 @@ long st7565_control(struct file *f, unsigned int control, unsigned long value)
 #endif
 		lcd_clear();
 	}
-	if (control == IOCTL_LCD_INTRO)
+	else if (control == IOCTL_LCD_INTRO)
 	{
 #ifdef DEBUG
 		printk("[%s] doing intro\n", __FUNCTION__);
@@ -338,9 +338,10 @@ long st7565_control(struct file *f, unsigned int control, unsigned long value)
 		printk("[%s] after update\n", __FUNCTION__);
 #endif
 	}
-	else{
+	else
+	{
 #ifdef DEBUG
-		printk("[%s] Unkown control request: %i\n", __FUNCTION__, control);
+		printk("[%s] Unknown control request: %i\n", __FUNCTION__, control);
 #endif
 		return -1;
 	}
@@ -349,7 +350,9 @@ long st7565_control(struct file *f, unsigned int control, unsigned long value)
 
 static int __init st7565_init(void)
 {
+#ifdef DEBUG
 	printk("[%s] initializiing st7565\n", __FUNCTION__);
+#endif
 	// allocate a buffer and zero it out
 	rx_buffer = kmalloc(BUFFER_SIZE, GFP_KERNEL);
 	memset(rx_buffer, 0, BUFFER_SIZE);
@@ -380,30 +383,38 @@ static int __init st7565_init(void)
 #endif // DEBUG
 	cdev_init(&c_dev, &pugs_fops);
 	if (cdev_add(&c_dev, first, 1) == -1)
-	{
-		device_destroy(cl, first);
-		class_destroy(cl);
-		unregister_chrdev_region(first, 1);
-		return -1;
-	}
+		{
+			device_destroy(cl, first);
+			class_destroy(cl);
+			unregister_chrdev_region(first, 1);
+			return -1;
+		}
 
-	// request access to GPIO, set them all as outputs (initially low)
+		// request access to GPIO, set them all as outputs (initially low)
+#ifdef DEBUG
 	printk("[%s] registering st7565 gpio pins\n", __FUNCTION__);
+#endif
 	int err, i = 0;
 	for (i = 0; i < st7565_gpio_pin_info.num_pins; i++)
 	{
 		err = gpio_request(st7565_gpio_pins[i].gpio, st7565_gpio_pins[i].name);
 		if (err)
 		{
+#ifdef DEBUG
 			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].gpio, err);
+#endif
 		}
 		err = gpio_direction_output(st7565_gpio_pins[i].gpio, 0);
 		if (err)
 		{
+#ifdef DEBUG
 			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].gpio, err);
+#endif
 		}
 	}
+#ifdef DEBUG
 	printk("[%s] initializiing st7565 lcd display\n", __FUNCTION__);
+#endif
 	// initialize display
 	st7565_init_lcd();
 #ifdef DEBUG
@@ -413,8 +424,9 @@ static int __init st7565_init(void)
 
 	lcd_ascii5x7_string(0, 10, "finishing boot...");
 	// ready to go!
+#ifdef DEBUG
 	printk("[%s] st7565 registered!\n", __FUNCTION__);
-
+#endif
 	return 0;
 }
 
@@ -454,7 +466,9 @@ void st7565_deinit(void)
 
 void st7565_init_lcd(void)
 {
+#ifdef DEBUG
 	printk("[%s] configuring st7565\n", __FUNCTION__);
+#endif
 	gpio_set_value(ST7565_CS, 0);
 	/**/
 	// gpio_set_value(ST7565_CS, 0);
@@ -509,7 +523,9 @@ void st7565_init_lcd(void)
 	// gpio_set_value(ST7565_CS, 1);
 	/**/
 	lcd_clear();
+#ifdef DEBUG
 	printk("[%s] st7565 configured\n", __FUNCTION__);
+#endif
 }
 
 void lcd_ascii5x7_string(unsigned int xPos, unsigned int yPos,

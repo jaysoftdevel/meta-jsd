@@ -24,7 +24,7 @@ FILES_${PN} += " \
 	 ${DEST_PATH}/lib/*.a	\
 "
 
-EXTRA_OECMAKE += "-DDEBUG=ON"
+#EXTRA_OEMAKE += "DEBUG=1"
 
 do_configure(){
 	# use local source

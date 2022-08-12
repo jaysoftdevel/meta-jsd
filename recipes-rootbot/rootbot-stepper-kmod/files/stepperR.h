@@ -31,6 +31,10 @@
 #define CM_WKUP_BASE 0x44e00400
 #define GPIO0_CLK_CONFIG_OFFSET 0x8
 
+#define IOCTL_STEPPER_R_STEP_FWD _IOW(9, 0, unsigned long)
+#define IOCTL_STEPPER_R_STEP_REV _IOW(9, 1, unsigned long)
+#define IOCTL_STEPPER_R_STEP_NONE _IOW(9, 2, unsigned long)
+
 //add your function definitions for the project Ultrtasonic_Distance_Simple here
 typedef unsigned char uint8;
 typedef struct tPos{

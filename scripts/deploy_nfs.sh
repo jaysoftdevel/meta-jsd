@@ -31,4 +31,5 @@ sudo chown nobody:nogroup -R ${NFS_DIR}
 sudo chmod 777 -R ${TFTP_DIR}
 echo "## set permissions done..."
 
+sync
 # ?? restart servcies ??

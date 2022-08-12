@@ -13,14 +13,12 @@
 #ifndef STEPPERMOTOR_CONTROL_R_C
 #define STEPPERMOTOR_CONTROL_R_C
 
-#define DEBUG
-
 /* Kernel Programming */
 #define MODULE
 #define LINUX
 #define __KERNEL__
 
-#define DEBUG
+//#define DEBUG
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -117,14 +115,14 @@ int stepFwdR(void)
 		if (i == coilPins.pos || i == ((unsigned)(coilPins.pos + 1) & 0x03)) // cast to bit field to catch overrun!
 		{
 #ifdef DEBUG
-			printk("set pin %i high\n", coilPins.coils[i]);
+			printk("[%s] set pin %i high\n", __FUNCTION__, coilPins.coils[i]);
 #endif
 			gpio_set_value(coilPins.coils[i], 1);
 		}
 		else
 		{
 #ifdef DEBUG
-			printk("set pin %i low\n", coilPins.coils[i]);
+			printk("[%s] set pin %i low\n", __FUNCTION__, coilPins.coils[i]);
 #endif
 			gpio_set_value(coilPins.coils[i], 0);
 		}
@@ -141,14 +139,14 @@ int stepRevR(void)
 		if (i == coilPins.pos || i == ((unsigned)(coilPins.pos + 1) & 0x03)) // cast to bit field to catch overrun!
 		{
 #ifdef DEBUG
-			printk("set pin %i high\n", coilPins.coils[i]);
+			printk("[%s] set pin %i high\n", __FUNCTION__, coilPins.coils[i]);
 #endif
 			gpio_set_value(coilPins.coils[i], 1);
 		}
 		else
 		{
 #ifdef DEBUG
-			printk("set pin %i low\n", coilPins.coils[i]);
+			printk("[%s] set pin %i low\n", __FUNCTION__, coilPins.coils[i]);
 #endif
 			gpio_set_value(coilPins.coils[i], 0);
 		}
@@ -160,7 +158,7 @@ int stepRevR(void)
 int stepRNone(void)
 {
 #ifdef DEBUG
-	printk("set all pins to low\n");
+	printk("[%s] set all pins to low\n", __FUNCTION__);
 #endif
 	gpio_set_value(COIL_PIN_NORTH, 0);
 	gpio_set_value(COIL_PIN_EAST, 0);
@@ -171,7 +169,9 @@ int stepRNone(void)
 
 static int __init stepperR_init(void)
 {
+#ifdef DEBUG
 	printk("[%s] initializiing stepperR\n", __FUNCTION__);
+#endif
 	// allocate a buffer and zero it out
 	rx_buffer = kmalloc(BUFFER_SIZE, GFP_KERNEL);
 	memset(rx_buffer, 0, BUFFER_SIZE);
@@ -210,26 +210,37 @@ static int __init stepperR_init(void)
 	}
 
 	// request access to GPIO, set them all as outputs (initially low)
+#ifdef DEBUG
 	printk("[%s] registering stepperR gpio pins\n", __FUNCTION__);
+#endif
 	int err, i;
 	i = 0;
 	for (i = 0; i < stepperR_gpio_pin_info.num_pins; i++)
 	{
+#ifdef DEBUG
 		printk("[%s] register pin %d with gpio %d with name %s\n", __FUNCTION__, i, stepperR_gpio_pins[i].gpio, stepperR_gpio_pins[i].name);
+#endif
 		err = gpio_request(stepperR_gpio_pins[i].gpio, stepperR_gpio_pins[i].name);
 		if (err)
 		{
+#ifdef DEBUG
 			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, stepperR_gpio_pins[i].gpio, err);
+#endif
+			return -1;
 		}
 		err = gpio_direction_output(stepperR_gpio_pins[i].gpio, 0);
 		if (err)
 		{
+#ifdef DEBUG
 			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, stepperR_gpio_pins[i].gpio, err);
+#endif
+			return -1;
 		}
 	}
-	// ready to go!
+// ready to go!
+#ifdef DEBUG
 	printk("[%s] stepperR registered!\n", __FUNCTION__);
-
+#endif
 	return 0;
 }
 
@@ -243,9 +254,39 @@ static int stepperR_open(struct inode *i, struct file *f)
 
 long stepperR_control(struct file *f, unsigned int control, unsigned long value)
 {
+	int i;
 #ifdef DEBUG
 	printk("[%s] control: %x value: %x\n", __FUNCTION__, control, value);
 #endif
+	if (control == IOCTL_STEPPER_R_STEP_FWD)
+	{
+#ifdef DEBUG
+		printk("[%s] Received stepperR forward step\n", __FUNCTION__);
+#endif
+		stepFwdR();
+	}
+	else if (control == IOCTL_STEPPER_R_STEP_REV)
+	{
+#ifdef DEBUG
+		printk("[%s] Received stepperR reverse step\n", __FUNCTION__);
+#endif
+
+		stepRevR();
+	}
+	else if (control == IOCTL_STEPPER_R_STEP_NONE)
+	{
+#ifdef DEBUG
+		printk("[%s] Received stepperR stop step\n", __FUNCTION__);
+#endif
+		stepRNone();
+	}
+	else
+	{
+#ifdef DEBUG
+		printk("[%s] Received unknown stepperR command: %i\n", __FUNCTION__, control);
+#endif
+		return -1;
+	}
 	return 0;
 }
 
@@ -259,8 +300,9 @@ static ssize_t stepperR_write(struct file *f, const char __user *buf, size_t len
 
 	// copy the incoming data from userspace to a buffer in kernel space
 	int retval = raw_copy_from_user(rx_buffer, buf, len);
-
+#ifdef DEBUG
 	printk("[%s] Received data: %s length: %x\n", __FUNCTION__, rx_buffer, len);
+#endif
 	return len;
 }
 
@@ -274,7 +316,9 @@ static int stepperR_close(struct inode *i, struct file *f)
 
 static void __exit stepperR_exit(void)
 {
+#ifdef DEBUG
 	printk("[%s] shutting down...", __FUNCTION__);
+#endif
 	// release buffer
 	if (rx_buffer)
 	{
@@ -293,7 +337,9 @@ static void __exit stepperR_exit(void)
 	device_destroy(cl, second);
 	class_destroy(cl);
 	unregister_chrdev_region(second, 1);
+#ifdef DEBUG
 	printk("[%s] stepperR unregistered\n", __FUNCTION__);
+#endif
 }
 
 /********************/
@@ -301,7 +347,9 @@ static void __exit stepperR_exit(void)
 int init_module(void)
 {
 	int i, j;
+#ifdef DEBUG
 	printk("Hello World stepperR!\n");
+#endif
 	stepperR_init();
 	stepFwdR();
 	msleep(50);
@@ -321,7 +369,9 @@ int init_module(void)
 void cleanup_module(void)
 {
 	stepperR_exit();
+#ifdef DEBUG
 	printk("Goodbye Cruel World stepperR!\n");
+#endif
 }
 
 MODULE_LICENSE("GPL");

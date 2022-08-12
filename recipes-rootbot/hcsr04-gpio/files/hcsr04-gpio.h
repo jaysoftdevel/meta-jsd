@@ -20,6 +20,12 @@
 #define TRIGGER_RR	GPIO_TO_PIN(2, 14)	// P8_37, red
 #define ECHO_RR		GPIO_TO_PIN(2, 11)	// P8_42, red
 
+#define IOCTL_HCSR04_FL_TRIGGER _IOW(7, 0, unsigned long)
+#define IOCTL_HCSR04_FC_TRIGGER _IOW(7, 1, unsigned long)
+#define IOCTL_HCSR04_FR_TRIGGER _IOW(7, 2, unsigned long)
+#define IOCTL_HCSR04_RL_TRIGGER _IOW(7, 3, unsigned long)
+#define IOCTL_HCSR04_RR_TRIGGER _IOW(7, 4, unsigned long)
+
 static int hcsr04_open(struct inode *i, struct file *f);
 static ssize_t hcsr04_read(struct file *f, char __user *buf, size_t len, loff_t *off);
 long hcsr04_control(struct file *f, unsigned int control, unsigned long value);
@@ -30,10 +36,10 @@ long echoToDistance(long duration);
 // Interrupts not used, too unprecise!
 //static irqreturn_t MeasureISR(int irq, void *dev);
 
-int getDistanceFL(void);
-int getDistanceFC(void);
-int getDistanceFR(void);
-int getDistanceRL(void);
-int getDistanceRR(void);
+long getDistanceFL(void);
+long getDistanceFC(void);
+long getDistanceFR(void);
+long getDistanceRL(void);
+long getDistanceRR(void);
 
 #endif // HCSR04_GPIO_H

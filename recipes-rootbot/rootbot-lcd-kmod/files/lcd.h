@@ -9,8 +9,6 @@
 #ifndef LCD_H_
 #define LCD_H_
 
-#define DEBUG
-
 /* Dont support text mode in IOCTL!!
 	-> length of data cannot be determined
 	and therefore buffer length is unknown!
