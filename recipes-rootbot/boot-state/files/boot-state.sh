@@ -9,4 +9,8 @@ done
 
 echo "  ready, waiting..." > /dev/st7565
 slepp 2
-/home/root/scheduler
+
+/home/root/tester
+echo "  prepare rootbot main..." > /dev/st7565
+sleep 2
+/home/root/rootbot

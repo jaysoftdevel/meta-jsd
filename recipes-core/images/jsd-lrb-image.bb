@@ -23,15 +23,8 @@ IMAGE_INSTALL += " \
     ${WIFI_SUPPORT} \
 "
 
-#    ${PRU_SUPPORT} \
-#    ${DEV_SDK_INSTALL} \
-#    ${DEV_EXTRAS} \
-#    ${EXTRA_TOOLS_INSTALL} \
-#    ${PROFILING} \
-#
-
 CORE_OS = " \
-    scheduler \
+    rootbot \
     openssh \
     openssh-keygen \
     boot-state \
@@ -43,10 +36,6 @@ DISTRO_FEATURES += " \
 	kernel-module-stepperL \
 	kernel-module-stepperR \
 "
-#	kernel-module-pru-rproc \
-#	kernel-module-irq-pruss-intc \
-#	kernel-module-pruss \
-#
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
@@ -54,13 +43,6 @@ KERNEL_EXTRA_INSTALL = " \
     rootbot-stepper-kmod \
     hcsr04-gpio-kmod \
     "
-
-# Check wheather PRU modules are required at all, since its enabled in kernel already!
-# FYI, pruss-lld depends on the osal extensions (uncommitted yet)
-PRU_SUPPORT = " \
-    pruss-lld \
-    pru-icss \
-  "
 
 # to be checked!
 WIFI_SUPPORT = " \

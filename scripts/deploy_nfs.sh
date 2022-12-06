@@ -20,8 +20,9 @@ echo "## extracting image done..."
 
 # copy kernel and dtb
 echo "## deploy kernel"
-sudo cp ${BUILD_LOCATION}/${KERNEL_NAME} ${TFTP_DIR}
-sudo cp ${BUILD_LOCATION}/${DTB_NAME} ${TFTP_DIR}
+sudo mkdir ${TFTP_DIR}/
+sudo cp ${BUILD_LOCATION}/${KERNEL_NAME} ${TFTP_DIR}/
+sudo cp ${BUILD_LOCATION}/${DTB_NAME} ${TFTP_DIR}/
 echo "## deploy kernel done..."
 
 # set permissions

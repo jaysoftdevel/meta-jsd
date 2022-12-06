@@ -275,16 +275,6 @@ int testDisplay()
 
     for (int i = 0; i < 30; i++)
     {
-        dd.distanceSensors.distFrontLeft++;
-        dd.distanceSensors.distFrontCenter--;
-        dd.distanceSensors.distFrontRight++;
-        dd.distanceSensors.distRearLeft--;
-        dd.distanceSensors.distRearRight++;
-        dd.connectionStatus.connectionStatus=~(dd.connectionStatus.connectionStatus);
-        dd.connectionStatus.ping--;
-        dd.motorStatus.positionLeft++;
-        dd.motorStatus.positionRight--;
-        dd.currentLoad++;
         if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &dd) != 0)
         {
             std::cout << "## Switch to working mode failed" << std::endl;
