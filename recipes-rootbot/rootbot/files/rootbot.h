@@ -35,7 +35,7 @@ typedef struct
     DistanceSensors distanceSensors;
     ConnectionStatus connectionStatus;
     MotorStatus motorStatus;
-    char currentLoad;
+    unsigned char currentLoad;
 } DisplayData;
 
 #define TCP_SOCKET_PORT 12345

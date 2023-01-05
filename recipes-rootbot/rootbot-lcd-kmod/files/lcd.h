@@ -40,14 +40,14 @@ typedef struct{
 }ConnectionStatus;
 
 typedef struct{
-	unsigned char positionLeft;
-	unsigned char positionRight;
+	unsigned short positionLeft;
+	unsigned short positionRight;
 }MotorStatus;
 
 typedef struct{
 	DistanceSensors distanceSensors;
 	ConnectionStatus connectionStatus;
 	MotorStatus motorStatus;
-	char currentLoad;
+	unsigned char currentLoad;
 }DisplayData;
 #endif /* LCD_H_ */

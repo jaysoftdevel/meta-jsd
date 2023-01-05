@@ -57,9 +57,9 @@ echo "###"
 	#	sudo cp ${SRCDIR}/${REL_SRC_DIR}/uEnv.txt /media/card
 	#fi
 	#el
-	if [ -f ./uEnv.txt ]; then
-		echo "Copying ./uEnv.txt to /media/card"
-		sudo cp ./uEnv.txt /media/card
+	if [ -f ./uEnv_sdcard.txt ]; then
+		echo "Copying SD card ./uEnv.txt to /media/card"
+		sudo cp ./uEnv_sdcard.txt /media/card/uEnv.txt
 	fi
 
 	echo "Unmounting ${DEV}"

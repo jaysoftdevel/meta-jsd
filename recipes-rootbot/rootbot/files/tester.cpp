@@ -8,6 +8,7 @@
 #include <sys/ioctl.h>
 
 #define TEST_IO_THING 3
+#define LOAD_STAT_OFFSET 2
 
 #define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
 #define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
@@ -46,8 +47,8 @@ typedef struct
 
 typedef struct
 {
-    unsigned char positionLeft;
-    unsigned char positionRight;
+    unsigned short positionLeft;
+    unsigned short positionRight;
 } MotorStatus;
 
 typedef struct
@@ -55,11 +56,12 @@ typedef struct
     DistanceSensors distanceSensors;
     ConnectionStatus connectionStatus;
     MotorStatus motorStatus;
-    char currentLoad;
+    unsigned char currentLoad;
 } DisplayData;
 
 static DisplayData dd;
 
+unsigned char getLoad();
 int testDeviceFiles();
 int testDisplay();
 int testHCSR04();
@@ -69,6 +71,7 @@ int testStepperR();
 int main(void)
 {
     int ret;
+    std::cout << "### Initialize cpustat kernel file" << std::endl;
     std::cout << "### Test Device files" << std::endl;
     ret = testDeviceFiles();
     if (ret != 0)
@@ -103,11 +106,11 @@ int main(void)
     // }
     std::cout << "### Testing with parallel threads... " << ret << std::endl;
     sleep(2);
-    std::thread t_display (testDisplay);
+    std::thread t_display(testDisplay);
     sleep(2);
-    std::thread t_hcsr04 (testHCSR04);
-    std::thread t_stepperL (testStepperL);
-    std::thread t_stepperR (testStepperR);
+    std::thread t_hcsr04(testHCSR04);
+    std::thread t_stepperL(testStepperL);
+    std::thread t_stepperR(testStepperR);
 
     t_display.join();
     t_hcsr04.join();
@@ -130,6 +133,10 @@ int testStepperL()
             std::cout << "## test StepperL fwd failed with: " << ret << std::endl;
             return -1;
         }
+
+        if(++dd.motorStatus.positionLeft>=360){
+            dd.motorStatus.positionLeft=0;
+        }
         usleep(1300);
     }
     ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_NONE, NULL);
@@ -146,6 +153,10 @@ int testStepperL()
         {
             std::cout << "## test StepperL rev failed with: " << ret << std::endl;
             return -3;
+        }
+
+        if(--dd.motorStatus.positionLeft <= 0){
+            dd.motorStatus.positionRight=359;
         }
         usleep(1300);
     }
@@ -176,6 +187,9 @@ int testStepperR()
             std::cout << "## test StepperR fwd failed with: " << ret << std::endl;
             return -5;
         }
+        if(++dd.motorStatus.positionRight>=360){
+            dd.motorStatus.positionRight=0;
+        }
         usleep(1300);
     }
     ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);
@@ -192,6 +206,10 @@ int testStepperR()
         {
             std::cout << "## test StepperR rev failed with: " << ret << std::endl;
             return -7;
+        }
+
+        if(--dd.motorStatus.positionRight<=0){
+            dd.motorStatus.positionRight=359;
         }
         usleep(1300);
     }
@@ -215,16 +233,16 @@ int testHCSR04()
     for (int i = 0; i < 50; i++)
     {
         dd.distanceSensors.distFrontLeft = ioctl(fd_hcsr04, IOCTL_HCSR04_FL_TRIGGER, NULL);
-        //std::cout << "## FL value is: " << FL << std::endl;
+        // std::cout << "## FL value is: " << FL << std::endl;
         dd.distanceSensors.distFrontCenter = ioctl(fd_hcsr04, IOCTL_HCSR04_FC_TRIGGER, NULL);
-        //std::cout << "## FC value is: " << FC << std::endl;
+        // std::cout << "## FC value is: " << FC << std::endl;
         dd.distanceSensors.distFrontRight = ioctl(fd_hcsr04, IOCTL_HCSR04_FR_TRIGGER, NULL);
-        //std::cout << "## FR value is: " << FR << std::endl;
+        // std::cout << "## FR value is: " << FR << std::endl;
         dd.distanceSensors.distRearLeft = ioctl(fd_hcsr04, IOCTL_HCSR04_RL_TRIGGER, NULL);
-        //std::cout << "## RL value is: " << RL << std::endl;
+        // std::cout << "## RL value is: " << RL << std::endl;
         dd.distanceSensors.distRearRight = ioctl(fd_hcsr04, IOCTL_HCSR04_RR_TRIGGER, NULL);
-        //std::cout << "## RR value is: " << RR << std::endl;
-        
+        // std::cout << "## RR value is: " << RR << std::endl;
+        usleep(300 * 1000);
     }
     std::cout << "## Close HCSR04 ..." << std::endl;
     close(fd_hcsr04);
@@ -275,6 +293,7 @@ int testDisplay()
 
     for (int i = 0; i < 30; i++)
     {
+        dd.currentLoad = getLoad();
         if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &dd) != 0)
         {
             std::cout << "## Switch to working mode failed" << std::endl;
@@ -287,6 +306,25 @@ int testDisplay()
     std::cout << "## leave " << __FUNCTION__ << std::endl;
     close(fd_st7565);
     return 0;
+}
+
+unsigned char getLoad()
+{
+    std::ifstream loadavg("/proc/loadavg", std::ifstream::in);
+    std::string loadStr;
+    if(!loadavg.is_open()){
+        std::cout << "### error opening schedstat file..." << std::endl;
+        return -1;
+    }
+
+    for (int i = 0; i < LOAD_STAT_OFFSET; i++)
+    {
+        loadavg.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
+    }
+    // extract
+    std::getline(loadavg, loadStr, ' ');
+    float load = std::stof(loadStr);
+    return static_cast<unsigned char>(load*100);
 }
 
 int testDeviceFiles()
