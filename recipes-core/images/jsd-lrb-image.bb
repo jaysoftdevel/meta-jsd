@@ -7,7 +7,8 @@ IMAGE_LINGUAS = "en-us"
 inherit core-image
 
 # minimize amount of outputs during development
-IMAGE_FSTYPES = "tar.xz"
+IMAGE_FSTYPES = "tar.xz wic"
+SDCARD_ROOTFS = "ext4"
 
 DISTRO_FEATURES = " \
     nfs \
@@ -137,7 +138,13 @@ ROOTFS_POSTPROCESS_COMMAND += " \
     set_local_timezone ; \
  "
 
-KERNEL_IMAGETYPE = "zImage"
+IMAGE_BOOT_FILES += "uEnv.txt"
+do_set_uEnv(){
+	cp -v ${THISDIR}/../../scripts/uEnv_sdcard.txt ${DEPLOY_DIR_IMAGE}/uEnv.txt
+}
+addtask set_uEnv after do_rootfs before do_flush_pseudodb
+
+KERNEL_IMAGETYPE = "zImage MLO"
 
 export IMAGE_BASENAME = "${PN}"
 

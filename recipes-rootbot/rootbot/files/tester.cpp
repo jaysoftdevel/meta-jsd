@@ -127,15 +127,16 @@ int testStepperL()
     std::cout << "## testing stepperL forward" << std::endl;
     for (i = 0; i < 1500; i++)
     {
+        
+        if(dd.motorStatus.positionLeft++ > 359){
+            dd.motorStatus.positionLeft=0;
+        }
+
         ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_FWD, NULL);
         if (ret != 0)
         {
             std::cout << "## test StepperL fwd failed with: " << ret << std::endl;
             return -1;
-        }
-
-        if(++dd.motorStatus.positionLeft>=360){
-            dd.motorStatus.positionLeft=0;
         }
         usleep(1300);
     }
@@ -148,15 +149,15 @@ int testStepperL()
     std::cout << "## testing stepperL reverse" << std::endl;
     for (i = 0; i < 1500; i++)
     {
+        if(dd.motorStatus.positionLeft-- <= 0){
+            dd.motorStatus.positionLeft=359;
+        }
+        
         ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_REV, NULL);
         if (ret != 0)
         {
             std::cout << "## test StepperL rev failed with: " << ret << std::endl;
             return -3;
-        }
-
-        if(--dd.motorStatus.positionLeft <= 0){
-            dd.motorStatus.positionRight=359;
         }
         usleep(1300);
     }

@@ -212,15 +212,15 @@ void lcd_setup_working_mode_frame(void)
 #endif
 	// setting up working frame, not yet values
 	lcd_ascii5x7_string(4, 1 * TOKENSIZE, "FL");
-	lcd_ascii5x7_string(4, 7 * TOKENSIZE, "FC");
-	lcd_ascii5x7_string(4, 14 * TOKENSIZE, "FR");
+	lcd_ascii5x7_string(4, 8 * TOKENSIZE, "FC");
+	lcd_ascii5x7_string(4, 15 * TOKENSIZE, "FR");
 	lcd_ascii5x7_string(5, 1 * TOKENSIZE, "RL");
-	lcd_ascii5x7_string(5, 7 * TOKENSIZE, "RR");
-	lcd_ascii5x7_string(6, 1 * TOKENSIZE, "RotL");
-	lcd_ascii5x7_string(6, 10 * TOKENSIZE, "RotR");
+	lcd_ascii5x7_string(5, 8 * TOKENSIZE, "RR");
+	lcd_ascii5x7_string(6, 1 * TOKENSIZE, "ML");
+	lcd_ascii5x7_string(6, 8 * TOKENSIZE, "MR");
 	lcd_ascii5x7_string(7, 1 * TOKENSIZE, "Ping");
 	lcd_ascii5x7_string(7, 10 * TOKENSIZE, "CS");
-	lcd_ascii5x7_string(0, 1 * TOKENSIZE, "load");
+	lcd_ascii5x7_string(0, 1 * TOKENSIZE, "Load");
 	// credits!
 	lcd_ascii5x7_string(2, 5 * TOKENSIZE, "github.com/");
 	lcd_ascii5x7_string(3, 4 * TOKENSIZE, "JaySoftDevel");
@@ -234,38 +234,38 @@ void lcd_update_display_data(DisplayData dd)
 #endif
 	// getting distance sensor values
 	snprintf(buffer, 4, "%3d", dd.distanceSensors.distFrontLeft);
-	lcd_ascii5x7_string(4, 1 + 3 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(4, 1 + 4 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 2 FC: %d\n", __FUNCTION__, dd.distanceSensors.distFrontCenter);
 #endif
 	snprintf(buffer, 4, "%3d", dd.distanceSensors.distFrontCenter);
-	lcd_ascii5x7_string(4, 1 + 10 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(4, 1 + 11 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 3 FR: %d\n", __FUNCTION__, dd.distanceSensors.distFrontRight);
 #endif
 	snprintf(buffer, 4, "%3d", dd.distanceSensors.distFrontRight);
-	lcd_ascii5x7_string(4, 1 + 17 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(4, 1 + 18 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 4 RL: %d\n", __FUNCTION__, dd.distanceSensors.distRearLeft);
 #endif
 	snprintf(buffer, 4, "%3d", dd.distanceSensors.distRearLeft);
-	lcd_ascii5x7_string(5, 1 + 3 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(5, 1 + 4 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 5 RR: %d\n", __FUNCTION__, dd.distanceSensors.distRearRight);
 #endif
 	snprintf(buffer, 4, "%3d", dd.distanceSensors.distRearRight);
-	lcd_ascii5x7_string(5, 1 + 10 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(5, 1 + 11 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 6 RotL: %d\n", __FUNCTION__, dd.motorStatus.positionLeft);
 #endif
 	// getting motor positions
 	snprintf(buffer, 4, "%3d", dd.motorStatus.positionLeft);
-	lcd_ascii5x7_string(6, 1 + 5 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(6, 1 + 4 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 7 RotR: %d\n", __FUNCTION__, dd.motorStatus.positionRight);
 #endif
 	snprintf(buffer, 4, "%3d", dd.motorStatus.positionRight);
-	lcd_ascii5x7_string(6, 1 + 14 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(6, 1 + 11 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 8 Ping: %d\n", __FUNCTION__, dd.connectionStatus.ping);
 #endif
@@ -288,7 +288,7 @@ void lcd_update_display_data(DisplayData dd)
 #endif
 	// getting current load, no conversion necessary
 	snprintf(buffer, 4, "%3d", dd.currentLoad);
-	lcd_ascii5x7_string(0, 1 + 5 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(0, 1 + 6 * TOKENSIZE, buffer);
 
 	kfree(buffer);
 }
