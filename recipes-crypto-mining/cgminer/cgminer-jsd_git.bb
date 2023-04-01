@@ -2,7 +2,7 @@ include cgminer.inc
 
 SUMMARY = "cgminer for the compac/2pac mining sticks"
 
-FILES_EXTRA_PATHS_prepend = ":${THISDIR}"
+FILESEXTRAPATHS_prepend = "${THISDIR}:"
 
 RDEPENDS_${PN} += "bash"
 

@@ -9,14 +9,8 @@ inherit core-image
 # minimize amount of outputs during development
 IMAGE_FSTYPES = "tar.xz wic"
 SDCARD_ROOTFS = "ext4"
-
-DISTRO_FEATURES = " \
-    nfs \
-    ipv4 \
-    wifi \
-"
-#    largefile \
-#
+IMAGE_OVERHEAD_FACTOR = "1.1"
+#IMAGE_ROOTFS_EXTRA_SPACE = "100000"
 
 IMAGE_INSTALL += " \
     ${CORE_OS} \
@@ -32,29 +26,37 @@ CORE_OS = " \
     boot-state \
 "
 
-DISTRO_FEATURES += " \
-	kernel-module-st7565 \
-	kernel-module-hcsr04-gpio \
-	kernel-module-stepperL \
-	kernel-module-stepperR \
-"
+DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
+VIRTUAL-RUNTIME_init_manager = "systemd"
+VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
+DISTRO_FEATURES = " \
+    nfs \
+    ipv4 \
+    wifi \
+    kernel-module-st7565 \
+    kernel-module-hcsr04-gpio \
+    kernel-module-stepperL \
+    kernel-module-stepperR \
+    systemd \
+"
+#    largefile \
+#
+
+# doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
     rootbot-lcd-kmod \
     rootbot-stepper-kmod \
-    hcsr04-gpio-kmod \
+    rootbot-hcsr04-kmod \
     "
 
 # to be checked!
 WIFI_SUPPORT = " \
     crda \
     iw \
-    linux-firmware-ath9k \
-    linux-firmware-ralink \
-    linux-firmware-rtl8192ce \
     linux-firmware-rtl8192cu \
-    linux-firmware-rtl8192su \
+    dhcp-client \
     wpa-supplicant \
 "
 #    wireless-tools \
@@ -147,6 +149,10 @@ addtask set_uEnv after do_rootfs before do_flush_pseudodb
 KERNEL_IMAGETYPE = "zImage MLO"
 
 export IMAGE_BASENAME = "${PN}"
+
+#CORE_IMAGE_EXTRA_INSTALL += " kernel-modules"
+#packagegroup-base-wifi 
+#DISTRO_FEATURES_append = " wifi"
 
 # To be placed into local.conf!
 DISTRO_FEATURES_remove = "3g"
