@@ -21,7 +21,7 @@
 #include <linux/interrupt.h>
 #include <linux/ktime.h>
 
-#include "hcsr04-gpio.h"
+#include "hcsr04.h"
 
 static dev_t second;	  // Global variable for the second device number
 static struct cdev c_dev; // Global variable for the character device structure

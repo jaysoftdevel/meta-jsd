@@ -1,6 +1,6 @@
 #!/bin/bash
-BUILD_LOCATION="../../build/tmp/deploy/images/beaglebone/"
-IMAGE_NAME="jsd-lrb-image-beaglebone.tar.xz"
+BUILD_LOCATION="../../build/tmp/deploy/images/rootbot-bbb/"
+IMAGE_NAME="jsd-lrb-image-rootbot-bbb.tar.xz"
 KERNEL_NAME="zImage"
 DTB_NAME="am335x-boneblack-rootbot.dtb"
 INTERFACE="enx000ec6d96a80"
@@ -10,13 +10,19 @@ NFS_DIR="/opt/nfs"
 TFTP_DIR="/opt/tftp/tftpboot"
 
 # restart to free access to nfs folder
-sudo /etc/init.d/tftpd-hpa restart
-sudo /etc/init.d/nfs-kernel-server restart
+sudo /etc/init.d/tftpd-hpa stop
+sudo /etc/init.d/nfs-kernel-server stop
+
+if [ $# -eq 1 ] && [ $1 == "service" ]
+then
+	exit
+fi
 
 # clean old installs
 echo "## cleanup"
 sudo rm -rvf ${TFTP_DIR}/*
 sudo rm -rvf ${NFS_DIR}/*
+sync
 echo "## cleanup done.."
 
 # extract new image
@@ -40,5 +46,5 @@ echo "## set permissions done..."
 echo "## assign ip addrtess and restart nfs and tftp services"
 sync
 sudo ifconfig ${INTERFACE} ${HOST_IP}
-sudo /etc/init.d/tftpd-hpa restart
-sudo /etc/init.d/nfs-kernel-server restart
+sudo /etc/init.d/tftpd-hpa start
+sudo /etc/init.d/nfs-kernel-server start

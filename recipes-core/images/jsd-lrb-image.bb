@@ -7,7 +7,7 @@ IMAGE_LINGUAS = "en-us"
 inherit core-image
 
 # minimize amount of outputs during development
-IMAGE_FSTYPES = "tar.xz wic"
+#IMAGE_FSTYPES = "tar.xz wic ext4"
 SDCARD_ROOTFS = "ext4"
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
@@ -18,6 +18,9 @@ IMAGE_INSTALL += " \
     ${WIFI_SUPPORT} \
     ${DEV_INSTALL} \
 "
+# ${DEV_EXTRAS} \
+# ${EXTRA_TOOLS_INSTALL} \
+#
 
 CORE_OS = " \
     rootbot \
@@ -26,20 +29,21 @@ CORE_OS = " \
     boot-state \
 "
 
-DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
-VIRTUAL-RUNTIME_init_manager = "systemd"
-VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
+# set to local.conf
+#DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
+#VIRTUAL-RUNTIME_init_manager = "systemd"
+#VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
 
-DISTRO_FEATURES = " \
-    nfs \
-    ipv4 \
-    wifi \
-    kernel-module-st7565 \
-    kernel-module-hcsr04-gpio \
-    kernel-module-stepperL \
-    kernel-module-stepperR \
-    systemd \
-"
+#DISTRO_FEATURES = " \
+#    nfs \
+#    ipv4 \
+#    wifi \
+#    systemd \
+#"
+#    kernel-module-st7565 \
+#    kernel-module-hcsr04-gpio \
+#    kernel-module-stepperL \
+#    kernel-module-stepperR \
 #    largefile \
 #
 
@@ -146,8 +150,6 @@ do_set_uEnv(){
 }
 addtask set_uEnv after do_rootfs before do_flush_pseudodb
 
-KERNEL_IMAGETYPE = "zImage MLO"
-
 export IMAGE_BASENAME = "${PN}"
 
 #CORE_IMAGE_EXTRA_INSTALL += " kernel-modules"
@@ -155,30 +157,30 @@ export IMAGE_BASENAME = "${PN}"
 #DISTRO_FEATURES_append = " wifi"
 
 # To be placed into local.conf!
-DISTRO_FEATURES_remove = "3g"
-DISTRO_FEATURES_remove = "alsa"
-DISTRO_FEATURES_remove = "alsa-lib"
-DISTRO_FEATURES_remove = "alsa-state"
-DISTRO_FEATURES_remove = "alsa-utils"
-DISTRO_FEATURES_remove = "bluetooth"
-DISTRO_FEATURES_remove = "bluez"
-DISTRO_FEATURES_remove = "ext2"
-DISTRO_FEATURES_remove = "gobject-introspection"
-DISTRO_FEATURES_remove = "gobject-introspection-data"
-DISTRO_FEATURES_remove = "nfc"
-#DISTRO_FEATURES_remove = "nfs"
-DISTRO_FEATURES_remove = "opengl"
-DISTRO_FEATURES_remove = "pulseaudio"
-DISTRO_FEATURES_remove = "wayland"
-DISTRO_FEATURES_remove = "x11"
-
-# To be placed into MACHINE.conf!
-MACHINE_FEATUES_remove = "alsa"
-MACHINE_FEATUES_remove = "alsa-lib"
-MACHINE_FEATUES_remove = "alsa-state"
-MACHINE_FEATUES_remove = "alsa-utils"
-MACHINE_FEATUES_remove = "apm"
-MACHINE_FEATUES_remove = "gpu"
-MACHINE_FEATUES_remove = "qemu-user-mode"
+#DISTRO_FEATURES_remove = "3g"
+#DISTRO_FEATURES_remove = "alsa"
+#DISTRO_FEATURES_remove = "alsa-lib"
+#DISTRO_FEATURES_remove = "alsa-state"
+#DISTRO_FEATURES_remove = "alsa-utils"
+#DISTRO_FEATURES_remove = "bluetooth"
+#DISTRO_FEATURES_remove = "bluez"
+#DISTRO_FEATURES_remove = "ext2"
+#DISTRO_FEATURES_remove = "gobject-introspection"
+#DISTRO_FEATURES_remove = "gobject-introspection-data"
+#DISTRO_FEATURES_remove = "nfc"
+##DISTRO_FEATURES_remove = "nfs"
+#DISTRO_FEATURES_remove = "opengl"
+#DISTRO_FEATURES_remove = "pulseaudio"
+#DISTRO_FEATURES_remove = "wayland"
+#DISTRO_FEATURES_remove = "x11"
+#
+## To be placed into MACHINE.conf!
+#MACHINE_FEATUES_remove = "alsa"
+#MACHINE_FEATUES_remove = "alsa-lib"
+#MACHINE_FEATUES_remove = "alsa-state"
+#MACHINE_FEATUES_remove = "alsa-utils"
+#MACHINE_FEATUES_remove = "apm"
+#MACHINE_FEATUES_remove = "gpu"
+#MACHINE_FEATUES_remove = "qemu-user-mode"
 
 

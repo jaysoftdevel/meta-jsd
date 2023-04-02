@@ -1,4 +1,4 @@
-obj-m += st7565.o
+obj-m := st7565.o
 SRC := $(shell pwd)
 
 all:

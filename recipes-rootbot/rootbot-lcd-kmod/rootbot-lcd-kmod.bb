@@ -16,8 +16,4 @@ SRC_URI = "file://st7565.c \
 
 S = "${WORKDIR}"
 
-RPROVIDES_${PN} += "kernel-module-${PN}"
-
-PKG_${PN} = "kernel-module-${PN}"
-
-KERNEL_MODULE_AUTOLOAD += "${PN}"
+RPROVIDES_${PN} += "kernel-module-st7565"

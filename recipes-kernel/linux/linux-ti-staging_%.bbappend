@@ -13,15 +13,3 @@ SRC_URI += " \
 KERNEL_DEVICETREE = " \
    am335x-boneblack-rootbot.dtb \
 "
-
-# not yet working, to be fixed!
-KERNEL_MODULE_AUTOLOAD += " \
-	st7565 \
-	hcsr04-gpio \
-	stepperL \
-	stepperR \
-"
-#	pru-rproc \
-#	irq-pruss-intc \
-#	pruss \
-#

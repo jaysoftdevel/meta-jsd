@@ -1,4 +1,4 @@
-obj-m := hcsr04-gpio.o
+obj-m := hcsr04.o
 
 SRC := $(shell pwd)
 

@@ -7,15 +7,11 @@ inherit module kernel-module-split
 #EXTRA_OEMAKE += "DEBUG=1"
 
 SRC_URI = "file://Makefile \
-           file://hcsr04-gpio.c \
-           file://hcsr04-gpio.h \
+           file://hcsr04.c \
+           file://hcsr04.h \
            file://COPYING \
           "
 
 S = "${WORKDIR}"
 
-RPROVIDES_${PN} += "kernel-module-${PN}"
-
-PKG_${PN} = "kernel-module-${PN}"
-
-KERNEL_MODULE_AUTOLOAD += "${PN}"
+RPROVIDES_${PN} += "kernel-module-hcsr04"

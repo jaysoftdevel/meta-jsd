@@ -1,0 +1,11 @@
+[Unit]
+Description=start initscript upon first boot
+After=network-online.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/libexec/wifi.sh
+
+[Install]
+WantedBy=multi-user.target
