@@ -20,10 +20,6 @@ do_install_append () {
 	install -m 0644 ${WORKDIR}/wifi.service ${D}${systemd_unitdir}/system
 }
 
-#MASKED_SCRIPTS = " \
-#	wifi \
-#"
-
 FILES_${PN} += " \
 	${ROOT_HOME}/wifi.sh \
 "

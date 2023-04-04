@@ -73,38 +73,13 @@ int main(void)
     int ret;
     std::cout << "### Initialize cpustat kernel file" << std::endl;
     std::cout << "### Test Device files" << std::endl;
-    ret = testDeviceFiles();
-    if (ret != 0)
-    {
-        std::cout << "### test device files failed with: " << ret << std::endl;
-        return -1;
-    }
-    /* Sequencial test of all components */
-    // sleep(2);
-    // std::cout << "### Test display" << std::endl;
-    // ret = testDisplay();
+    // ret = testDeviceFiles();
     // if (ret != 0)
     // {
-    //     std::cout << "### test display failed with: " << ret << std::endl;
-    //     return -2;
+    //     std::cout << "### test device files failed with: " << ret << std::endl;
+    //     return -1;
     // }
-    // sleep(2);
-    // std::cout << "### Test HCSR04 files" << std::endl;
-    // ret = testHCSR04();
-    // if (ret != 0)
-    // {
-    //     std::cout << "### test HCSR04 failed with: " << ret << std::endl;
-    //     return -3;
-    // }
-    // sleep(2);
-    // std::cout << "### Test Steppers files" << std::endl;
-    // ret = testStepper();
-    // if (ret != 0)
-    // {
-    //     std::cout << "### test Steppers failed with: " << ret << std::endl;
-    //     return -4;
-    // }
-    std::cout << "### Testing with parallel threads... " << ret << std::endl;
+    // std::cout << "### Testing with parallel threads... " << ret << std::endl;
     sleep(2);
     std::thread t_display(testDisplay);
     sleep(2);

@@ -24,6 +24,8 @@ IMAGE_INSTALL += " \
 
 CORE_OS = " \
     rootbot \
+    tester \
+    tester-client \
     openssh \
     openssh-keygen \
     boot-state \
@@ -142,13 +144,7 @@ disable_bootlogd() {
 
 ROOTFS_POSTPROCESS_COMMAND += " \
     set_local_timezone ; \
- "
-
-IMAGE_BOOT_FILES += "uEnv.txt"
-do_set_uEnv(){
-	cp -v ${THISDIR}/../../scripts/uEnv_sdcard.txt ${DEPLOY_DIR_IMAGE}/uEnv.txt
-}
-addtask set_uEnv after do_rootfs before do_flush_pseudodb
+"
 
 export IMAGE_BASENAME = "${PN}"
 

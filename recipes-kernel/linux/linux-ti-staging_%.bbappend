@@ -13,3 +13,10 @@ SRC_URI += " \
 KERNEL_DEVICETREE = " \
    am335x-boneblack-rootbot.dtb \
 "
+
+
+IMAGE_BOOT_FILES += "uEnv.txt"
+do_set_uEnv(){
+	cp -v ${THISDIR}/../../scripts/uEnv_sdcard.txt ${DEPLOY_DIR_IMAGE}/uEnv.txt
+}
+addtask set_uEnv after do_deploy before do_package_qa

@@ -6,13 +6,16 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 SRC_URI = " \
 	file://CMakeLists.txt \
-	file://rootbot.cpp \
-	file://rootbot.h \
+	file://tester.cpp \
 "
 
 S = "${WORKDIR}"
 
-DEPENDS += "rootbot-gpio nlohmann-json"
+EXTRA_OECMAKE += "-DDEBUG=ON"
+
+DEPENDS += "rootbot nlohmann-json"
+
+OECMAKE_GENERATOR = "Unix Makefiles"
 
 FILES_${PN} += " \
 	/ \

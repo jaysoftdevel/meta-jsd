@@ -40,3 +40,5 @@ do_install() {
 	install -d ${D}${includedir}
 	install -m 0755 ${S}/iolib.h ${D}${includedir}/
 }
+
+BBCLASSEXTEND = "native nativesdk"
