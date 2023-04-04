@@ -81,7 +81,7 @@ int main(int argc, char const *argv[])
             std::cerr << "Failed to send data." << std::endl;
             break;
         }
-        std::cout << "Sent JSON datagram with length of " << bytes_sent << " : " << datagram << std::endl;
+        // std::cout << "Sent JSON datagram with length of " << bytes_sent << " : " << datagram << std::endl;
         //sleep(.01);
 
         bytes_sent = send(sock, &dd, sizeof(dd), 0);

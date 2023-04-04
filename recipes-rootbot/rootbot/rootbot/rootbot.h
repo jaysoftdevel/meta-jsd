@@ -60,8 +60,7 @@ struct DisplayData
                         char buffer[sizeof(DisplayData)];
                         auto disp = reinterpret_cast<DisplayData*>(buffer);
                         dd = *disp;
-                        std::cerr << "## FL " << std::to_string(dd.distanceSensors.distFrontLeft) << " #"  << "## FC " << std::to_string(dd.distanceSensors.distFrontCenter) << " #"  << "## Fr " << std::to_string(dd.distanceSensors.distFrontRight) << " #" << "## RL " << std::to_string(dd.distanceSensors.distRearLeft) << " #"  << "## RR " << std::to_string(dd.distanceSensors.distRearRight) << " #"  << "## CS " << std::to_string(dd.connectionStatus.connectionStatus) << " #"  << "## Pi " << std::to_string(dd.connectionStatus.ping) << " #" << "## ML " << std::to_string(dd.motorStatus.positionLeft) << " #" << "## MR " << std::to_string(dd.motorStatus.positionRight) << " #" << "## Lo " << std::to_string(dd.currentLoad) << " #" << std::endl;
-                        
+                        // std::cerr << "## FL " << std::to_string(dd.distanceSensors.distFrontLeft) << " #"  << "## FC " << std::to_string(dd.distanceSensors.distFrontCenter) << " #"  << "## Fr " << std::to_string(dd.distanceSensors.distFrontRight) << " #" << "## RL " << std::to_string(dd.distanceSensors.distRearLeft) << " #"  << "## RR " << std::to_string(dd.distanceSensors.distRearRight) << " #"  << "## CS " << std::to_string(dd.connectionStatus.connectionStatus) << " #"  << "## Pi " << std::to_string(dd.connectionStatus.ping) << " #" << "## ML " << std::to_string(dd.motorStatus.positionLeft) << " #" << "## MR " << std::to_string(dd.motorStatus.positionRight) << " #" << "## Lo " << std::to_string(dd.currentLoad) << " #" << std::endl;
                         return dd;
                 }
                 
