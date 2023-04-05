@@ -43,6 +43,7 @@ struct DisplayData
                 std::ostringstream oss;
                 oss.flush();
                 oss << "{\"distanceSensors\" : { \"distFrontLeft\": " << std::to_string(distanceSensors.distFrontLeft) << ", \"distFrontCenter\": " << std::to_string(distanceSensors.distFrontCenter) << ", \"distFrontRight\": " << std::to_string(distanceSensors.distFrontRight) << ", \"distRearLeft\": " << std::to_string(distanceSensors.distRearLeft) << ", \"distRearRight\": " << std::to_string(distanceSensors.distFrontRight) << "}, \"connectionStatus\": { \"ping\": " << std::to_string(connectionStatus.ping) << ", \"conectionStatus\":" << std::to_string(connectionStatus.connectionStatus) << "}, \"motorStatus\": { \"positionLeft\": " << std::to_string(motorStatus.positionLeft) << ", \"positionRight\": " << std::to_string(motorStatus.positionRight) << "}, \"currentLoad\": " << std::to_string(currentLoad) << "}";
+                // std::cout << "## " << oss.str() << " ##" << std::endl;
                 return nlohmann::json::parse(oss.str());
         }
         static DisplayData deserialize_json(std::string datagram)

@@ -59,7 +59,7 @@ int main(int argc, char const *argv[])
     }
 
     // connect to server
-    std::cout << "## try to reconnect to socket" << std::endl;
+    std::cout << "## try to connect to socket" << std::endl;
     if (connect(sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) == -1)
     {
         std::cerr << "Failed to connect to server." << std::endl;
@@ -82,7 +82,7 @@ int main(int argc, char const *argv[])
             break;
         }
         // std::cout << "Sent JSON datagram with length of " << bytes_sent << " : " << datagram << std::endl;
-        //sleep(.01);
+        sleep(.01);
 
         bytes_sent = send(sock, &dd, sizeof(dd), 0);
         if (bytes_sent == -1)
