@@ -1,6 +1,6 @@
 [Unit]
 Description=Rootbot service instance or something and stuff, dunno....
-After=systemd-modules-load.service
+After=network-online.target
 
 [Service]
 Type=oneshot
