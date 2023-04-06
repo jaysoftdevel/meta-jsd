@@ -8,27 +8,20 @@
 #include <cstring>
 #include <cstdlib>
 #include <cstdio>
+#include <iomanip>
 #include <netinet/in.h>
 #include <netinet/udp.h>
 
-// #include <boost/asio.hpp>
-// #include <boost/property_tree/ptree.hpp>
-// #include <boost/property_tree/json_parser.hpp>
-
 using namespace std;
-
-// using boost::asio::ip::udp;
-// using boost::property_tree::ptree;
-// using boost::property_tree::read_json;
 
 #include "rootbot.h"
 
-const int BUFFER_SIZE = 1024;
+#define JSON_BUFFERSIZE_CLIENT 256;
 
 int main(int argc, char const *argv[])
 {
     // receive JSON datagram
-    char buffer[1024] = {0};
+    char buffer[sizeof(DisplayData)] = {0};
     int dataRec = 0;
     std::string str;
     int opt = 1;
@@ -36,8 +29,8 @@ int main(int argc, char const *argv[])
     try
     {
 
-        const char *host = "192.168.7.2";
-        int port = 12345;
+        const char *host = TCP_SOCKET_SERVER_IP;
+        int port = TCP_SOCKET_PORT;
         int backlog = 5;
 
         // create socket
@@ -104,7 +97,7 @@ int main(int argc, char const *argv[])
                 // connection inactive, waiting...
                 client_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
 
-                std::cout << "Incoming connection accepted." << std::endl;
+                std::cout << "New incoming connection accepted." << std::endl;
                 // accept incoming connection
                 if (client_sock == -1)
                 {
@@ -114,9 +107,17 @@ int main(int argc, char const *argv[])
                 }
             }
             dataRec += bytes_received;
-            std::string json_datagram(buffer, bytes_received);
-            DisplayData dd = DisplayData::deserialize_json(json_datagram);
-            // std::cout << "Received datagram with length of " << bytes_received << " : " << json_datagram << " #" << std::endl;
+            std::string datagram(buffer, bytes_received);
+            DisplayData dd = DisplayData::deserialize(datagram);
+            nlohmann::json json = dd.serialize_json();
+            std::cout << "## done processing incoming datagram" << std::endl;
+            // send JSON datagram
+            int bytes_sent = send(client_sock, to_string(json).c_str(), to_string(json).length(), 0);
+            if (bytes_sent == -1)
+            {
+                std::cerr << "Failed to send back json data." << std::endl;
+                break;
+            }
             std::cout << "### Total received data: " << dataRec << " bytes #" << std::endl;
         }
 
@@ -130,57 +131,5 @@ int main(int argc, char const *argv[])
         std::cerr << e.what() << std::endl;
         return EXIT_FAILURE;
     }
-    //  try
-    // {
-    //     boost::asio::io_service io_service;
-    //     udp::socket socket(io_service, udp::endpoint(udp::v4(), 0));
-    //     udp::resolver resolver(io_service);
-    //     udp::resolver::query query(udp::v4(), "example.com", "9000");
-    //     udp::endpoint server_endpoint = *resolver.resolve(query);
-
-    //     std::array<char, 1024> buffer;
-    //     udp::endpoint sender_endpoint;
-
-    //     while (true)
-    //     {
-    //         size_t length = socket.receive_from(boost::asio::buffer(buffer), sender_endpoint);
-
-    //         // Parse the received JSON data
-    //         std::string json_data(buffer.data(), length);
-    //         std::istringstream iss(json_data);
-    //         ptree pt;
-    //         read_json(iss, pt);
-
-    //         // Do something with the JSON data
-    //         std::cout << "Received JSON data:\n";
-    //         std::cout << "  id: " << pt.get<std::string>("id") << std::endl;
-    //         std::cout << "  message: " << pt.get<std::string>("message") << std::endl;
-    //     }
-    // }
-    // catch (std::exception& e)
-    // {
-    //     std::cerr << "Exception: " << e.what() << std::endl;
-    // }
-
-    // return 0;
-
-    try
-    {
-        Connection conn = PortListener(TCP_SOCKET_PORT).waitForConnection();
-        while (str.compare("quit") != 0)
-        {
-            str = conn.rx();
-            std::cout << str << std::endl;
-            conn.tx("Data received: " + str.length());
-            std::cout << "Data processed: " << str.length() << " # " << std::endl;
-        }
-    }
-    catch (std::runtime_error &e)
-    {
-        std::cerr << e.what() << std::endl;
-        return EXIT_FAILURE;
-    }
-    std::thread t_socket(Socket);
-
     return 0;
 }
