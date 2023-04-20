@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 
+#define DEBUG
+
 #define TEST_IO_THING 3
 #define LOAD_STAT_OFFSET 2
 
@@ -87,10 +89,16 @@ int main(void)
     std::thread t_stepperL(testStepperL);
     std::thread t_stepperR(testStepperR);
 
+    std::cout << "### Waiting for threads to join" << std::endl;
     t_display.join();
-    t_hcsr04.join();
+    std::cout << "### Display joined" << std::endl;
+    t_hcsr04.join(); 
+    std::cout << "### HCSR04 joined" << std::endl;
     t_stepperL.join();
+    std::cout << "### StepperL joined" << std::endl;
     t_stepperR.join();
+    std::cout << "### StepperR joined" << std::endl;
+    std::cout << "### All threads joined" << std::endl;
     return 0;
 }
 
@@ -230,7 +238,7 @@ int testDisplay()
 {
     std::cout << "## enter " << __FUNCTION__ << std::endl;
     std::cout << "## Test IOCTL \"unknown\" control request" << std::endl;
-    int fd_st7565 = open("/dev/st7565", O_RDWR);
+    int fd_st7565 = open("/dev/st7565", O_RDWR|O_NONBLOCK|O_CLOEXEC);
     // planned error!
     if (ioctl(fd_st7565, TEST_IO_THING, 5) != -1)
     {
@@ -279,8 +287,8 @@ int testDisplay()
     }
 
     std::cout << "## Close display..." << std::endl;
-    std::cout << "## leave " << __FUNCTION__ << std::endl;
     close(fd_st7565);
+    std::cout << "## leaving " << __FUNCTION__ << std::endl;
     return 0;
 }
 

@@ -11,7 +11,7 @@ SRC_URI = " \
 
 S = "${WORKDIR}"
 
-EXTRA_OECMAKE += "-DDEBUG=ON"
+EXTRA_OECMAKE += " -DDEBUG=ON"
 
 DEPENDS += "rootbot nlohmann-json"
 

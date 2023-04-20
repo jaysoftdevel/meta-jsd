@@ -41,7 +41,7 @@ int main(int argc, char const *argv[])
             return 1;
         }
 
-        // Forcefully attaching socket to the address 192.168.7.2
+        // Forcefully attaching socket to the address TCP_SOCKET_SERVER_IP
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
         {
             std::cerr << "Set socket options error" << std::endl;

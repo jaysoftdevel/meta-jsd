@@ -6,7 +6,7 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 # "kernel-module-" prefix as required by the oe-core build environment.
 inherit module kernel-module-split
 
-#EXTRA_OEMAKE += "DEBUG=1"
+EXTRA_OECMAKE += " -DDEBUG=ON"
 
 SRC_URI = "file://Makefile \
            file://stepperL.c \

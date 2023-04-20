@@ -10,6 +10,7 @@
  * http://www.instructables.com/id/Drive-a-Stepper-Motor-with-an-AVR-Microprocessor/?ALLSTEPS
  *
  */
+
 #ifndef STEPPERMOTOR_CONTROL_L_C
 #define STEPPERMOTOR_CONTROL_L_C
 
@@ -32,6 +33,11 @@
 #include <linux/delay.h>
 
 #include "stepperL.h"
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("JaySoftDevel");
+MODULE_DESCRIPTION("Linux Kernel Module to drive SN754410 Quadruple Half-H Driver via GPIO");
+MODULE_VERSION("0.4");
 
 // Keep this order!!
 static struct tPos coilPins = {COIL_PIN_NORTH, COIL_PIN_SOUTH, COIL_PIN_EAST, COIL_PIN_WEST};

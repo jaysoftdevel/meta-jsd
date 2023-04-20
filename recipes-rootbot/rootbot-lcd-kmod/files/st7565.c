@@ -17,6 +17,11 @@
 #include "font.h"
 #include "lcd.h"
 
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("JaySoftDevel");
+MODULE_DESCRIPTION("Linux Kernel Module to drive ST7565 LCD display via GPIO");
+MODULE_VERSION("0.4");
+
 // prototypes
 void st7565_init_lcd(void);
 void lcd_ascii5x7_string(unsigned int xPos, unsigned int yPos,

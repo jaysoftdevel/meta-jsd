@@ -3,7 +3,7 @@ Description=Boot state checking service
 After=systemd-modules-load.service
 
 [Service]
-#Type=simple
+Type=oneshot
 ExecStart=/usr/libexec/boot-state.sh
 
 [Install]

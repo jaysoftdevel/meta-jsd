@@ -28,8 +28,9 @@ CORE_OS = " \
     tester-client \
     openssh \
     openssh-keygen \
-    boot-state \
 "
+#boot-state \
+#
 
 # set to local.conf
 #DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"

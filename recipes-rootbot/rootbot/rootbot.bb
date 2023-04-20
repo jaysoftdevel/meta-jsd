@@ -18,6 +18,8 @@ SRC_URI = " \
 	file://rootbot.service \
 "
 
+EXTRA_OECMAKE += " -DDEBUG=ON"
+
 S = "${WORKDIR}"
 
 DEPENDS += "rootbot-gpio nlohmann-json"
