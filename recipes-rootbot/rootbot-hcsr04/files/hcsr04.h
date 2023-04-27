@@ -36,10 +36,6 @@ long echoToDistance(long duration);
 // Interrupts not used, too unprecise!
 //static irqreturn_t MeasureISR(int irq, void *dev);
 
-long getDistanceFL(void);
-long getDistanceFC(void);
-long getDistanceFR(void);
-long getDistanceRL(void);
-long getDistanceRR(void);
+long getDistance(unsigned int pin);
 
 #endif // HCSR04_GPIO_H

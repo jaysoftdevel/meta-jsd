@@ -62,7 +62,7 @@ static struct file_operations pugs_fops = {
 struct gpio_pin
 {
 	const char *name;
-	unsigned gpio;
+	unsigned pin;
 };
 
 // Struct to point to all GPIO pins
@@ -76,21 +76,21 @@ struct gpio_platform_data
 static struct gpio_pin stepperL_gpio_pins[] = {
 	{
 		.name = "stepperL::north",
-		.gpio =
+		.pin =
 			COIL_PIN_NORTH,
 	},
 	{
 		.name = "stepperL::east",
-		.gpio = COIL_PIN_EAST,
+		.pin = COIL_PIN_EAST,
 	},
 	{
 		.name =
 			"stepperL::south",
-		.gpio = COIL_PIN_SOUTH,
+		.pin = COIL_PIN_SOUTH,
 	},
 	{
 		.name = "stepperL::west",
-		.gpio =
+		.pin =
 			COIL_PIN_WEST,
 	},
 };
@@ -222,21 +222,21 @@ static int __init stepperL_init(void)
 	for (i = 0; i < stepperL_gpio_pin_info.num_pins; i++)
 	{
 #ifdef DEBUG
-		printk("[%s] register pin %d with gpio %d with name %s\n", __FUNCTION__, i, stepperL_gpio_pins[i].gpio, stepperL_gpio_pins[i].name);
+		printk("[%s] register pin %d with gpio %d with name %s\n", __FUNCTION__, i, stepperL_gpio_pins[i].pin, stepperL_gpio_pins[i].name);
 #endif
-		err = gpio_request(stepperL_gpio_pins[i].gpio, stepperL_gpio_pins[i].name);
+		err = gpio_request(stepperL_gpio_pins[i].pin, stepperL_gpio_pins[i].name);
 		if (err)
 		{
 #ifdef DEBUG
-			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, stepperL_gpio_pins[i].gpio, err);
+			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, stepperL_gpio_pins[i].pin, err);
 #endif
 			return -1;
 		}
-		err = gpio_direction_output(stepperL_gpio_pins[i].gpio, 0);
+		err = gpio_direction_output(stepperL_gpio_pins[i].pin, 0);
 		if (err)
 		{
 #ifdef DEBUG
-			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, stepperL_gpio_pins[i].gpio, err);
+			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, stepperL_gpio_pins[i].pin, err);
 #endif
 			return -1;
 		}
@@ -333,7 +333,7 @@ static void __exit stepperL_exit(void)
 	int i = 0;
 	for (i = 0; i < stepperL_gpio_pin_info.num_pins; i++)
 	{
-		gpio_free(stepperL_gpio_pins[i].gpio);
+		gpio_free(stepperL_gpio_pins[i].pin);
 	}
 
 	// unregister character device

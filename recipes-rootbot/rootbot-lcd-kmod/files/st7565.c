@@ -76,7 +76,7 @@ static struct file_operations pugs_fops = {
 struct gpio_pin
 {
 	const char *name;
-	unsigned gpio;
+	unsigned pin;
 };
 
 // Struct to point to all GPIO pins
@@ -90,31 +90,31 @@ struct gpio_platform_data
 static struct gpio_pin st7565_gpio_pins[] = {
 	{
 		.name = "st7565::cs",
-		.gpio =
+		.pin =
 			ST7565_CS,
 	},
 	{
 		.name = "st7565::rst",
-		.gpio = ST7565_RST,
+		.pin = ST7565_RST,
 	},
 	{
 		.name =
 			"st7565::a0",
-		.gpio = ST7565_A0,
+		.pin = ST7565_A0,
 	},
 	{
 		.name = "st7565::clk",
-		.gpio =
+		.pin =
 			ST7565_CLK,
 	},
 	{
 		.name = "st7565::si",
-		.gpio = ST7565_SI,
+		.pin = ST7565_SI,
 	},
 	{
 		.name =
 			"st7565::ap",
-		.gpio = ST7565_AP,
+		.pin = ST7565_AP,
 	},
 };
 
@@ -402,18 +402,18 @@ static int __init st7565_init(void)
 	int err, i = 0;
 	for (i = 0; i < st7565_gpio_pin_info.num_pins; i++)
 	{
-		err = gpio_request(st7565_gpio_pins[i].gpio, st7565_gpio_pins[i].name);
+		err = gpio_request(st7565_gpio_pins[i].pin, st7565_gpio_pins[i].name);
 		if (err)
 		{
 #ifdef DEBUG
-			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].gpio, err);
+			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].pin, err);
 #endif
 		}
-		err = gpio_direction_output(st7565_gpio_pins[i].gpio, 0);
+		err = gpio_direction_output(st7565_gpio_pins[i].pin, 0);
 		if (err)
 		{
 #ifdef DEBUG
-			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].gpio, err);
+			printk("[%s] Could not set value of GPIO %i, error code: %i\n", __FUNCTION__, st7565_gpio_pins[i].pin, err);
 #endif
 		}
 	}
@@ -448,7 +448,7 @@ static void __exit st7565_exit(void)
 	int i = 0;
 	for (i = 0; i < st7565_gpio_pin_info.num_pins; i++)
 	{
-		gpio_free(st7565_gpio_pins[i].gpio);
+		gpio_free(st7565_gpio_pins[i].pin);
 	}
 
 	// unregister character device

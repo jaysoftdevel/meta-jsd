@@ -49,7 +49,7 @@ static struct file_operations pugs_fops = {.owner = THIS_MODULE,
 struct gpio_pin
 {
 	const char *name;
-	unsigned gpio;
+	unsigned pin;
 	unsigned irq;
 };
 
@@ -65,43 +65,43 @@ static struct gpio_pin hcsr04_gpio_pins[] =
 	{
 		{
 			.name = "hcsr04-trigger_FL",
-			.gpio = TRIGGER_FL,
+			.pin = TRIGGER_FL,
 		},
 		{
 			.name = "hcsr04-echo_FL",
-			.gpio = ECHO_FL,
+			.pin = ECHO_FL,
 		},
 		{
 			.name = "hcsr04-trigger_FC",
-			.gpio = TRIGGER_FC,
+			.pin = TRIGGER_FC,
 		},
 		{
 			.name = "hcsr04-echo_FC",
-			.gpio = ECHO_FC,
+			.pin = ECHO_FC,
 		},
 		{
 			.name = "hcsr04-trigger_FR",
-			.gpio = TRIGGER_FR,
+			.pin = TRIGGER_FR,
 		},
 		{
 			.name = "hcsr04-echo_FR",
-			.gpio = ECHO_FR,
+			.pin = ECHO_FR,
 		},
 		{
 			.name = "hcsr04-trigger_RR",
-			.gpio = TRIGGER_RR,
+			.pin = TRIGGER_RR,
 		},
 		{
 			.name = "hcsr04-echo_RR",
-			.gpio = ECHO_RR,
+			.pin = ECHO_RR,
 		},
 		{
 			.name = "hcsr04-trigger_RL",
-			.gpio = TRIGGER_RL,
+			.pin = TRIGGER_RL,
 		},
 		{
 			.name = "hcsr04-echo_RL",
-			.gpio = ECHO_RL,
+			.pin = ECHO_RL,
 		},
 };
 
@@ -115,44 +115,6 @@ static struct gpio_platform_data hcsr04_gpio_pin_info = {
 char *rx_buffer;
 int BUFFER_SIZE = 5 * 4; // 4 bytes for each HCSR04 sensor
 
-static struct task_struct *s_thread_timeout;
-static bool thread_timeout_running = false;
-static uint thread_param;
-
-static int thread_timeout(void *data)
-{
-#ifdef DEBUG
-			printk("[%s] starting thread...\n", __FUNCTION__);
-#endif
-	while (!kthread_should_stop())
-	{
-		if (!thread_timeout_running)
-		{
-#ifdef DEBUG
-			printk("[%s] thread not running\n", __FUNCTION__);
-#endif
-			set_current_state(TASK_INTERRUPTIBLE);
-			schedule();
-		}
-		else
-		{
-#ifdef DEBUG
-			printk("[%s] thread setting to false\n", __FUNCTION__);
-#endif 
-			thread_timeout_running = false;
-		}
-	}
-	return 0;
-}
-
-static int activate_thread(unsigned int param)
-{
-	thread_param = param;
-	thread_timeout_running = true;
-	wake_up_process(s_thread_timeout);
-	return 0;
-}
-
 /********************************/
 /****** echo to distance calculation ******/
 /********************************/
@@ -161,198 +123,100 @@ long echoToDistance(long duration)
 	return (long)(duration / 5844);
 }
 
+static struct task_struct *kthread_task;
+static struct timer_list my_timer;
+static bool timeout = false;
+
+static void timer_notifier(struct timer_list *timer)
+{
+	printk("[%s] Timer expired\n", __FUNCTION__);
+	timeout = true;
+}
+
+static int kthread_timeout(void *data)
+{
+	unsigned int pin = *(unsigned int *)data;
+
+	// printk(KERN_INFO "[%s] GPIO polling thread starting...\n", __FUNCTION__);
+
+	// while ()
+	// {
+	// printk("[%s] execute thread with arg: %i", __FUNCTION__, pin);
+	gpio_set_value(hcsr04_gpio_pins[pin].pin, 1);
+	msleep(2);
+	gpio_set_value(hcsr04_gpio_pins[pin].pin, 0);
+	// printk("[%s] Wait for low", __FUNCTION__);
+	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 1 || !kthread_should_stop())
+	{
+		// msleep(1); // define exit strategy
+	}
+	// printk("[%s] get timestamp, wait for high", __FUNCTION__);
+	start = ktime_get_ns();
+	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 0 || !kthread_should_stop())
+	{
+		// msleep(1); 
+	}
+	end = ktime_get_ns();
+	// printk("[%s] got stop timestamp", __FUNCTION__);
+	duration = (int)end - start;
+	// }
+
+	// printk(KERN_INFO "[%s] GPIO polling thread exiting...\n", __FUNCTION__);
+	return duration;
+}
+
 /********************************/
 /****** trigger from HCSR04 index ******/
 /********************************/
 long getDistance(unsigned int pin)
 {
 #ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[pin + 1].name);
+	printk("[%s] waiting for %s pin!!\n", __FUNCTION__, hcsr04_gpio_pins[pin + 1].name);
 #endif
-	activate_thread(pin);
-	gpio_set_value(hcsr04_gpio_pins[pin].gpio, 1);
+
+	gpio_set_value(hcsr04_gpio_pins[pin].pin, 1);
 	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[pin].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].gpio) != 1)
+	gpio_set_value(hcsr04_gpio_pins[pin].pin, 0);
+
+	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 1)
 	{
 		// define exit strategy
 	}
+
 	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].gpio) != 0) // || hcsr04_timed_out != true
+	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 0)
 	{
 	}
 	end = ktime_get_ns();
 
 	duration = (int)end - start;
-	// !!! use copy to user mechanism!
+
+	// // reset timeout
+	// timeout = false;
+
+	// // setup timer for GPIO read timeout
+	// timer_setup(&my_timer, timer_notifier, 0);
+	// mod_timer(&my_timer, jiffies + msecs_to_jiffies(200));
+
+	// // start thread to read GPIO
+	// kthread_task = kthread_run(kthread_timeout, &pin, "my-kthread");
+
+	// if (IS_ERR(kthread_task))
+	// {
+	// 	printk(KERN_ERR "Failed to create kernel thread: %ld\n", PTR_ERR(kthread_task));
+	// }
+	// // printk("[%s] Thead setup was ok!!\n", __FUNCTION__);
+	// while (timeout != true)
+	// {
+	// 	msleep(10);
+	// }
+	// int ret = kthread_stop(kthread_task);
+	// del_timer(&my_timer);
+	// printk("[%s] Timer deletion ok\n", __FUNCTION__);
+	// printk("[%s] GPIO polling thread stopped with value: %x\n", __FUNCTION__, ret);
+
 #ifdef DEBUG
 	printk("### %s: %u mm#\n", hcsr04_gpio_pins[pin + 1].name, echoToDistance(duration));
-#endif
-	return echoToDistance(duration);
-}
-
-/********************************/
-/******    trigger FL      ******/
-/********************************/
-long getDistanceFL(void)
-{
-#ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[1].name);
-#endif
-	gpio_set_value(hcsr04_gpio_pins[0].gpio, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[0].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[1].gpio) != 1)
-	{
-		// define exit strategy
-	}
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[1].gpio) != 0)
-	{
-	}
-	end = ktime_get_ns();
-
-	// #ifdef DEBUG
-	// 	printk("Delete timer FL\n");
-	// #endif
-	// del_timer(&hcsr04_timeout);
-
-	duration = (int)end - start;
-	// !!! use copy to user mechanism!
-#ifdef DEBUG
-	printk("### FL: %u mm#\n", echoToDistance(duration));
-#endif
-	return echoToDistance(duration);
-}
-
-/********************************/
-/******    trigger FC      ******/
-/********************************/
-long getDistanceFC(void)
-{
-#ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[3].name);
-#endif
-	gpio_set_value(hcsr04_gpio_pins[2].gpio, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[2].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[3].gpio) != 1)
-	{
-		// define exit strategy
-	}
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[3].gpio) != 0)
-	{
-	}
-	end = ktime_get_ns();
-	// #ifdef DEBUG
-	// 	printk("Delete timer FC\n");
-	// #endif
-	// del_timer(&hcsr04_timeout);
-
-	duration = (int)end - start;
-	// !!! use copy to user mechanism!
-#ifdef DEBUG
-	printk("### FC: %u mm#\n", echoToDistance(duration));
-#endif
-	return echoToDistance(duration);
-}
-
-/********************************/
-/******    trigger FR      ******/
-/********************************/
-long getDistanceFR(void)
-{
-#ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[5].name);
-#endif
-	gpio_set_value(hcsr04_gpio_pins[4].gpio, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[4].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[5].gpio) != 1)
-	{
-		// define exit strategy
-	}
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[5].gpio) != 0)
-	{
-	}
-	end = ktime_get_ns();
-	// #ifdef DEBUG
-	// 	printk("Delete timer FR\n");
-	// #endif
-	// del_timer(&hcsr04_timeout);
-
-	duration = (int)end - start;
-	// !!! use copy to user mechanism!
-#ifdef DEBUG
-	printk("### FR: %u mm#\n", echoToDistance(duration));
-#endif
-	return echoToDistance(duration);
-}
-
-/********************************/
-/******    trigger RL      ******/
-/********************************/
-long getDistanceRL(void)
-{
-#ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[7].name);
-#endif
-	gpio_set_value(hcsr04_gpio_pins[6].gpio, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[6].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[7].gpio) != 1)
-	{
-		// define exit strategy
-	}
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[7].gpio) != 0)
-	{
-	}
-	end = ktime_get_ns();
-	// #ifdef DEBUG
-	// 	printk("Delete timer RL\n");
-	// #endif
-	// del_timer(&hcsr04_timeout);
-
-	duration = (int)end - start;
-	// !!! use copy to user mechanism!
-#ifdef DEBUG
-	printk("### RL: %u mm#\n", echoToDistance(duration));
-#endif
-	return echoToDistance(duration);
-}
-
-/********************************/
-/******    trigger RR      ******/
-/********************************/
-long getDistanceRR(void)
-{
-#ifdef DEBUG
-	printk("[%s] waiting for %s pin\n", __FUNCTION__, hcsr04_gpio_pins[9].name);
-#endif
-	gpio_set_value(hcsr04_gpio_pins[8].gpio, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[8].gpio, 0);
-	while (gpio_get_value(hcsr04_gpio_pins[9].gpio) != 1)
-	{
-		// define exit strategy
-	}
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[9].gpio) != 0)
-	{
-	}
-	end = ktime_get_ns();
-	// #ifdef DEBUG
-	// 	printk("Delete timer RR\n");
-	// #endif
-	// del_timer(&hcsr04_timeout);
-
-	duration = (int)end - start;
-	// !!! use copy to user mechanism!
-#ifdef DEBUG
-	printk("### RR: %u mm#\n", echoToDistance(duration));
 #endif
 	return echoToDistance(duration);
 }
@@ -417,57 +281,65 @@ static int __init hcsr04_init(void)
 	for (i = 0; i < hcsr04_gpio_pin_info.num_pins; i++)
 	{
 #ifdef DEBUG
-		printk("[%s] register pin %d with gpio %d with name %s\n", __FUNCTION__, i, hcsr04_gpio_pins[i].gpio, hcsr04_gpio_pins[i].name);
+		printk("[%s] register pin %d with pin %d with name %s\n", __FUNCTION__, i, hcsr04_gpio_pins[i].pin, hcsr04_gpio_pins[i].name);
 #endif
-		err = gpio_request(hcsr04_gpio_pins[i].gpio, hcsr04_gpio_pins[i].name);
+		err = gpio_request(hcsr04_gpio_pins[i].pin, hcsr04_gpio_pins[i].name);
+
 		if (err)
 		{
 #ifdef DEBUG
-			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].gpio, err);
+			printk("[%s] Could not get access to GPIO %i, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].pin, err);
 #endif
 		}
 		// only even pins are tiggers
 		if (i % 2 == 0)
 		{
-			err = gpio_direction_output(hcsr04_gpio_pins[i].gpio, 0);
+			err = gpio_direction_output(hcsr04_gpio_pins[i].pin, 0);
 			if (err)
 			{
 #ifdef DEBUG
-				printk("[%s] Could not set GPIO %i to output, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].gpio, err);
+				printk("[%s] Could not set GPIO %i to output, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].pin, err);
 #endif
 			}
 		}
 		// all odd pin are echos
 		else
 		{
-			err = gpio_direction_input(hcsr04_gpio_pins[i].gpio);
+			err = gpio_direction_input(hcsr04_gpio_pins[i].pin);
 			if (err)
 			{
 #ifdef DEBUG
-				printk("[%s] Could not set GPIO %i to input, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].gpio, err);
+				printk("[%s] Could not set GPIO %i to input, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].pin, err);
 #endif
 			}
 			/** for now do not use IRQs, for whatever reason this is way more unprecises then polling!!! **/
-			// // also register interrupt for all echos
-			// irq = gpio_to_irq(hcsr04_gpio_pins[i].gpio);
-			// if (irq < 0)
-			// {
-			// 	printk("[%s] Could not register interrupt for GPIO %i, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].gpio, irq);
-			// }
-			// else
-			// {
-			// 	printk("[%s] Received GPIO interrupt %i for pin %i", __FUNCTION__, irq, hcsr04_gpio_pins[i].gpio);
-			// 	err = request_irq(irq, MeasureISR, IRQF_TRIGGER_RISING, "IRQ_EDGE", (struct cdev *)&c_dev);
-			// 	if (err)
-			// 	{
-			// 		printk("[%s] Registering of interrupt %i failed for rising edge, error code: %i\n", __FUNCTION__, irq, err);
-			// 	}
-			// 	printk("[%s] Set irq number %i\n", __FUNCTION__, irq);
-			// 	hcsr04_gpio_pins[i].irq = irq;
-			// }
+			// also register interrupt for all echos
+			// 				irq = gpio_to_irq(hcsr04_gpio_pins[i].pin);
+			// 				if (irq < 0)
+			// 				{
+			// 	#ifdef DEBUG
+			// 					printk("[%s] Could not register interrupt for GPIO %i, error code: %i\n", __FUNCTION__, hcsr04_gpio_pins[i].pin, irq);
+			// 	#endif
+			// 				}
+			// 				else
+			// 				{
+			// 	#ifdef DEBUG
+			// 					printk("[%s] Received GPIO interrupt %i for pin %i", __FUNCTION__, irq, hcsr04_gpio_pins[i].pin);
+			// 	#endif
+			// 					err = request_irq(irq, measureISR, IRQF_TRIGGER_RISING, "IRQ_EDGE", (struct cdev *)&c_dev);
+			// 					if (err)
+			// 					{
+			// 	#ifdef DEBUG
+			// 						printk("[%s] Registering of interrupt %i failed for rising edge, error code: %i\n", __FUNCTION__, irq, err);
+			// 	#endif
+			// 					}
+			// 	#ifdef DEBUG
+			// 					printk("[%s] Set irq number %i\n", __FUNCTION__, irq);
+			// 	#endif
+			// 					hcsr04_gpio_pins[i].irq = irq;
+			// 				}
 		}
 	}
-	s_thread_timeout = kthread_create(thread_timeout, NULL, "s_thread_timeout");
 
 // ready to go!
 #ifdef DEBUG
@@ -485,41 +357,6 @@ long hcsr04_control(struct file *f, unsigned int control, unsigned long value)
 #ifdef DEBUG
 	printk("[%s] controlling: control = %x and value = %lx\n", __FUNCTION__, control, value);
 #endif
-	// 	if (control == IOCTL_HCSR04_FL_TRIGGER)
-	// 	{
-	// #ifdef DEBUG
-	// 		printk("[%s] Received read FL\n", __FUNCTION__);
-	// #endif
-	// 		return getDistanceFL();
-	// 	}
-	// 	if (control == IOCTL_HCSR04_FC_TRIGGER)
-	// 	{
-	// #ifdef DEBUG
-	// 		printk("[%s] Received read FC\n", __FUNCTION__);
-	// #endif
-	// 		return getDistanceFC();
-	// 	}
-	// 	if (control == IOCTL_HCSR04_FR_TRIGGER)
-	// 	{
-	// #ifdef DEBUG
-	// 		printk("[%s] Received read FR\n", __FUNCTION__);
-	// #endif
-	// 		return getDistanceFR();
-	// 	}
-	// 	if (control == IOCTL_HCSR04_RL_TRIGGER)
-	// 	{
-	// #ifdef DEBUG
-	// 		printk("[%s] Received read RL\n", __FUNCTION__);
-	// #endif
-	// 		return getDistanceRL();
-	// 	}
-	// 	if (control == IOCTL_HCSR04_RR_TRIGGER)
-	// 	{
-	// #ifdef DEBUG
-	// 		printk("[%s] Received read RR\n", __FUNCTION__);
-	// #endif
-	// 		return getDistanceRR();
-	// 	}
 	switch (control)
 	{
 	case IOCTL_HCSR04_FL_TRIGGER:
@@ -622,7 +459,7 @@ static void __exit hcsr04_deinit(void)
 #endif
 			free_irq(hcsr04_gpio_pins[i].irq, (struct cdev *)&c_dev);
 		}
-		gpio_free(hcsr04_gpio_pins[i].gpio);
+		gpio_free(hcsr04_gpio_pins[i].pin);
 	}
 
 	// unregister character device
@@ -630,8 +467,6 @@ static void __exit hcsr04_deinit(void)
 	device_destroy(cl, second);
 	class_destroy(cl);
 	unregister_chrdev_region(second, 1);
-
-	kthread_stop(s_thread_timeout);
 
 #ifdef DEBUG
 	printk("[%s] HCSR04 unregistered\n", __FUNCTION__);
