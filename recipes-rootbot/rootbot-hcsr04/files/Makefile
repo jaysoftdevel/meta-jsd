@@ -2,11 +2,18 @@ obj-m := hcsr04.o
 
 SRC := $(shell pwd)
 
+MY_CFLAGS += -g -DDEBUG
+ccflags-y += ${MY_CFLAGS}
+CC += ${MY_CFLAGS}
+
 all:
 	$(MAKE) -C $(KERNEL_SRC) M=$(SRC)
 
 modules_install:
 	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules_install
+
+debug:
+	$(MAKE) -C $(KERNEL_SRC) M=$(SRC) modules EXTRA_CFLAGS="$(MY_CFLAGS)"
 
 clean:
 	rm -f *.o *~ core .depend .*.cmd *.ko *.mod.c

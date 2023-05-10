@@ -15,7 +15,7 @@
 #include <asm/uaccess.h>
 #include <linux/spi/spidev.h>
 #include "font.h"
-#include "lcd.h"
+#include "st7565.h"
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("JaySoftDevel");

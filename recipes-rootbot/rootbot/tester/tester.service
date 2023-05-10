@@ -3,9 +3,12 @@ Description=Rootbot service instance or something and stuff, dunno....
 #After=wifi.service
 
 [Service]
-#Type=oneshot
-#RemainAfterExit=yes
-#ExecStart=/home/root/rootbot
+Type=oneshot
+RemainAfterExit=yes
+#ExecStart=/home/root/tester
+#CPUSchedulingPolicy=fifo
+#CPUSchedulingPriority=80
 
 [Install]
 #WantedBy=multi-user.target
+

@@ -9,25 +9,27 @@ inherit systemd
 ACTIVE_SYSTEMD_SUPPORT = "1"
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "rootbot.service"
+SYSTEMD_SERVICE_${PN} = "${PN}.service"
 
-SRC_URI = " \
-	file://CMakeLists.txt \
-	file://rootbot.cpp \
-	file://rootbot.h \
-	file://rootbot.service \
-"
+#SRC_URI = " \
+#	file://CMakeLists.txt \
+#	file://rootbot.cpp \
+#	file://rootbot.h \
+#	file://rootbot.service \
+#"
+
+EXTERNALSRC = "${THISDIR}/${PN}"
+EXTERNALSRC_BUILD = "${EXTERNALSRC}/build"
 
 EXTRA_OECMAKE += " -DDEBUG=ON"
 
-S = "${WORKDIR}"
+S = "${WORKDIR}/git"
 
 DEPENDS += "rootbot-gpio nlohmann-json"
 
 do_install_append () {
-	echo "## appending..."
 	install -d ${D}${systemd_unitdir}/system/
-	install -m 0644 ${WORKDIR}/rootbot.service ${D}${systemd_unitdir}/system
+	install -m 0644 ${S}/${PN}.service ${D}${systemd_unitdir}/system
 }
 
 

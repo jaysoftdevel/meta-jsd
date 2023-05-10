@@ -4,9 +4,8 @@ FILESEXTRAPATHS_prepend := "${THISDIR}/files/dts:${THISDIR}/${PN}:${THISDIR}/${P
 
 LINUX_VERSION_EXTENSION = "-jsd"
 
-# Make custom kernel with PRU enabled, only list blobs, not overlays!
-# no need to add defconfig as its already part of SRC_URI
 SRC_URI += " \
+    file://defconfig \
     file://am335x-boneblack-rootbot.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
 

@@ -1,20 +1,6 @@
-#include <iostream>
-#include <thread>
-#include <stdexcept>
-
-#include <sys/socket.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-#include <cstring>
-#include <cstdlib>
-#include <cstdio>
-#include <iomanip>
-#include <netinet/in.h>
-#include <netinet/udp.h>
+#include "rootbot.h"
 
 using namespace std;
-
-#include "rootbot.h"
 
 #define JSON_BUFFERSIZE_CLIENT 256;
 

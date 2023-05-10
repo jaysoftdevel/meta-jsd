@@ -1,0 +1,11 @@
+[Unit]
+Description=Rootbot service instance or something and stuff, dunno....
+#After=wifi.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+#ExecStart=/home/root/rootbot
+
+[Install]
+#WantedBy=multi-user.target

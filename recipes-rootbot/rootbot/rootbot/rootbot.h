@@ -1,5 +1,3 @@
-// Adapted from C code example
-// at https://www.geeksforgeeks.org/socket-programming-cc/
 #include <stdio.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
@@ -8,6 +6,7 @@
 #include <string>
 #include <stdexcept>
 #include <iostream>
+#include <thread>
 #include <sstream>
 #include <nlohmann/json.hpp>
 

@@ -8,7 +8,7 @@ inherit core-image
 
 # minimize amount of outputs during development
 #IMAGE_FSTYPES = "tar.xz wic ext4"
-SDCARD_ROOTFS = "ext4"
+SDCARD_ROOTFS_rootbot-bbb = "ext4"
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
 
@@ -17,6 +17,7 @@ IMAGE_INSTALL += " \
     ${KERNEL_EXTRA_INSTALL} \
     ${WIFI_SUPPORT} \
     ${DEV_INSTALL} \
+    ${EXTRA_TOOLS_INSTALL} \
 "
 # ${DEV_EXTRAS} \
 # ${EXTRA_TOOLS_INSTALL} \
@@ -53,9 +54,9 @@ CORE_OS = " \
 # doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    rootbot-lcd-kmod \
-    rootbot-stepper-kmod \
-    rootbot-hcsr04-kmod \
+    kernel-module-rootbot-lcd \
+    kernel-module-rootbot-stepper \
+    kernel-module-rootbot-hcsr04 \
     "
 
 # to be checked!

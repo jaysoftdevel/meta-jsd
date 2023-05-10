@@ -16,9 +16,9 @@ IMAGE_INSTALL += " \
 
 KERNEL_EXTRA_INSTALL = " \
     kernel-modules \
-    rootbot-lcd-kmod \
-    rootbot-stepper-kmod \
-    hcsr04-gpio-kmod \
+    kernel-module-rootbot-lcd \
+    kernel-module-rootbot-stepper \
+    kernel-module-hcsr04 \
     "
 
 PROFILING = " \

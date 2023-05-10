@@ -12,4 +12,4 @@ SRC_URI = "file://Makefile \
 
 S = "${WORKDIR}"
 
-RPROVIDES_${PN} += "kernel-module-hcsr04"
+RPROVIDES_${PN} += "kernel-module-rootbot-hcsr04"

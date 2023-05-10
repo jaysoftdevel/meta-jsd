@@ -6,7 +6,7 @@
 #define LINUX
 #define __KERNEL__
 
-#define DEBUG
+// #define DEBUG
 
 #include <linux/kernel.h>
 #include <linux/module.h>
@@ -20,6 +20,7 @@
 #include <linux/delay.h>
 #include <linux/interrupt.h>
 #include <linux/kthread.h>
+
 
 #include "hcsr04.h"
 
@@ -38,6 +39,7 @@ static int duration;	   // used for time measurements
 // used for buffer
 char *rx_buffer;
 
+// register features
 static struct file_operations pugs_fops = {.owner = THIS_MODULE,
 										   .open = hcsr04_open,
 										   .release = hcsr04_close,
@@ -88,20 +90,20 @@ static struct gpio_pin hcsr04_gpio_pins[] =
 			.pin = ECHO_FR,
 		},
 		{
-			.name = "hcsr04-trigger_RR",
-			.pin = TRIGGER_RR,
-		},
-		{
-			.name = "hcsr04-echo_RR",
-			.pin = ECHO_RR,
-		},
-		{
 			.name = "hcsr04-trigger_RL",
 			.pin = TRIGGER_RL,
 		},
 		{
 			.name = "hcsr04-echo_RL",
 			.pin = ECHO_RL,
+		},
+		{
+			.name = "hcsr04-trigger_RR",
+			.pin = TRIGGER_RR,
+		},
+		{
+			.name = "hcsr04-echo_RR",
+			.pin = ECHO_RR,
 		},
 };
 
@@ -123,47 +125,51 @@ long echoToDistance(long duration)
 	return (long)(duration / 5844);
 }
 
-static struct task_struct *kthread_task;
-static struct timer_list my_timer;
-static bool timeout = false;
+/*********************************************************************************/
+/** Disabled as threaded distance measurement is not yet working as supposed... **/
+/*********************************************************************************/
+// static struct task_struct *kthread_task;
+// static struct timer_list my_timer;
+// static bool timeout = false;
 
-static void timer_notifier(struct timer_list *timer)
-{
-	printk("[%s] Timer expired\n", __FUNCTION__);
-	timeout = true;
-}
+// static void timer_notifier(struct timer_list *timer)
+// {
+// 	timeout = true;
+// 	printk("[%s] Timer expired\n", __FUNCTION__);
+// 	return;
+// }
 
-static int kthread_timeout(void *data)
-{
-	unsigned int pin = *(unsigned int *)data;
+// static int kthread_timeout(void *data)
+// {
+// 	unsigned int pin = *(unsigned int *)data;
 
-	// printk(KERN_INFO "[%s] GPIO polling thread starting...\n", __FUNCTION__);
+// 	printk(KERN_INFO "[%s] GPIO polling thread starting...\n", __FUNCTION__);
 
-	// while ()
-	// {
-	// printk("[%s] execute thread with arg: %i", __FUNCTION__, pin);
-	gpio_set_value(hcsr04_gpio_pins[pin].pin, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[pin].pin, 0);
-	// printk("[%s] Wait for low", __FUNCTION__);
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 1 || !kthread_should_stop())
-	{
-		// msleep(1); // define exit strategy
-	}
-	// printk("[%s] get timestamp, wait for high", __FUNCTION__);
-	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 0 || !kthread_should_stop())
-	{
-		// msleep(1); 
-	}
-	end = ktime_get_ns();
-	// printk("[%s] got stop timestamp", __FUNCTION__);
-	duration = (int)end - start;
-	// }
+// 	// while ()
+// 	// {
+// 	// printk("[%s] execute thread with arg: %i", __FUNCTION__, pin);
+// 	gpio_set_value_cansleep(hcsr04_gpio_pins[pin].pin, 1);
+// 	msleep(10);
+// 	gpio_set_value_cansleep(hcsr04_gpio_pins[pin].pin, 0);
+// 	//printk("[%s] Wait for low", __FUNCTION__);
+// 	while (gpio_get_value_cansleep(hcsr04_gpio_pins[pin + 1].pin) != 1 || !kthread_should_stop())
+// 	{
+// 		// msleep(1); // define exit strategy
+// 	}
+// 	//printk("[%s] get timestamp, wait for high", __FUNCTION__);
+// 	start = ktime_get_ns();
+// 	while (gpio_get_value_cansleep(hcsr04_gpio_pins[pin + 1].pin) != 0 || !kthread_should_stop())
+// 	{
+// 		// msleep(1); 
+// 	}
+// 	end = ktime_get_ns();
+// 	//printk("[%s] got stop timestamp", __FUNCTION__);
+// 	duration = (int)end - start;
+// 	// }
 
-	// printk(KERN_INFO "[%s] GPIO polling thread exiting...\n", __FUNCTION__);
-	return duration;
-}
+// 	printk(KERN_INFO "[%s] GPIO polling thread exiting...\n", __FUNCTION__);
+// 	return duration;
+// }
 
 /********************************/
 /****** trigger from HCSR04 index ******/
@@ -171,52 +177,75 @@ static int kthread_timeout(void *data)
 long getDistance(unsigned int pin)
 {
 #ifdef DEBUG
-	printk("[%s] waiting for %s pin!!\n", __FUNCTION__, hcsr04_gpio_pins[pin + 1].name);
+	printk("[%s] waiting for %s pin!!", __FUNCTION__, hcsr04_gpio_pins[pin + 1].name);
 #endif
 
-	gpio_set_value(hcsr04_gpio_pins[pin].pin, 1);
-	msleep(2);
-	gpio_set_value(hcsr04_gpio_pins[pin].pin, 0);
+ 	// Enter uninterruptible section
+    set_current_state(TASK_UNINTERRUPTIBLE);
 
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 1)
+	//gpio_set_value(hcsr04_gpio_pins[pin].pin, 1);
+	gpio_set_value_cansleep(hcsr04_gpio_pins[pin].pin, 1);
+
+	msleep(10);
+	//gpio_set_value(hcsr04_gpio_pins[pin].pin, 0);
+	gpio_set_value_cansleep(hcsr04_gpio_pins[pin].pin, 0);
+
+	while (gpio_get_value_cansleep(hcsr04_gpio_pins[pin + 1].pin) != 1)
 	{
 		// define exit strategy
 	}
 
 	start = ktime_get_ns();
-	while (gpio_get_value(hcsr04_gpio_pins[pin + 1].pin) != 0)
+	while (gpio_get_value_cansleep(hcsr04_gpio_pins[pin + 1].pin) != 0)
 	{
 	}
 	end = ktime_get_ns();
 
+	// Exit uninterruptible section
+    set_current_state(TASK_RUNNING);
+
 	duration = (int)end - start;
 
+	/*********************************************************************************/
+	/** Disabled as threaded distance measurement is not yet working as supposed... **/
+	/*********************************************************************************/
 	// // reset timeout
 	// timeout = false;
 
 	// // setup timer for GPIO read timeout
 	// timer_setup(&my_timer, timer_notifier, 0);
-	// mod_timer(&my_timer, jiffies + msecs_to_jiffies(200));
+	// mod_timer(&my_timer, jiffies + msecs_to_jiffies(500));
 
 	// // start thread to read GPIO
 	// kthread_task = kthread_run(kthread_timeout, &pin, "my-kthread");
-
 	// if (IS_ERR(kthread_task))
 	// {
 	// 	printk(KERN_ERR "Failed to create kernel thread: %ld\n", PTR_ERR(kthread_task));
 	// }
-	// // printk("[%s] Thead setup was ok!!\n", __FUNCTION__);
+
+	// // bind to cpu 0
+	// kthread_bind(kthread_task, 0);
+	// //struct sched_param param = {.sched_priority = sched_get_priority_max(SCHED_FIFO)};
+	// // struct sched_param param = {.sched_priority = 1};
+	// // if (sched_setscheduler(kthread_task, SCHED_RR, &param) != 0) {
+	// // 	printk("[%s] Setting up distance thread failed...", __FUNCTION__);
+	// // }
+
+	// printk("[%s] Thead setup was ok!!\n", __FUNCTION__);
 	// while (timeout != true)
 	// {
 	// 	msleep(10);
+	// 	//printk("[%s] waiting: %i!!\n", __FUNCTION__, timeout);
 	// }
+	// printk("[%s] stopping thread\n", __FUNCTION__);
 	// int ret = kthread_stop(kthread_task);
+	// printk("[%s] deleting timer\n", __FUNCTION__);
 	// del_timer(&my_timer);
 	// printk("[%s] Timer deletion ok\n", __FUNCTION__);
 	// printk("[%s] GPIO polling thread stopped with value: %x\n", __FUNCTION__, ret);
 
 #ifdef DEBUG
-	printk("### %s: %u mm#\n", hcsr04_gpio_pins[pin + 1].name, echoToDistance(duration));
+	printk("[%s] %s: %lu mm", __FUNCTION__, hcsr04_gpio_pins[pin + 1].name, echoToDistance(duration));
 #endif
 	return echoToDistance(duration);
 }
@@ -278,11 +307,18 @@ static int __init hcsr04_init(void)
 #ifdef DEBUG
 	printk("[%s] registering HCSR04_GPIO pins\n", __FUNCTION__);
 #endif
+
+#ifdef BUILD_FOR_QEMU
+	printk("[%s] no GPIO access possible in QEMU HW, skipping",__FUNCTION__);
+	return 0;
+#endif
+
 	for (i = 0; i < hcsr04_gpio_pin_info.num_pins; i++)
 	{
 #ifdef DEBUG
 		printk("[%s] register pin %d with pin %d with name %s\n", __FUNCTION__, i, hcsr04_gpio_pins[i].pin, hcsr04_gpio_pins[i].name);
 #endif
+
 		err = gpio_request(hcsr04_gpio_pins[i].pin, hcsr04_gpio_pins[i].name);
 
 		if (err)

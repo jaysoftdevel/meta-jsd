@@ -33,9 +33,11 @@ static ssize_t hcsr04_write(struct file *f, const char __user *buf, size_t len, 
 static int hcsr04_close(struct inode *i, struct file *f);
 long echoToDistance(long duration);
 
-// Interrupts not used, too unprecise!
-//static irqreturn_t MeasureISR(int irq, void *dev);
-
 long getDistance(unsigned int pin);
+
+// redefined from linux/sched.h and linux/sched/types.h
+struct sched_param {
+	int sched_priority;
+};
 
 #endif // HCSR04_GPIO_H
