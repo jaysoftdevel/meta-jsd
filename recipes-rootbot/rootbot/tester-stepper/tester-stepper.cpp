@@ -13,17 +13,17 @@
 #define TEST_IO_THING 3
 #define LOAD_STAT_OFFSET 2
 
-#define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
-#define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
-#define IOCTL_LCD_CLEAR_ALL _IOW(6, 3, unsigned long)
-#define IOCTL_LCD_SETUP_WORKING_MODE _IOW(6, 4, unsigned long)
-#define IOCTL_LCD_INTRO _IOW(6, 5, unsigned long)
+// #define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
+// #define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
+// #define IOCTL_LCD_CLEAR_ALL _IOW(6, 3, unsigned long)
+// #define IOCTL_LCD_SETUP_WORKING_MODE _IOW(6, 4, unsigned long)
+// #define IOCTL_LCD_INTRO _IOW(6, 5, unsigned long)
 
-#define IOCTL_HCSR04_FL_TRIGGER _IOW(7, 0, unsigned long)
-#define IOCTL_HCSR04_FC_TRIGGER _IOW(7, 1, unsigned long)
-#define IOCTL_HCSR04_FR_TRIGGER _IOW(7, 2, unsigned long)
-#define IOCTL_HCSR04_RL_TRIGGER _IOW(7, 3, unsigned long)
-#define IOCTL_HCSR04_RR_TRIGGER _IOW(7, 4, unsigned long)
+// #define IOCTL_HCSR04_FL_TRIGGER _IOW(7, 0, unsigned long)
+// #define IOCTL_HCSR04_FC_TRIGGER _IOW(7, 1, unsigned long)
+// #define IOCTL_HCSR04_FR_TRIGGER _IOW(7, 2, unsigned long)
+// #define IOCTL_HCSR04_RL_TRIGGER _IOW(7, 3, unsigned long)
+// #define IOCTL_HCSR04_RR_TRIGGER _IOW(7, 4, unsigned long)
 
 #define IOCTL_STEPPER_L_STEP_FWD _IOW(8, 0, unsigned long)
 #define IOCTL_STEPPER_L_STEP_REV _IOW(8, 1, unsigned long)
@@ -32,6 +32,8 @@
 #define IOCTL_STEPPER_R_STEP_FWD _IOW(9, 0, unsigned long)
 #define IOCTL_STEPPER_R_STEP_REV _IOW(9, 1, unsigned long)
 #define IOCTL_STEPPER_R_STEP_NONE _IOW(9, 2, unsigned long)
+
+#define DEMO_STEPS 5000
 
 typedef struct
 {
@@ -62,22 +64,22 @@ typedef struct
     unsigned char currentLoad;
 } DisplayData;
 
-std::thread t_display;
-std::thread t_hcsr04;
+// std::thread t_display;
+// std::thread t_hcsr04;
 std::thread t_stepperL;
 std::thread t_stepperR;
 
 static DisplayData dd;
 
-static int fd_hcsr04;
+// static int fd_hcsr04;
 static int fd_stepperL;
 static int fd_stepperR;
-static int fd_st7565;
+// static int fd_st7565;
 
-unsigned char getLoad();
+// unsigned char getLoad();
 int testDeviceFiles();
-int testDisplay();
-int testHCSR04();
+// int testDisplay();
+// int testHCSR04();
 int testStepperL();
 int testStepperR();
 void sig_handler(int signo);
@@ -110,17 +112,10 @@ int main(void)
     }
     sleep(2);
     std::cout << "### Testing with parallel threads... " << ret << std::endl;
-    t_display = std::thread(testDisplay);
-    sleep(5);
-    t_hcsr04 = std::thread(testHCSR04);
     t_stepperL = std::thread(testStepperL);
     t_stepperR = std::thread(testStepperR);
 
     std::cout << "### Waiting for threads to join" << std::endl;
-    t_display.join();
-    std::cout << "### Display joined" << std::endl;
-    t_hcsr04.join();
-    std::cout << "### HCSR04 joined" << std::endl;
     t_stepperL.join();
     std::cout << "### StepperL joined" << std::endl;
     t_stepperR.join();
@@ -134,11 +129,7 @@ void sig_handler(int signo)
     if (signo == SIGINT)
     {
         std::cout << "### Received signal: " << signo << std::endl;
-        if (t_display.joinable())
-        {
-            std::cout << "### display still running, detaching..." << std::endl;
-            t_display.detach();
-        }
+        
         if (t_stepperL.joinable())
         {
             std::cout << "### stepperL still running, detaching..." << std::endl;
@@ -149,19 +140,8 @@ void sig_handler(int signo)
             std::cout << "### stepperR still running, detaching..." << std::endl;
             t_stepperR.detach();
         }
-        if (t_hcsr04.joinable())
-        {
-            std::cout << "### HCSR04 still running, detaching..." << std::endl;
-            t_hcsr04.detach();
-        }
         // check for open file descriptors
-        int fd_state = fcntl(fd_hcsr04, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### HCSR04 file stille open, closing" << std::endl;
-            close(fd_hcsr04);
-        }
-        fd_state = fcntl(fd_stepperL, F_GETFL);
+        int fd_state = fcntl(fd_stepperL, F_GETFL);
         if (fd_state == -1)
         {
             std::cout << "### stepperL file stille open, closing" << std::endl;
@@ -173,12 +153,7 @@ void sig_handler(int signo)
             std::cout << "### stepperR file stille open, closing" << std::endl;
             close(fd_stepperR);
         }
-        fd_state = fcntl(fd_st7565, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### display file stille open, closing" << std::endl;
-            close(fd_st7565);
-        }
+
 
         std::cout << "###### Ultimately terminating everything..." << std::endl;
         m_stop = true;
@@ -194,7 +169,7 @@ int testStepperL()
     fd_stepperL = open("/dev/stepperL", O_RDWR);
     std::cout << "## enter " << __FUNCTION__ << std::endl;
     std::cout << "## testing stepperL forward" << std::endl;
-    for (i = 0; i < 1500; i++)
+    for (i = 0; i < DEMO_STEPS; i++)
     {
 
         if (dd.motorStatus.positionLeft++ > 359)
@@ -251,7 +226,7 @@ int testStepperR()
     std::cout << "## enter " << __FUNCTION__ << std::endl;
 
     std::cout << "## testing stepperR forward" << std::endl;
-    for (i = 0; i < 1500; i++)
+    for (i = 0; i < DEMO_STEPS; i++)
     {
         ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_FWD, NULL);
         if (ret != 0)
@@ -299,95 +274,6 @@ int testStepperR()
     return 0;
 }
 
-int testHCSR04()
-{
-    std::cout << "## enter " << __FUNCTION__ << std::endl;
-
-    fd_hcsr04 = open("/dev/hcsr04", O_RDWR);
-
-    while (!m_stop)
-    {
-        std::cout << ".";
-        dd.distanceSensors.distFrontLeft = ioctl(fd_hcsr04, IOCTL_HCSR04_FL_TRIGGER, NULL);
-        usleep(100 * 1000);
-        // std::cout << "## FL value is: " << FL << std::endl;
-        dd.distanceSensors.distFrontCenter = ioctl(fd_hcsr04, IOCTL_HCSR04_FC_TRIGGER, NULL);
-        usleep(100 * 1000);
-        // std::cout << "## FC value is: " << FC << std::endl;
-        dd.distanceSensors.distFrontRight = ioctl(fd_hcsr04, IOCTL_HCSR04_FR_TRIGGER, NULL);
-        usleep(100 * 1000);
-        // std::cout << "## FR value is: " << FR << std::endl;
-        dd.distanceSensors.distRearLeft = ioctl(fd_hcsr04, IOCTL_HCSR04_RL_TRIGGER, NULL);
-        usleep(100 * 1000);
-        // std::cout << "## RL value is: " << RL << std::endl;
-        dd.distanceSensors.distRearRight = ioctl(fd_hcsr04, IOCTL_HCSR04_RR_TRIGGER, NULL);
-        // std::cout << "## RR value is: " << RR << std::endl;
-        usleep(100 * 1000);
-    }
-    std::cout << "## Close HCSR04 ..." << std::endl;
-    close(fd_hcsr04);
-    std::cout << "## leave " << __FUNCTION__ << std::endl;
-    return 0;
-}
-
-int testDisplay()
-{
-    std::cout << "## enter " << __FUNCTION__ << std::endl;
-    fd_st7565 = open("/dev/st7565", O_RDWR | O_NONBLOCK | O_CLOEXEC);
-
-    std::cout << "## Test IOCTL \"unknown\" control request" << std::endl;
-    // planned error!
-    if (ioctl(fd_st7565, TEST_IO_THING, 5) != -1)
-    {
-        std::cout << "## Unexpected control return..." << std::endl;
-        return -1;
-    }
-    std::cout << "## Write banner sequence" << std::endl;
-    if (ioctl(fd_st7565, IOCTL_LCD_CLEAR_ALL, NULL) != 0)
-    {
-        std::cout << "## Clearing display failed" << std::endl;
-        return -2;
-    }
-    if (ioctl(fd_st7565, IOCTL_LCD_INTRO, NULL) != 0)
-    {
-        std::cout << "## Clearing display failed" << std::endl;
-        return -3;
-    }
-    std::cout << "## Test IOCTL with DisplayData" << std::endl;
-    if (ioctl(fd_st7565, IOCTL_LCD_CLEAR_ALL, NULL) != 0)
-    {
-        std::cout << "## Clearing display failed" << std::endl;
-        return -4;
-    }
-    if (ioctl(fd_st7565, IOCTL_LCD_SETUP_WORKING_MODE, NULL) != 0)
-    {
-        std::cout << "## Set working mode failed" << std::endl;
-        return -5;
-    }
-    if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &dd) != 0)
-    {
-        std::cout << "## Switch to working mode failed" << std::endl;
-        return -6;
-    }
-
-    while (!m_stop)
-    {
-        dd.currentLoad = getLoad();
-        if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &dd) != 0)
-        {
-            std::cout << "## Switch to working mode failed" << std::endl;
-            // 2Do: Send signal instead of termination
-            std::terminate();
-        }
-        usleep(100 * 1000);
-    }
-
-    std::cout << "## Close display..." << std::endl;
-    close(fd_st7565);
-    std::cout << "## leaving " << __FUNCTION__ << std::endl;
-    return 0;
-}
-
 unsigned char getLoad()
 {
     std::ifstream loadavg("/proc/loadavg", std::ifstream::in);
@@ -411,38 +297,38 @@ unsigned char getLoad()
 int testDeviceFiles()
 {
     std::cout << "## enter " << __FUNCTION__ << std::endl;
-    std::string str_st7565("Test string for ST7565!!!");
-    std::string str_hcsr04("Test string for HCSR04 range sensor!!!");
+    // std::string str_st7565("Test string for ST7565!!!");
+    // std::string str_hcsr04("Test string for HCSR04 range sensor!!!");
     std::string str_stepperL("Test string for Stepper motor LEFT!!!");
     std::string str_stepperR("Test string for Stepper motor RIGHT!!!");
 
-    std::ofstream ofs_st7565;
-    std::ofstream ofs_hcsr04;
+    // std::ofstream ofs_st7565;
+    // std::ofstream ofs_hcsr04;
     std::ofstream ofs_stepperL;
     std::ofstream ofs_stepperR;
-    ofs_st7565.open("/dev/st7565", std::ios::out);                // only write
-    ofs_hcsr04.open("/dev/hcsr04", std::ios::out | std::ios::in); // read and write
+    // ofs_st7565.open("/dev/st7565", std::ios::out);                // only write
+    // ofs_hcsr04.open("/dev/hcsr04", std::ios::out | std::ios::in); // read and write
     ofs_stepperL.open("/dev/stepperL", std::ios::out);            // only write
     ofs_stepperR.open("/dev/stepperR", std::ios::out);            // only write
 
-    if (!ofs_st7565)
-    {
-        std::cout << "## opening of ST7565 failed..." << std::endl;
-        return -1;
-    }
-    else
-    {
-        std::cout << "## opening of ST7565 successful!" << std::endl;
-    }
-    if (!ofs_hcsr04)
-    {
-        std::cout << "## opening of HCSR04 failed..." << std::endl;
-        return -2;
-    }
-    else
-    {
-        std::cout << "## opening of HCSR04 successful!" << std::endl;
-    }
+    // if (!ofs_st7565)
+    // {
+    //     std::cout << "## opening of ST7565 failed..." << std::endl;
+    //     return -1;
+    // }
+    // else
+    // {
+    //     std::cout << "## opening of ST7565 successful!" << std::endl;
+    // }
+    // if (!ofs_hcsr04)
+    // {
+    //     std::cout << "## opening of HCSR04 failed..." << std::endl;
+    //     return -2;
+    // }
+    // else
+    // {
+    //     std::cout << "## opening of HCSR04 successful!" << std::endl;
+    // }
     if (!ofs_stepperL)
     {
         std::cout << "## opening of StepperL failed..." << std::endl;
@@ -462,12 +348,12 @@ int testDeviceFiles()
         std::cout << "## opening of StepperR successful!" << std::endl;
     }
 
-    // Try to write some data
-    std::cout << "## Write to st7565" << std::endl;
-    ofs_st7565 << str_st7565;
+    // // Try to write some data
+    // std::cout << "## Write to st7565" << std::endl;
+    // ofs_st7565 << str_st7565;
 
-    std::cout << "## Write to hcsr04" << std::endl;
-    ofs_hcsr04 << str_hcsr04;
+    // std::cout << "## Write to hcsr04" << std::endl;
+    // ofs_hcsr04 << str_hcsr04;
 
     std::cout << "## Write to stepperL" << std::endl;
     ofs_stepperL << str_stepperL;
@@ -477,8 +363,8 @@ int testDeviceFiles()
 
     std::cout << "## Close all descriptors" << std::endl;
 
-    ofs_st7565.close();
-    ofs_hcsr04.close();
+    // ofs_st7565.close();
+    // ofs_hcsr04.close();
     ofs_stepperL.close();
     ofs_stepperR.close();
     std::cout << "## leave " << __FUNCTION__ << std::endl;

@@ -11,7 +11,7 @@
 #include <nlohmann/json.hpp>
 
 #define TCP_SOCKET_PORT 12345
-#define TCP_SOCKET_SERVER_IP "192.168.10.39"
+#define TCP_SOCKET_SERVER_IP "192.168.5.10"
 #define JSON_BUFFERSIZE_CLIENT 256
 
 #pragma pack(push,1)

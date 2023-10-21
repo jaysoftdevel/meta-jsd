@@ -65,11 +65,20 @@ int main(int argc, char const *argv[])
         int bytes_sent = send(sock, &dd, sizeof(dd), 0);
         if (bytes_sent == -1)
         {
-            std::cerr << "Failed to send data." << std::endl;
+            std::cerr << "Failed to send raw data." << std::endl;
             break;
         }
         total_sent_bytes += bytes_sent;
         std::cout << "Sent raw datagram with length of " << bytes_sent << " and " << total_sent_bytes << " in total #" << std::endl;
+
+        bytes_sent = send(sock, &datagram, sizeof(datagram), 0);
+        if (bytes_sent == -1)
+        {
+            std::cerr << "Failed to send json data." << std::endl;
+            break;
+        }
+        total_sent_bytes += bytes_sent;
+        std::cout << "Sent json datagram with length of " << bytes_sent << " and " << total_sent_bytes << " in total #" << std::endl;
 
         int bytes_received = recv(sock, buffer, sizeof(buffer), 0);
         if (bytes_received == -1)

@@ -98,12 +98,13 @@ int main(int argc, char const *argv[])
             nlohmann::json json = dd.serialize_json();
             std::cout << "## done processing incoming datagram" << std::endl;
             // send JSON datagram
-            int bytes_sent = send(client_sock, to_string(json).c_str(), to_string(json).length(), 0);
+            int bytes_sent = send(client_sock, &json, json.size(), 0);
             if (bytes_sent == -1)
             {
                 std::cerr << "Failed to send back json data." << std::endl;
                 break;
             }
+            std::cout << "## sent " << json.size() << " bytes json datagra" << std::endl;
             std::cout << "### Total received data: " << dataRec << " bytes #" << std::endl;
         }
 

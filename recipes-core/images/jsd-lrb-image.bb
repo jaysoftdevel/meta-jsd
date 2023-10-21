@@ -27,6 +27,7 @@ CORE_OS = " \
     rootbot \
     tester \
     tester-client \
+    tester-stepper \
     openssh \
     openssh-keygen \
 "
