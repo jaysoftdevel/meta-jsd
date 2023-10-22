@@ -2,7 +2,7 @@
 
 using namespace std;
 
-#define JSON_BUFFERSIZE_CLIENT 256;
+static int fd_st7565;
 
 int main(int argc, char const *argv[])
 {
@@ -62,6 +62,24 @@ int main(int argc, char const *argv[])
         socklen_t client_addr_len = sizeof(client_addr);
         client_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
 
+        std::cout << "Opening display device" << std::endl;
+        fd_st7565 = open("/dev/st7565", O_RDWR | O_NONBLOCK | O_CLOEXEC);
+        if (fd_st7565 < 0){
+            std::cerr << "Failed to open display. " << std::to_string(fd_st7565) << " #" << std::endl;
+            close(sock);
+            return 1;
+        }
+        std::cout << "## Clear display" << std::endl;
+        if (ioctl(fd_st7565, IOCTL_LCD_CLEAR_ALL, NULL) != 0)
+        {
+            std::cout << "## Clearing display failed" << std::endl;
+            return -4;
+        }
+        if (ioctl(fd_st7565, IOCTL_LCD_SETUP_WORKING_MODE, NULL) != 0)
+        {
+            std::cout << "## Set working mode failed" << std::endl;
+            return -5;
+        }
         std::cout << "Incoming connection accepted." << std::endl;
         // accept incoming connection
         if (client_sock == -1)
@@ -72,7 +90,7 @@ int main(int argc, char const *argv[])
         }
         while (true)
         {
-            int bytes_received = recv(client_sock, buffer, sizeof(buffer), 0);
+            int bytes_received = recv(client_sock, &buffer, sizeof(buffer), 0);
             if (bytes_received == -1)
             {
                 std::cerr << "Failed to receive data." << std::endl;
@@ -95,6 +113,14 @@ int main(int argc, char const *argv[])
             dataRec += bytes_received;
             std::string datagram(buffer, bytes_received);
             DisplayData dd = DisplayData::deserialize(datagram);
+            std::cout << "## Test IOCTL with DisplayData" << std::endl;
+            // TODO: read dd from devices!
+            if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &dd) != 0)
+            {
+                std::cout << "## Switch to working mode failed" << std::endl;
+                return -6;
+            }
+            
             nlohmann::json json = dd.serialize_json();
             std::cout << "## done processing incoming datagram" << std::endl;
             // send JSON datagram

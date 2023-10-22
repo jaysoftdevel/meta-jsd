@@ -1,0 +1,13 @@
+# disable unwanted services at startup
+PACKAGECONFIG_remove += "backlight"
+PACKAGECONFIG_remove += "cryptsetup"
+PACKAGECONFIG_remove += "gcrypt"
+PACKAGECONFIG_remove += "hibernate"
+PACKAGECONFIG_remove += "nss"
+PACKAGECONFIG_remove += "nss-mymachines"
+PACKAGECONFIG_remove += "nss-resolve"
+PACKAGECONFIG_remove += "randomseed"
+PACKAGECONFIG_remove += "resolved"
+PACKAGECONFIG_remove += "timedated"
+PACKAGECONFIG_remove += "timesyncd"
+PACKAGECONFIG_remove += "valgrind"
