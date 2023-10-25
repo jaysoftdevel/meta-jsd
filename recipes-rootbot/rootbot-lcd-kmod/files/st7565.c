@@ -276,7 +276,7 @@ void lcd_update_display_data(DisplayData dd)
 #endif
 	// getting connection status
 	snprintf(buffer, 4, "%4d", dd.connectionStatus.ping);
-	lcd_ascii5x7_string(7, 1 + 5 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(7, 1 + 6 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 9 CS: %d\n", __FUNCTION__, dd.connectionStatus.connectionStatus);
 #endif
@@ -323,11 +323,26 @@ long st7565_control(struct file *f, unsigned int control, unsigned long value)
 	}
 	else if (control == IOCTL_LCD_WORKING_MODE)
 	{
-		static DisplayData dd;
-		raw_copy_from_user(&dd, (void *)value, sizeof(DisplayData));
+		DisplayData dd;
+		memset(&dd, 0, sizeof(DisplayData));
+		printk(
+			"[%s] Display values1: FL %x FC %x FR %x RL %x RR %x\nPing %x conStat %x\nML %x MR %x\ncurrentLoad %x\n", __FUNCTION__,
+			dd.distanceSensors.distFrontLeft,
+			dd.distanceSensors.distFrontCenter,
+			dd.distanceSensors.distFrontRight,
+			dd.distanceSensors.distRearLeft,
+			dd.distanceSensors.distRearRight, dd.connectionStatus.ping,
+			dd.connectionStatus.connectionStatus,
+			dd.motorStatus.positionLeft, dd.motorStatus.positionRight,
+			dd.currentLoad);
+		//raw_copy_from_user(&dd, (void *) value, sizeof(DisplayData));
+		//char dd[20]={0};
+		if(copy_from_user(&dd,(DisplayData __user*) value, sizeof(DisplayData))){
+			printk("[%s] failed to copy from user space...");
+		}
 #ifdef DEBUG
 		printk(
-			"[%s] Display values: FL %x FC %x FR %x RL %x RR %x\nPing %x conStat %x\nML %x MR %x\ncurrentLoad %x\n", __FUNCTION__,
+			"[%s] Display values2: FL %x FC %x FR %x RL %x RR %x\nPing %x conStat %x\nML %x MR %x\ncurrentLoad %x\n", __FUNCTION__,
 			dd.distanceSensors.distFrontLeft,
 			dd.distanceSensors.distFrontCenter,
 			dd.distanceSensors.distFrontRight,

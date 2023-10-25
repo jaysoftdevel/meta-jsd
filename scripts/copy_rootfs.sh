@@ -1,6 +1,7 @@
 #!/bin/bash
 
-MACHINE=beaglebone
+#MACHINE=beaglebone
+MACHINE=rootbot-bbb
 REL_SRC_DIR=../../build/tmp/deploy/images/${MACHINE}
 
 if [ "x${1}" = "x" ]; then

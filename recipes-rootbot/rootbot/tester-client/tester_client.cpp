@@ -86,9 +86,13 @@ int main(int argc, char const *argv[])
             std::cerr << "Failed to receive data." << std::endl;
             break;
         }
-        std::string json(buffer, sizeof(buffer));
-        total_received_bytes += json.length();
-        std::cout << "Received json data with size: " << json.length() << " and " << total_received_bytes << " in total: " << json << " #" << std::endl;
+
+        std::string json_str(buffer, bytes_received);
+        nlohmann::json json;
+        dd = dd.deserialize(buffer);
+        total_received_bytes += json_str.length();
+        std::cout << "Received json data with size: " << json_str.length() << " and " << total_received_bytes << " in total: " << json_str << " #" << std::endl;
+
         sleep(0.1);
     }
     close(sock);

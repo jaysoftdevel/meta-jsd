@@ -5,7 +5,7 @@
             "name": "PyTesterCLient",
             "type": "python",
             "request": "launch",
-            "program": "rootbot/python-tester-client/python-tester-client.py",
+            "program": "rootbot/python-tester-client/python-tester-client-gui.py",
             "console": "integratedTerminal"
         },
         {

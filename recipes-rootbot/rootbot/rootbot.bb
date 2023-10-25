@@ -14,7 +14,7 @@ SYSTEMD_SERVICE_${PN} = "${PN}.service"
 #SRC_URI = " \
 #	file://CMakeLists.txt \
 #	file://rootbot.cpp \
-#	file://rootbot.h \
+#	file://rootbot.hpp \
 #	file://rootbot.service \
 #"
 

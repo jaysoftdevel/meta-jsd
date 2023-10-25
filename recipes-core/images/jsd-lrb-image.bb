@@ -26,7 +26,6 @@ IMAGE_INSTALL += " \
 CORE_OS = " \
     rootbot \
     tester \
-    tester-client \
     tester-stepper \
     openssh \
     openssh-keygen \

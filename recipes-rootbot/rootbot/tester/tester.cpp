@@ -1,66 +1,11 @@
+#include "rootbot.h"
+
 #include <iostream>
-#include <fstream>
 #include <thread>
 
 #include <unistd.h>
 #include <sys/types.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
 #include <signal.h>
-
-// #define DEBUG
-
-#define TEST_IO_THING 3
-#define LOAD_STAT_OFFSET 2
-
-#define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
-#define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
-#define IOCTL_LCD_CLEAR_ALL _IOW(6, 3, unsigned long)
-#define IOCTL_LCD_SETUP_WORKING_MODE _IOW(6, 4, unsigned long)
-#define IOCTL_LCD_INTRO _IOW(6, 5, unsigned long)
-
-#define IOCTL_HCSR04_FL_TRIGGER _IOW(7, 0, unsigned long)
-#define IOCTL_HCSR04_FC_TRIGGER _IOW(7, 1, unsigned long)
-#define IOCTL_HCSR04_FR_TRIGGER _IOW(7, 2, unsigned long)
-#define IOCTL_HCSR04_RL_TRIGGER _IOW(7, 3, unsigned long)
-#define IOCTL_HCSR04_RR_TRIGGER _IOW(7, 4, unsigned long)
-
-#define IOCTL_STEPPER_L_STEP_FWD _IOW(8, 0, unsigned long)
-#define IOCTL_STEPPER_L_STEP_REV _IOW(8, 1, unsigned long)
-#define IOCTL_STEPPER_L_STEP_NONE _IOW(8, 2, unsigned long)
-
-#define IOCTL_STEPPER_R_STEP_FWD _IOW(9, 0, unsigned long)
-#define IOCTL_STEPPER_R_STEP_REV _IOW(9, 1, unsigned long)
-#define IOCTL_STEPPER_R_STEP_NONE _IOW(9, 2, unsigned long)
-
-typedef struct
-{
-    unsigned char distFrontLeft;
-    unsigned char distFrontCenter;
-    unsigned char distFrontRight;
-    unsigned char distRearLeft;
-    unsigned char distRearRight;
-} DistanceSensors;
-
-typedef struct
-{
-    unsigned int ping;
-    bool connectionStatus;
-} ConnectionStatus;
-
-typedef struct
-{
-    unsigned short positionLeft;
-    unsigned short positionRight;
-} MotorStatus;
-
-typedef struct
-{
-    DistanceSensors distanceSensors;
-    ConnectionStatus connectionStatus;
-    MotorStatus motorStatus;
-    unsigned char currentLoad;
-} DisplayData;
 
 std::thread t_display;
 std::thread t_hcsr04;
