@@ -4,9 +4,11 @@
 
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <iostream>
 
 class ConnectionStatus {
-private:
+// set to private in future!
+public:
     unsigned int ping = 0x123456u;
     bool connectionStatus = false;
 
@@ -14,7 +16,8 @@ public:
     unsigned int getPing() const;
     void setPing(unsigned int value);
     bool getConnectionStatus() const;
-    void setConnectionStatus(bool value);
+    void setConnectionEnabled(bool value);
+    void setConnectionStatus(unsigned int ping, std::string linkup);
 
     nlohmann::json serialize_json() const;
     std::vector<uint8_t> serialize_bytes() const;

@@ -3,14 +3,15 @@ import tkinter as tk
 from tkinter import *
 import threading
 import socket
+import json
 
 
 class RootbotWidget(tk.Frame):
     PORT = 12345
-    # ADDR = '192.168.5.10'
-    # HOST = '192.168.5.1'
-    ADDR = 'localhost'
-    HOST = 'localhost'
+    ADDR = '192.168.5.10'
+    HOST = '192.168.5.1'
+    #ADDR = 'localhost'
+    #HOST = 'localhost'
 
     def __init__(self, master=None, **kw):
         super(RootbotWidget, self).__init__(master, **kw)
@@ -84,7 +85,8 @@ class RootbotWidget(tk.Frame):
         self.entryLoad.configure(width=5)
         self.entryLoad.grid(column=5, row=6)
         self.entryLoad.insert(END,"0")
-        self.ckbCS = tk.Checkbutton(self.DisplayData)
+        self.ckbCS_state = tk.BooleanVar()
+        self.ckbCS = tk.Checkbutton(self.DisplayData, variable=self.ckbCS_state)
         self.ckbCS.configure(text=' CS', width=5)
         self.ckbCS.grid(column=1, row=6)
         self.btnSend = tk.Button(self.DisplayData, text="Send", command=lambda: self.send_data())
@@ -130,28 +132,28 @@ class RootbotWidget(tk.Frame):
         self.ckbMotor.configure(text='Motor live')
         self.ckbMotor.grid(column=0, row=2, sticky="w")
         self.DisplayData.grid(column=0, row=1)
-        frame3 = tk.Frame(self)
-        frame3.configure(height=200, width=200)
-        self.txtResponse = tk.Text(frame3)
-        self.txtResponse.configure(height=10, width=50)
+        self.ResponseFrame = tk.Frame(self)
+        self.ResponseFrame.configure(height=200, width=200)
+        self.txtResponse = tk.Text(self.ResponseFrame)
+        self.txtResponse.configure(height=20, width=80)
         self.txtResponse.pack(side="top")
-        frame3.grid(column=0, row=2)
-        frame4 = tk.Frame(self)
-        frame4.configure(height=200, width=200)
-        self.ckbLive = tk.Checkbutton(frame4)
+        self.ResponseFrame.grid(column=0, row=2)
+        self.LiveFrame = tk.Frame(self)
+        self.LiveFrame.configure(height=200, width=200)
+        self.ckbLive = tk.Checkbutton(self.LiveFrame)
         self.ckbLive.configure(text='Enable live mode')
         self.ckbLive.grid(column=0, row=0, sticky="w")
-        self.sclInterval = tk.Scale(frame4)
+        self.sclInterval = tk.Scale(self.LiveFrame)
         self.sclInterval.configure(
             from_=5,
             label='Interval (ms)',
             orient="horizontal",
             to=5000)
         self.sclInterval.grid(column=2, row=0, sticky="e")
-        self.lblSpacer = tk.Label(frame4)
+        self.lblSpacer = tk.Label(self.LiveFrame)
         self.lblSpacer.configure(width=25)
         self.lblSpacer.grid(column=1, row=0)
-        frame4.grid(column=0, row=0)
+        self.LiveFrame.grid(column=0, row=0)
         self.configure(height=320, width=480)
         self.pack(side="top")
     
@@ -192,13 +194,11 @@ class RootbotWidget(tk.Frame):
                 while True:
                     conn, addr = s.accept()
                     with conn:
-                        print('Receiver Connected by', addr)
+                        print(f'Receiver Connected by {addr}')
                         while True:
                             data = conn.recv(1024)
                             if not data: break
-                            print("loopback data: " + str(data))
-                            conn.send(bytes(str(data).replace(
-                                '\'', "") + ' returned', 'utf-8'))
+                            print(f"Received data: {str(data)}")
                 s.close()
                 s = None
         except Exception as e:
@@ -207,17 +207,18 @@ class RootbotWidget(tk.Frame):
             s = None
 
     def send_data(self):
-        data = self.ckbCS.getint(0)
-        print()
-        print(self.ckbCS_state)
-        data = [[self.entryFL.get(), self.entryFC.get(), self.entryFR.get(), self.entryRL.get(), self.entryRR.get()], [
-            self.entryPing.get(), self.ckbCS_state.get()], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()]
+        data = json.dumps([[self.entryFL.get(), self.entryFC.get(), self.entryFR.get(), self.entryRL.get(), self.entryRR.get()], [
+            self.entryPing.get(), self.ckbCS_state.get()], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()])
+        #self.txtResponse.delete(0, END)
+        self.txtResponse.insert(END, "\nSending: " + data)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((RootbotWidget.ADDR, RootbotWidget.PORT))
-            s.send(data)
-            print("data sent")
-            recv_data = s.recv(1024)
-            widget.insert(END, "\n" + bytes(recv_data).hex())
+            try:
+                s.connect((RootbotWidget.ADDR, RootbotWidget.PORT))
+                s.send(data.encode('utf-8'))
+                recv_data = s.recv(1024)
+                self.txtResponse.insert(END, "\n\n" + bytes(recv_data).hex())
+            except Exception as e:
+                print("Error: Cannot send data to counterpart: \n   " + str(e))
         s.close()
         s=None
 

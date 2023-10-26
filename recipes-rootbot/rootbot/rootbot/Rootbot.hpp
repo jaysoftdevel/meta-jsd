@@ -52,7 +52,8 @@ namespace jsd
 {
     class Rootbot
     {
-    private:
+    // make private later!
+    public:
         DistanceSensors distanceSensors;
         ConnectionStatus connectionStatus;
         MotorStatus motorStatus;

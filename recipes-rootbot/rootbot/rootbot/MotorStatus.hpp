@@ -4,15 +4,18 @@
 
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <iostream>
 
 class MotorStatus {
-private:
+// make private in future!
+public:
     unsigned short positionLeft = 0xABu;
     unsigned short positionRight = 0xCDu;
 
 public:
     unsigned short getPositionLeft() const;
     unsigned short getPositionRight() const;
+    void setMotorStatus(unsigned short ML, unsigned short MR);
 
     nlohmann::json serialize_json() const;
     std::vector<uint8_t> serialize_bytes() const;

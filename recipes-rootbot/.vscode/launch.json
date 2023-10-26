@@ -63,7 +63,7 @@
             "request": "launch",
             "program": "/media/junske/yocto/Yocto/poky-rocko_bbb/meta-jsd/recipes-rootbot/rootbot/rootbot/build/rootbot",
             "args": [],
-            "stopAtEntry": true,
+            "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
             "console": "integratedTerminal",

@@ -33,3 +33,17 @@ ConnectionStatus ConnectionStatus::deserialize_json(const nlohmann::json& j) {
     }
     return status;
 }
+
+void ConnectionStatus::setConnectionStatus(unsigned int ping, std::string linkup){
+    std::cout << "set conncetion status: " << std::endl;
+}
+void ConnectionStatus::setPing(unsigned int value){
+
+}
+void ConnectionStatus::setConnectionEnabled(bool value){
+
+}
+
+bool ConnectionStatus::getConnectionStatus() const{
+
+}

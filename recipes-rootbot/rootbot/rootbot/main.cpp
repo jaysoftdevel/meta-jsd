@@ -58,15 +58,16 @@ int main(int argc, char const *argv[])
             return 1;
         }
 
-        cout << "Waiting for incoming connections..." << endl;
+        cout << "## Waiting for incoming connections..." << endl;
         int client_sock;
         struct sockaddr_in client_addr;
         socklen_t client_addr_len = sizeof(client_addr);
         client_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
 
-        cout << "Opening display device" << endl;
+        cout << "## Opening display device" << endl;
         fd_st7565 = open("/dev/st7565", O_RDWR | O_NONBLOCK | O_CLOEXEC);
-        if (fd_st7565 < 0){
+        if (fd_st7565 < 0)
+        {
             cerr << "Failed to open display. " << to_string(fd_st7565) << " #" << endl;
             close(sock);
             return 1;
@@ -82,7 +83,6 @@ int main(int argc, char const *argv[])
             cout << "## Set working mode failed" << endl;
             return -5;
         }
-        cout << "Incoming connection accepted." << endl;
         // accept incoming connection
         if (client_sock == -1)
         {
@@ -90,6 +90,8 @@ int main(int argc, char const *argv[])
             close(sock);
             return 1;
         }
+
+        cout << "## Incoming connection accepted." << endl;
         while (true)
         {
             int bytes_received = recv(client_sock, &buffer, sizeof(buffer), 0);
@@ -103,7 +105,7 @@ int main(int argc, char const *argv[])
                 // connection inactive, waiting...
                 client_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
 
-                cout << "New incoming connection accepted." << endl;
+                cout << "## New incoming connection accepted." << endl;
                 // accept incoming connection
                 if (client_sock == -1)
                 {
@@ -112,27 +114,96 @@ int main(int argc, char const *argv[])
                     return 1;
                 }
             }
-            dataRec += bytes_received;
-            cout << "## Test IOCTL with DisplayData" << endl;
+            else if (bytes_received > 0)
+            {
+                cout << "## Data received:\n";
+                buffer[bytes_received] = '\0';
+                for (int i = 0; i <= bytes_received; i++)
+                {
+                    cout << to_string(i) << ": " << buffer[i] << " # ";
+                }
+                cout << endl;
 
-            // TODO: read dd from devices!
-            auto data = rb.serialize_bytes();
-            if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &data[0]) != 0)
-            {
-                cout << "## Switch to working mode failed" << endl;
-                return -6;
+                nlohmann::json recData = nlohmann::json::parse(buffer);
+                try
+                {
+                    if (recData.is_array())
+                    {
+                        cout << "is array" << endl;
+                        for (const auto &item : recData)
+                        {
+                            cout << "item: " << item << " with size " << item.size() << endl;
+                            if (item.is_array())
+                            {
+                                cout << "is array again" << endl;
+                                // DD
+                                if (item.size() == 5) // distance sensors
+                                {
+                                    cout << "caught DD" << endl;
+                                    for (size_t i=0; i < item.size(); ++i)
+                                    {
+                                        cout << "DD item: " << item[i] << endl;
+                                        rb.distanceSensors.setDistanceSensor(i, (unsigned char)stoi(item[i].get<std::string>()));
+                                    }
+                                }
+                                else if (item.size() == 2 && item[1].is_boolean()) // connection status
+                                {
+                                    cout << "caught CS" << endl;
+                                    // for (size_t i=0; i < item.size(); ++i)
+                                    // {
+                                        rb.connectionStatus.setConnectionStatus((unsigned int)stoi(item[0].get<std::string>()), item[1].get<std::string>());
+                                        cout << "CS item0: " << item[0] << " and CS item1: " << item[1]<< endl;
+                                    // }
+                                }
+                                else if (item.size() == 2 && item[1].is_string()) // motor status
+                                {
+                                    cout << "caught MC" << endl;
+
+
+                                        rb.motorStatus.setMotorStatus((unsigned short)stoi(item[0].get<std::string>()), (unsigned short)stoi(item[1].get<std::string>()));
+                                        cout << "MC item1: " << item[0] << " and MC item2: " << item[1] << endl;
+
+                                }
+                            }
+                            else if (item.is_string())
+                            {
+                                cout << "caught Load" << endl;
+                                cout << "load: " << item << endl;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        cout << "json type not detected" << endl;
+                    }
+                }
+                catch (const exception &e)
+                {
+                    cerr << "Error parsing JSON: " << e.what() << endl;
+                }
+
+                dataRec += bytes_received;
+                cout << "## Test IOCTL with DisplayData" << endl;
+
+                // TODO: read dd from devices!
+                auto data = rb.serialize_bytes();
+                if (ioctl(fd_st7565, IOCTL_LCD_WORKING_MODE, &data[0]) != 0)
+                {
+                    cout << "## Switch to working mode failed" << endl;
+                    return -6;
+                }
+
+                cout << "## sending data with size " << rb.serialize_bytes().size() << " back" << endl;
+                int bytes_sent = send(client_sock, rb.serialize_bytes().data(), rb.serialize_bytes().size(), 0);
+
+                if (bytes_sent == -1)
+                {
+                    cerr << "Failed to send back json data." << endl;
+                    break;
+                }
+                cout << "## sent " << rb.serialize_bytes().size() << " bytes datagram" << endl;
+                cout << "### Total received data: " << dataRec << " bytes #" << endl;
             }
-            
-            cout << "## sending data with size " << rb.serialize_bytes().size() << " back" << endl;
-            int bytes_sent = send(client_sock, rb.serialize_bytes().data(), rb.serialize_bytes().size(), 0);
-            
-            if (bytes_sent == -1)
-            {
-                cerr << "Failed to send back json data." << endl;
-                break;
-            }
-            cout << "## sent " << rb.serialize_bytes().size() << " bytes datagram" << endl;
-            cout << "### Total received data: " << dataRec << " bytes #" << endl;
         }
 
         // close client socket and server socket

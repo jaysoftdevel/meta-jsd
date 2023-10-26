@@ -3,9 +3,11 @@
 
 #include <vector>
 #include <nlohmann/json.hpp>
+#include <iostream>
 
 class DistanceSensors {
-private:
+// make privte later!
+public:
     unsigned char distFrontLeft = 0x12u;
     unsigned char distFrontCenter = 0x34u;
     unsigned char distFrontRight = 0x56u;
@@ -18,6 +20,7 @@ public:
     unsigned char getDistFrontRight() const;
     unsigned char getDistRearRight() const;
     unsigned char getDistRearLeft() const;
+    void setDistanceSensor(int pos, unsigned char value);
 
     nlohmann::json serialize_json() const;
     std::vector<uint8_t> serialize_bytes() const;
