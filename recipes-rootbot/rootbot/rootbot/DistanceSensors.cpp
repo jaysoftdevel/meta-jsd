@@ -80,32 +80,16 @@ DistanceSensors DistanceSensors::deserialize_json(const nlohmann::json &j)
     return sensors;
 }
 
-void DistanceSensors::setDistanceSensor(int pos, unsigned char value)
+void DistanceSensors::setDistanceSensors(unsigned char FL, unsigned char FC, unsigned char FR, unsigned char RL, unsigned char RR)
 {
-    std::cout << "Set DD " << std::hex << pos << " with val " << value << " #" << std::endl;
-    switch (pos)
-    {
-    case 0:
-        std::cout << "Set FL" << std::endl;
-        distFrontLeft = value;
-        break;
-    case 1:
-        std::cout << "Set FC" << std::endl;
-        distFrontCenter = value;
-        break;
-    case 2:
-        std::cout << "Set FR" << std::endl;
-        distFrontRight = value;
-        break;
-    case 3:
-        std::cout << "Set RL" << std::endl;
-        distRearLeft = value;
-        break;
-    case 4:
-        std::cout << "Set RR" << std::endl;
-        distRearRight = value;
-        break;
-    default:
-        break;
-    }
+        std::cout << "Set FL: " << +FL << std::endl;
+        distFrontLeft = FL;
+        std::cout << "Set FC: " << +FC <<std::endl;
+        distFrontCenter = FC;
+        std::cout << "Set FR: " << +FR << std::endl;
+        distFrontRight = FR;
+        std::cout << "Set RL: " << +RL << std::endl;
+        distRearLeft = RL;
+        std::cout << "Set RR: " << +RR << std::endl;
+        distRearRight = RR;
 }

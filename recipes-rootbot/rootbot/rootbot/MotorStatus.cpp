@@ -43,7 +43,7 @@ MotorStatus MotorStatus::deserialize_json(const nlohmann::json& j) {
 }
 
 void MotorStatus::setMotorStatus(unsigned short ML, unsigned short MR){
-    std::cout << "set motor status" << std::endl;
+    std::cout << "set motor status ML: " << std::hex << ML << " MR: " << MR << std::endl;
     positionLeft = ML;
     positionRight = MR;
     return;

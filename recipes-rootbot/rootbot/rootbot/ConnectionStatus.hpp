@@ -17,7 +17,7 @@ public:
     void setPing(unsigned int value);
     bool getConnectionStatus() const;
     void setConnectionEnabled(bool value);
-    void setConnectionStatus(unsigned int ping, std::string linkup);
+    void setConnectionStatus(unsigned int ping, bool linkup);
 
     nlohmann::json serialize_json() const;
     std::vector<uint8_t> serialize_bytes() const;

@@ -9,8 +9,8 @@
 class MotorStatus {
 // make private in future!
 public:
-    unsigned short positionLeft = 0xABu;
-    unsigned short positionRight = 0xCDu;
+    unsigned short positionLeft = 0;
+    unsigned short positionRight = 0;
 
 public:
     unsigned short getPositionLeft() const;

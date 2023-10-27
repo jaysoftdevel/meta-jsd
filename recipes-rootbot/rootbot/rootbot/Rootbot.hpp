@@ -23,6 +23,7 @@
 #define TCP_SOCKET_PORT 12345
 #define TCP_SOCKET_SERVER_IP "192.168.5.10"
 #define JSON_BUFFERSIZE_CLIENT 256
+#define RX_BUFFER_SIZE 64
 
 #define IOCTL_LCD_WORKING_MODE _IOW(6, 1, unsigned long)
 #define IOCTL_LCD_PIXEL_MODE _IOW(6, 2, unsigned long)
@@ -57,7 +58,7 @@ namespace jsd
         DistanceSensors distanceSensors;
         ConnectionStatus connectionStatus;
         MotorStatus motorStatus;
-        unsigned char currentLoad=0xDDu;
+        unsigned char currentLoad=0;
 
     public:
         void initRootbot()

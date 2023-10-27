@@ -8,11 +8,11 @@
 class DistanceSensors {
 // make privte later!
 public:
-    unsigned char distFrontLeft = 0x12u;
-    unsigned char distFrontCenter = 0x34u;
-    unsigned char distFrontRight = 0x56u;
-    unsigned char distRearLeft = 0x78u;
-    unsigned char distRearRight = 0x90u;
+    unsigned char distFrontLeft = 0;
+    unsigned char distFrontCenter = 0;
+    unsigned char distFrontRight = 0;
+    unsigned char distRearLeft = 0;
+    unsigned char distRearRight = 0;
 
 public:
     unsigned char getDistFrontLeft() const;
@@ -20,7 +20,7 @@ public:
     unsigned char getDistFrontRight() const;
     unsigned char getDistRearRight() const;
     unsigned char getDistRearLeft() const;
-    void setDistanceSensor(int pos, unsigned char value);
+    void setDistanceSensors(unsigned char FL, unsigned char FC, unsigned char FR, unsigned char RL, unsigned char RR);
 
     nlohmann::json serialize_json() const;
     std::vector<uint8_t> serialize_bytes() const;

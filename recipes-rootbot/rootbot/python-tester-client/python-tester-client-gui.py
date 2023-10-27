@@ -10,8 +10,8 @@ class RootbotWidget(tk.Frame):
     PORT = 12345
     ADDR = '192.168.5.10'
     HOST = '192.168.5.1'
-    #ADDR = 'localhost'
-    #HOST = 'localhost'
+    # ADDR = 'localhost'
+    # HOST = 'localhost'
 
     def __init__(self, master=None, **kw):
         super(RootbotWidget, self).__init__(master, **kw)
@@ -135,7 +135,7 @@ class RootbotWidget(tk.Frame):
         self.ResponseFrame = tk.Frame(self)
         self.ResponseFrame.configure(height=200, width=200)
         self.txtResponse = tk.Text(self.ResponseFrame)
-        self.txtResponse.configure(height=20, width=80)
+        self.txtResponse.configure(height=20, width=80,state="disabled")
         self.txtResponse.pack(side="top")
         self.ResponseFrame.grid(column=0, row=2)
         self.LiveFrame = tk.Frame(self)
@@ -199,6 +199,9 @@ class RootbotWidget(tk.Frame):
                             data = conn.recv(1024)
                             if not data: break
                             print(f"Received data: {str(data)}")
+                            if [ RootbotWidget.HOST == 'localhost' ]:
+                                print("Is local!")
+                                s.send(data)
                 s.close()
                 s = None
         except Exception as e:
@@ -207,16 +210,25 @@ class RootbotWidget(tk.Frame):
             s = None
 
     def send_data(self):
+        if(self.ckbCS_state.get() == False):
+            print("FALSE!!!")
+        elif(self.ckbCS_state.get() == True):
+            print("TRUE!!!")
         data = json.dumps([[self.entryFL.get(), self.entryFC.get(), self.entryFR.get(), self.entryRL.get(), self.entryRR.get()], [
-            self.entryPing.get(), self.ckbCS_state.get()], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()])
-        #self.txtResponse.delete(0, END)
+            self.entryPing.get(), "0" if self.ckbCS_state.get() == False else "1"], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()]).replace(" ", "")
+        self.txtResponse.config(state="normal")
         self.txtResponse.insert(END, "\nSending: " + data)
+        self.txtResponse.config(state="disabled")
+        
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
                 s.connect((RootbotWidget.ADDR, RootbotWidget.PORT))
                 s.send(data.encode('utf-8'))
                 recv_data = s.recv(1024)
-                self.txtResponse.insert(END, "\n\n" + bytes(recv_data).hex())
+                self.txtResponse.config(state="normal")
+                self.txtResponse.insert(END, "\nReceived: " + bytes(recv_data).hex() + "\n")
+                self.txtResponse.see(tk.END)
+                self.txtResponse.config(state="disabled")
             except Exception as e:
                 print("Error: Cannot send data to counterpart: \n   " + str(e))
         s.close()

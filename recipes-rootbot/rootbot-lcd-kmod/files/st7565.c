@@ -224,7 +224,7 @@ void lcd_setup_working_mode_frame(void)
 	lcd_ascii5x7_string(6, 1 * TOKENSIZE, "ML");
 	lcd_ascii5x7_string(6, 8 * TOKENSIZE, "MR");
 	lcd_ascii5x7_string(7, 1 * TOKENSIZE, "Ping");
-	lcd_ascii5x7_string(7, 10 * TOKENSIZE, "CS");
+	lcd_ascii5x7_string(7, 11 * TOKENSIZE, "CS");
 	lcd_ascii5x7_string(0, 1 * TOKENSIZE, "Load");
 	// credits!
 	lcd_ascii5x7_string(2, 5 * TOKENSIZE, "github.com/");
@@ -276,7 +276,7 @@ void lcd_update_display_data(DisplayData dd)
 #endif
 	// getting connection status
 	snprintf(buffer, 4, "%4d", dd.connectionStatus.ping);
-	lcd_ascii5x7_string(7, 1 + 6 * TOKENSIZE, buffer);
+	lcd_ascii5x7_string(7, 1 + 5 * TOKENSIZE, buffer);
 #ifdef DEBUG
 	printk("[%s] printing 9 CS: %d\n", __FUNCTION__, dd.connectionStatus.connectionStatus);
 #endif

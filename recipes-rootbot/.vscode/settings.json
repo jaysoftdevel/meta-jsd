@@ -97,6 +97,7 @@
         "latch": "cpp",
         "ranges": "cpp",
         "span": "cpp",
-        "syncstream": "cpp"
+        "syncstream": "cpp",
+        "*.def": "cpp"
     }
 }

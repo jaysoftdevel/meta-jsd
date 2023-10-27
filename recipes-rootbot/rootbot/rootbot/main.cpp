@@ -1,5 +1,7 @@
 #include "Rootbot.hpp"
 
+#include <chrono>
+
 using namespace std;
 using namespace jsd;
 
@@ -7,8 +9,8 @@ static int fd_st7565;
 
 int main(int argc, char const *argv[])
 {
-    // receive JSON datagram
-    char buffer[1024] = {0};
+    // receive datagram
+    char buffer[RX_BUFFER_SIZE] = {0};
     int dataRec = 0;
     int opt = 1;
     Rootbot rb;
@@ -94,6 +96,7 @@ int main(int argc, char const *argv[])
         cout << "## Incoming connection accepted." << endl;
         while (true)
         {
+            memset(buffer, 0, sizeof(buffer));
             int bytes_received = recv(client_sock, &buffer, sizeof(buffer), 0);
             if (bytes_received == -1)
             {
@@ -116,59 +119,51 @@ int main(int argc, char const *argv[])
             }
             else if (bytes_received > 0)
             {
-                cout << "## Data received:\n";
-                buffer[bytes_received] = '\0';
-                for (int i = 0; i <= bytes_received; i++)
-                {
-                    cout << to_string(i) << ": " << buffer[i] << " # ";
-                }
-                cout << endl;
-
+                // extract data from datagram and marshall to Rootbot datagram
+                cout << "buffer size: " << sizeof(buffer) << " but received " << bytes_received << endl;
+                
                 nlohmann::json recData = nlohmann::json::parse(buffer);
                 try
                 {
                     if (recData.is_array())
                     {
-                        cout << "is array" << endl;
                         for (const auto &item : recData)
                         {
-                            cout << "item: " << item << " with size " << item.size() << endl;
                             if (item.is_array())
                             {
-                                cout << "is array again" << endl;
                                 // DD
                                 if (item.size() == 5) // distance sensors
                                 {
-                                    cout << "caught DD" << endl;
-                                    for (size_t i=0; i < item.size(); ++i)
-                                    {
-                                        cout << "DD item: " << item[i] << endl;
-                                        rb.distanceSensors.setDistanceSensor(i, (unsigned char)stoi(item[i].get<std::string>()));
-                                    }
+                                    rb.distanceSensors.setDistanceSensors((unsigned char)stoi(item[0].get<std::string>()),
+                                                                          (unsigned char)stoi(item[1].get<std::string>()),
+                                                                          (unsigned char)stoi(item[2].get<std::string>()),
+                                                                          (unsigned char)stoi(item[3].get<std::string>()),
+                                                                          (unsigned char)stoi(item[4].get<std::string>()));
                                 }
                                 else if (item.size() == 2 && item[1].is_boolean()) // connection status
                                 {
-                                    cout << "caught CS" << endl;
-                                    // for (size_t i=0; i < item.size(); ++i)
-                                    // {
-                                        rb.connectionStatus.setConnectionStatus((unsigned int)stoi(item[0].get<std::string>()), item[1].get<std::string>());
-                                        cout << "CS item0: " << item[0] << " and CS item1: " << item[1]<< endl;
-                                    // }
+                                    cout << "about to get a bool!" << endl;
+                                    if(stoi(item[1].get<std::string>()) == 1 ){
+                                        cout << "TRUE!" << endl;
+                                    }
+                                    else if(stoi(item[1].get<std::string>()) == 0 ){
+                                        cout << "FALSE!" << endl;
+                                    }
+                                    else{
+                                        cout << "none matched!" << endl;
+                                    }
+                                    //cout << "got a bool? " << to_string(boller) << endl;
+                                    rb.connectionStatus.setConnectionStatus((unsigned int)stoi(item[0].get<std::string>()), stoi(item[1].get<std::string>()) == 1 ? true : false);
                                 }
                                 else if (item.size() == 2 && item[1].is_string()) // motor status
                                 {
-                                    cout << "caught MC" << endl;
-
-
-                                        rb.motorStatus.setMotorStatus((unsigned short)stoi(item[0].get<std::string>()), (unsigned short)stoi(item[1].get<std::string>()));
-                                        cout << "MC item1: " << item[0] << " and MC item2: " << item[1] << endl;
-
+                                    rb.motorStatus.setMotorStatus((unsigned short)stoi(item[0].get<std::string>()), (unsigned short)stoi(item[1].get<std::string>()));
                                 }
                             }
                             else if (item.is_string())
                             {
-                                cout << "caught Load" << endl;
-                                cout << "load: " << item << endl;
+                                cout << "set load: " << item << endl;
+                                rb.currentLoad = (unsigned char) stoi(item.get<std::string>());
                             }
                         }
                     }
@@ -204,6 +199,7 @@ int main(int argc, char const *argv[])
                 cout << "## sent " << rb.serialize_bytes().size() << " bytes datagram" << endl;
                 cout << "### Total received data: " << dataRec << " bytes #" << endl;
             }
+
         }
 
         // close client socket and server socket
