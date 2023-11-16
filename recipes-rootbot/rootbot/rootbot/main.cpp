@@ -23,6 +23,25 @@ int main(int argc, char const *argv[])
         int port = TCP_SOCKET_PORT;
         int backlog = 5;
 
+        cout << "## Opening display device" << endl;
+        fd_st7565 = open("/dev/st7565", O_RDWR | O_NONBLOCK | O_CLOEXEC);
+        if (fd_st7565 < 0)
+        {
+            cerr << "Failed to open display. " << to_string(fd_st7565) << " #" << endl;
+            return -1;
+        }
+        cout << "## Clear display" << endl;
+        if (ioctl(fd_st7565, IOCTL_LCD_CLEAR_ALL, NULL) != 0)
+        {
+            cout << "## Clearing display failed" << endl;
+            return -4;
+        }
+        if (ioctl(fd_st7565, IOCTL_LCD_SETUP_WORKING_MODE, NULL) != 0)
+        {
+            cout << "## Set working mode failed" << endl;
+            return -5;
+        }
+
         // create socket
         int sock = socket(AF_INET, SOCK_STREAM, 0);
         if (sock == -1)
@@ -35,6 +54,7 @@ int main(int argc, char const *argv[])
         if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &opt, sizeof(opt)))
         {
             cerr << "Set socket options error" << endl;
+            close(sock);
             return -1;
         }
 
@@ -66,25 +86,6 @@ int main(int argc, char const *argv[])
         socklen_t client_addr_len = sizeof(client_addr);
         client_sock = accept(sock, (struct sockaddr *)&client_addr, &client_addr_len);
 
-        cout << "## Opening display device" << endl;
-        fd_st7565 = open("/dev/st7565", O_RDWR | O_NONBLOCK | O_CLOEXEC);
-        if (fd_st7565 < 0)
-        {
-            cerr << "Failed to open display. " << to_string(fd_st7565) << " #" << endl;
-            close(sock);
-            return 1;
-        }
-        cout << "## Clear display" << endl;
-        if (ioctl(fd_st7565, IOCTL_LCD_CLEAR_ALL, NULL) != 0)
-        {
-            cout << "## Clearing display failed" << endl;
-            return -4;
-        }
-        if (ioctl(fd_st7565, IOCTL_LCD_SETUP_WORKING_MODE, NULL) != 0)
-        {
-            cout << "## Set working mode failed" << endl;
-            return -5;
-        }
         // accept incoming connection
         if (client_sock == -1)
         {
@@ -142,18 +143,7 @@ int main(int argc, char const *argv[])
                                 }
                                 else if (item.size() == 2 && item[1].is_boolean()) // connection status
                                 {
-                                    cout << "about to get a bool!" << endl;
-                                    if(stoi(item[1].get<std::string>()) == 1 ){
-                                        cout << "TRUE!" << endl;
-                                    }
-                                    else if(stoi(item[1].get<std::string>()) == 0 ){
-                                        cout << "FALSE!" << endl;
-                                    }
-                                    else{
-                                        cout << "none matched!" << endl;
-                                    }
-                                    //cout << "got a bool? " << to_string(boller) << endl;
-                                    rb.connectionStatus.setConnectionStatus((unsigned int)stoi(item[0].get<std::string>()), stoi(item[1].get<std::string>()) == 1 ? true : false);
+                                    rb.connectionStatus.setConnectionStatus((unsigned int)stoi(item[0].get<std::string>()), (bool)item[1].get<bool>());
                                 }
                                 else if (item.size() == 2 && item[1].is_string()) // motor status
                                 {

@@ -1,7 +1,7 @@
 SUMMARY = "A console development image with some C/C++ dev tools"
 LICENSE = "MIT"
 
-IMAGE_FEATURES += "package-management"
+#IMAGE_FEATURES += "package-management"
 IMAGE_LINGUAS = "en-us"
 
 inherit core-image
@@ -13,22 +13,20 @@ IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
 
 IMAGE_INSTALL += " \
-    ${CORE_OS} \
-    ${KERNEL_EXTRA_INSTALL} \
-    ${WIFI_SUPPORT} \
-    ${DEV_INSTALL} \
-    ${EXTRA_TOOLS_INSTALL} \
+	${CORE_OS} \
+	${KERNEL_EXTRA_INSTALL} \
+	${WIFI_SUPPORT} \
+	${DEV_INSTALL} \
+	${DEV_EXTRAS} \
+	${EXTRA_TOOLS_INSTALL} \
+	${EXTRA_TOOLS_INSTALL_PLUS} \
 "
-# ${DEV_EXTRAS} \
-# ${EXTRA_TOOLS_INSTALL} \
-#
+
 
 CORE_OS = " \
     rootbot \
     tester \
     tester-stepper \
-    openssh \
-    openssh-keygen \
 "
 #boot-state \
 #
@@ -37,19 +35,6 @@ CORE_OS = " \
 #DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
 #VIRTUAL-RUNTIME_init_manager = "systemd"
 #VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
-
-#DISTRO_FEATURES = " \
-#    nfs \
-#    ipv4 \
-#    wifi \
-#    systemd \
-#"
-#    kernel-module-st7565 \
-#    kernel-module-hcsr04-gpio \
-#    kernel-module-stepperL \
-#    kernel-module-stepperR \
-#    largefile \
-#
 
 # doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
@@ -76,26 +61,28 @@ DEV_INSTALL = " \
     coreutils \
     cpp \
     cpp-symlinks \
-    diffutils \
-    file \
     g++ \
     g++-symlinks \
     gdb \
     gdbserver \
     gcc \
     gcc-symlinks \
-    gettext \
-    git \
     ldd \
     libstdc++ \
     libstdc++-dev \
     libtool \
+    openssh \
+    openssh-keygen \
+     "
+
+DEV_EXTRAS = " \
+    gettext \
+    git \
+    diffutils \
+    file \
     make \
     perl-modules \
     pkgconfig \
- "
-
-DEV_EXTRAS = " \
     ntp \
     ntp-tickadj \
     zeromq \
@@ -103,34 +90,34 @@ DEV_EXTRAS = " \
  "
 
 EXTRA_TOOLS_INSTALL = " \
-    \
-    opkg \
-    devmem2 \
-    \
+    ethtool \
+    findutils \
+    htop \
+    less \
+    procps \
+    rsync \
+    sysfsutils \
+    util-linux \
+    vim \
+ "
+
+EXTRA_TOOLS_INSTALL_PLUS = " \
     acpid \
     bc \
     bzip2 \
     devmem2 \
     dosfstools \
-    ethtool \
-    findutils \
     i2c-tools \
     iftop \
-    htop \
-    less \
     memtester \
     nano \
     netcat \
-    procps \
-    rsync \
-    sysfsutils \
     tcpdump \
     unzip \
-    util-linux \
-    vim \
     wget \
     zip \
- "
+"
+
 
 TOOLCHAIN_TARGET_TASK += " \
 	kernel-devsrc \
@@ -149,6 +136,8 @@ ROOTFS_POSTPROCESS_COMMAND += " \
 "
 
 export IMAGE_BASENAME = "${PN}"
+
+IMAGE_INSTALL_remove = "packagegroup-base-extended"
 
 #CORE_IMAGE_EXTRA_INSTALL += " kernel-modules"
 #packagegroup-base-wifi 
@@ -171,8 +160,8 @@ export IMAGE_BASENAME = "${PN}"
 #DISTRO_FEATURES_remove = "pulseaudio"
 #DISTRO_FEATURES_remove = "wayland"
 #DISTRO_FEATURES_remove = "x11"
-#
-## To be placed into MACHINE.conf!
+
+# To be placed into MACHINE.conf!
 #MACHINE_FEATUES_remove = "alsa"
 #MACHINE_FEATUES_remove = "alsa-lib"
 #MACHINE_FEATUES_remove = "alsa-state"

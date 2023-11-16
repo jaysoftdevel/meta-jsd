@@ -34,12 +34,12 @@
 			0xB4 0x27 0x0 /* Echo: P8_42 gpio2[11] pin45 GPIO75 in pulldown Mode: 7 */
 
 			/* LCD st7565 panel pins */
-			0x34 0x07 0x0 /* CS: P8_11 gpio1[13] pin 13 GPIO23 out floating Mode: 7 */
-			0x8C 0x07 0x0 /* RST: P8_18 gpio2[1] pin 35 GPIO65 out floating Mode: 7 */
-			0x24 0x07 0x0 /* AP: P8_13 gpio0[23] pin 9 GPIO23 out floating Mode: 7 */
-			0x28 0x07 0x0 /* A0: P8_14 gpio0[26] pin 10 GPIO26 out floating Mode: 7 */
-			0x3C 0x07 0x0 /* CLK: P8_15 gpio1[15] pin 15 GPIO47 out floating Mode: 7 */
-			0x38 0x07 0x0 /* SI: P8_16 gpio1[14] pin 14 GPIO46 out floating Mode: 7 */
+			0x34 0x17 0x0 /* CS: P8_11 gpio1[13] pin 13 GPIO23 out floating Mode: 7 */
+			0x8C 0x17 0x0 /* RST: P8_18 gpio2[1] pin 35 GPIO65 out floating Mode: 7 */
+			0x24 0x17 0x0 /* AP: P8_13 gpio0[23] pin 9 GPIO23 out floating Mode: 7 */
+			0x28 0x17 0x0 /* A0: P8_14 gpio0[26] pin 10 GPIO26 out floating Mode: 7 */
+			0x3C 0x17 0x0 /* CLK: P8_15 gpio1[15] pin 15 GPIO47 out floating Mode: 7 */
+			0x38 0x17 0x0 /* SI: P8_16 gpio1[14] pin 14 GPIO46 out floating Mode: 7 */
 
 			/* Stepper motor Left */
 			0xE0 0x07 0x0 /* North: P8_27 gpio2[22] pin 56 GPIO86 out floating Mode: 7 */

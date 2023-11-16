@@ -1,6 +1,7 @@
 #!/bin/bash
 BUILD_LOCATION="../../build/tmp/deploy/images/rootbot-bbb/"
-IMAGE_NAME="jsd-lrb-image-rootbot-bbb.tar.xz"
+#IMAGE_NAME="jsd-lrb-image-devel-rootbot-bbb.tar.xz"
+IMAGE_NAME="jsd-lrb-image-minimal-rootbot-bbb.tar.xz"
 KERNEL_NAME="zImage"
 DTB_NAME="am335x-boneblack-rootbot.dtb"
 INTERFACE="enx000ec6d96a80"
@@ -15,6 +16,14 @@ sudo /etc/init.d/nfs-kernel-server stop
 
 if [ $# -eq 1 ] && [ $1 == "service" ]
 then
+	echo "### only restarted service"
+	exit
+fi
+
+# get desired image
+if [ ! -e ${BUILD_LOCATION}/${IMAGE_NAME} ]
+then
+	echo "### image ${BUILD_LOCATION}/${IMAGE_NAME} not found!"
 	exit
 fi
 
@@ -43,7 +52,7 @@ sudo chown nobody:nogroup -R ${NFS_DIR}
 sudo chmod 777 -R ${TFTP_DIR}
 echo "## set permissions done..."
 
-echo "## assign ip addrtess and restart nfs and tftp services"
+echo "## ${INTERFACE}: assign ip address and restart nfs and tftp services"
 sync
 sudo ifconfig ${INTERFACE} ${HOST_IP}
 sudo /etc/init.d/tftpd-hpa start

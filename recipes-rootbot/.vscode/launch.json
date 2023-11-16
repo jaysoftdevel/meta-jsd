@@ -80,6 +80,33 @@
             "miDebuggerPath": "/usr/bin/gdb-multiarch",
             "miDebuggerServerAddress": "192.168.5.10:3000",
             "sourceFileMap": {
+                "/usr/src/debug": "/home/root/rootbot",
+                "/usr/include": "/usr/include"
+            }
+        },
+        {
+            "name": "tester GDB debug",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "/media/junske/yocto/Yocto/poky-rocko_bbb/meta-jsd/recipes-rootbot/rootbot/tester/build/tester",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "integratedTerminal",
+            "MIMode": "gdb",
+            "targetArchitecture": "arm64",
+            "preLaunchTask": "",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "miDebuggerPath": "/usr/bin/gdb-multiarch",
+            "miDebuggerServerAddress": "192.168.5.10:3000",
+            "sourceFileMap": {
                 "/usr/src/debug": "/home/root/tester",
                 "/usr/include": "/usr/include"
             }

@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 import tkinter as tk
 from tkinter import *
+from tkinter import ttk
 import threading
 import socket
 import json
@@ -15,6 +16,8 @@ class RootbotWidget(tk.Frame):
 
     def __init__(self, master=None, **kw):
         super(RootbotWidget, self).__init__(master, **kw)
+
+        # Set the DPI explicitly (change the value as needed)
         self.DisplayData = tk.Frame(self)
         self.DisplayData.configure(
             borderwidth=5,
@@ -40,9 +43,9 @@ class RootbotWidget(tk.Frame):
         self.lblML = tk.Label(self.DisplayData)
         self.lblML.configure(text='ML')
         self.lblML.grid(column=2, row=2)
-        self.libMR = tk.Label(self.DisplayData)
-        self.libMR.configure(text='MR')
-        self.libMR.grid(column=4, row=2)
+        self.lblMR = tk.Label(self.DisplayData)
+        self.lblMR.configure(text='MR')
+        self.lblMR.grid(column=4, row=2)
         self.lblPing = tk.Label(self.DisplayData)
         self.lblPing.configure(text='Ping')
         self.lblPing.grid(column=2, row=6)
@@ -113,24 +116,24 @@ class RootbotWidget(tk.Frame):
         self.sclRR = tk.Scale(self.DisplayData, command=self.update_entry_RR)
         self.sclRR.configure(orient="horizontal", tickinterval=127, to=255)
         self.sclRR.grid(column=5, row=5)
-        self.ckbFront = tk.Checkbutton(self.DisplayData)
-        self.ckbFront.configure(text='FronSensors live')
-        self.ckbFront.grid(column=0, row=0, sticky="w")
-        self.ckbRear = tk.Checkbutton(self.DisplayData)
-        self.ckbRear.configure(text='RearSensors live')
-        self.ckbRear.grid(column=0, row=4, sticky="w")
-        self.ckbConnection = tk.Checkbutton(self.DisplayData)
-        self.ckbConnection.configure(text='Connection live')
-        self.ckbConnection.grid(column=0, row=6, sticky="w")
+        # self.ckbFront = tk.Checkbutton(self.DisplayData)
+        # self.ckbFront.configure(text='FronSensors live')
+        # self.ckbFront.grid(column=0, row=0, sticky="w")
+        # self.ckbRear = tk.Checkbutton(self.DisplayData)
+        # self.ckbRear.configure(text='RearSensors live')
+        # self.ckbRear.grid(column=0, row=4, sticky="w")
+        # self.ckbConnection = tk.Checkbutton(self.DisplayData)
+        # self.ckbConnection.configure(text='Connection live')
+        # self.ckbConnection.grid(column=0, row=6, sticky="w")
         self.sclLoad = tk.Scale(self.DisplayData, command=self.update_entry_Load)
         self.sclLoad.configure(orient="horizontal")
         self.sclLoad.grid(column=5, row=7)
         self.sclPing = tk.Scale(self.DisplayData, command=self.update_entry_Ping)
         self.sclPing.configure(orient="horizontal")
         self.sclPing.grid(column=3, row=7)
-        self.ckbMotor = tk.Checkbutton(self.DisplayData)
-        self.ckbMotor.configure(text='Motor live')
-        self.ckbMotor.grid(column=0, row=2, sticky="w")
+        # self.ckbMotor = tk.Checkbutton(self.DisplayData)
+        # self.ckbMotor.configure(text='Motor live')
+        # self.ckbMotor.grid(column=0, row=2, sticky="w")
         self.DisplayData.grid(column=0, row=1)
         self.ResponseFrame = tk.Frame(self)
         self.ResponseFrame.configure(height=200, width=200)
@@ -140,51 +143,124 @@ class RootbotWidget(tk.Frame):
         self.ResponseFrame.grid(column=0, row=2)
         self.LiveFrame = tk.Frame(self)
         self.LiveFrame.configure(height=200, width=200)
-        self.ckbLive = tk.Checkbutton(self.LiveFrame)
+        self.ckbLive_state = tk.BooleanVar()
+        self.ckbLive = tk.Checkbutton(self.LiveFrame, command=self.enable_live, variable=self.ckbLive_state)
         self.ckbLive.configure(text='Enable live mode')
         self.ckbLive.grid(column=0, row=0, sticky="w")
-        self.sclInterval = tk.Scale(self.LiveFrame)
+        self.sclInterval_value = tk.IntVar()
+        self.sclInterval = tk.Scale(self.LiveFrame,variable=self.sclInterval_value)
         self.sclInterval.configure(
             from_=5,
             label='Interval (ms)',
             orient="horizontal",
-            to=5000)
+            to=5000
+            )
+        self.sclInterval.set(1000)
         self.sclInterval.grid(column=2, row=0, sticky="e")
         self.lblSpacer = tk.Label(self.LiveFrame)
         self.lblSpacer.configure(width=25)
         self.lblSpacer.grid(column=1, row=0)
         self.LiveFrame.grid(column=0, row=0)
-        self.configure(height=320, width=480)
+        self.EchoFrame = tk.Frame(self)
+        self.EchoFrame.configure(height=200, width=200)
+        self.EchoFrame.grid(column=0, row=3)
+        self.lblEchoTitle = tk.Label(self.EchoFrame, text="RemoteStatus:       ", relief="sunken", compound="left",padx=10)
+        self.lblEchoTitle.grid(row=0, column=0)
+        self.lblEchoFL = tk.Label(self.EchoFrame)
+        self.lblEchoFL.configure(text='FL')
+        self.lblEchoFL.grid(column=1, row=0)
+        self.lblEchoFC = tk.Label(self.EchoFrame)
+        self.lblEchoFC.configure(text='FC')
+        self.lblEchoFC.grid(column=3, row=0)
+        self.lblEchoFR = tk.Label(self.EchoFrame)
+        self.lblEchoFR.configure(text='FR')
+        self.lblEchoFR.grid(column=5, row=0)
+        self.lblEchoRL = tk.Label(self.EchoFrame)
+        self.lblEchoRL.configure(text='RL')
+        self.lblEchoRL.grid(column=2, row=4)
+        self.lblEchoRR = tk.Label(self.EchoFrame)
+        self.lblEchoRR.configure(text='RR')
+        self.lblEchoRR.grid(column=4, row=4)
+        self.lblEchoML = tk.Label(self.EchoFrame)
+        self.lblEchoML.configure(text='ML')
+        self.lblEchoML.grid(column=2, row=2)
+        self.lilEchoMR = tk.Label(self.EchoFrame)
+        self.lilEchoMR.configure(text='MR')
+        self.lilEchoMR.grid(column=4, row=2)
+        self.lblEchoPing = tk.Label(self.EchoFrame)
+        self.lblEchoPing.configure(text='Ping')
+        self.lblEchoPing.grid(column=2, row=6)
+        self.lblEchoLoad = tk.Label(self.EchoFrame)
+        self.lblEchoLoad.configure(text='Load')
+        self.lblEchoLoad.grid(column=4, row=6)
+        self.sclEchoFL = tk.Scale(self.EchoFrame)
+        self.sclEchoFL.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoFL.grid(column=2, row=1)
+        self.sclEchoFC = tk.Scale(self.EchoFrame)
+        self.sclEchoFC.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoFC.grid(column=4, row=1)
+        self.sclEchoFR = tk.Scale(self.EchoFrame)
+        self.sclEchoFR.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoFR.grid(column=6, row=1)
+        self.sclEchoML = tk.Scale(self.EchoFrame)
+        self.sclEchoML.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoML.grid(column=3, row=3)
+        self.sclEchoMR = tk.Scale(self.EchoFrame)
+        self.sclEchoMR.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoMR.grid(column=5, row=3)
+        self.sclEchoRL = tk.Scale(self.EchoFrame)
+        self.sclEchoRL.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoRL.grid(column=3, row=5)
+        self.sclEchoRR = tk.Scale(self.EchoFrame)
+        self.sclEchoRR.configure(orient="horizontal", tickinterval=127, to=255, state="disabled")
+        self.sclEchoRR.grid(column=5, row=5)
         self.pack(side="top")
-    
+
+    def enable_live(self):
+        live_thread = None
+        if(self.ckbLive_state.get()==True):
+            self.btnSend.config(state="disabled")
+            live_thread = threading.Thread(target=widget.thread_func)
+            live_thread.start()
+        elif(self.ckbLive_state.get()==False):
+            self.btnSend.config(state="normal")
+            evt.set()
+
+    #exit_flag = threading.Event()
+    def thread_func(self):
+        global evt
+        evt = threading.Event()
+        while not evt.wait(timeout=self.sclInterval_value.get()/1000):
+            self.send_data()
+
     def update_entry_FL(self, value):
         self.entryFL.delete(0, END)
-        self.entryFL.insert(END, str(value))    
+        self.entryFL.insert(END, str(value))
     def update_entry_FC(self, value):
         self.entryFC.delete(0, END)
-        self.entryFC.insert(END, str(value))    
+        self.entryFC.insert(END, str(value))
     def update_entry_FR(self, value):
         self.entryFR.delete(0, END)
-        self.entryFR.insert(END, str(value))    
+        self.entryFR.insert(END, str(value))
     def update_entry_RL(self, value):
         self.entryRL.delete(0, END)
-        self.entryRL.insert(END, str(value))    
+        self.entryRL.insert(END, str(value))
     def update_entry_RR(self, value):
         self.entryRR.delete(0, END)
-        self.entryRR.insert(END, str(value))    
+        self.entryRR.insert(END, str(value))
     def update_entry_ML(self, value):
         self.entryML.delete(0, END)
-        self.entryML.insert(END, str(value))    
+        self.entryML.insert(END, str(value))
     def update_entry_MR(self, value):
         self.entryMR.delete(0, END)
         self.entryMR.insert(END, str(value))
     def update_entry_Load(self, value):
         self.entryLoad.delete(0, END)
-        self.entryLoad.insert(END, str(value))    
+        self.entryLoad.insert(END, str(value))
     def update_entry_Ping(self, value):
         self.entryPing.delete(0, END)
-        self.entryPing.insert(END, str(value))    
-    
+        self.entryPing.insert(END, str(value))
+
     def receive_data(entry_widget):
         print("receiving...")
         try:
@@ -210,16 +286,12 @@ class RootbotWidget(tk.Frame):
             s = None
 
     def send_data(self):
-        if(self.ckbCS_state.get() == False):
-            print("FALSE!!!")
-        elif(self.ckbCS_state.get() == True):
-            print("TRUE!!!")
         data = json.dumps([[self.entryFL.get(), self.entryFC.get(), self.entryFR.get(), self.entryRL.get(), self.entryRR.get()], [
-            self.entryPing.get(), "0" if self.ckbCS_state.get() == False else "1"], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()]).replace(" ", "")
+            self.entryPing.get(), self.ckbCS_state.get()], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()]).replace(" ", "")
         self.txtResponse.config(state="normal")
         self.txtResponse.insert(END, "\nSending: " + data)
         self.txtResponse.config(state="disabled")
-        
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:
                 s.connect((RootbotWidget.ADDR, RootbotWidget.PORT))
@@ -227,6 +299,7 @@ class RootbotWidget(tk.Frame):
                 recv_data = s.recv(1024)
                 self.txtResponse.config(state="normal")
                 self.txtResponse.insert(END, "\nReceived: " + bytes(recv_data).hex() + "\n")
+                self.txtResponse.insert(END, "\nReceived: " + bytes("recv_data",'utf-8').hex() + "\n")
                 self.txtResponse.see(tk.END)
                 self.txtResponse.config(state="disabled")
             except Exception as e:
@@ -240,4 +313,3 @@ if __name__ == "__main__":
     widget.pack(expand=True, fill="both")
     recv_thread = threading.Thread(target=widget.receive_data).start()
     root.mainloop()
-    print("## stuff after")

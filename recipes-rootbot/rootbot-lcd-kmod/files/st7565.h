@@ -4,10 +4,10 @@
  *  Created on: Dec 23, 2014
  *  Author: done
  */
-#include <stdbool.h>
 
-#ifndef LCD_H_
-#define LCD_H_
+#ifndef __ST7565_KERNEL_MODULE_H
+#define __ST7565_KERNEL_MODULE_H
+#include <stdbool.h>
 
 /* Dont support text mode in IOCTL!!
 	-> length of data cannot be determined
@@ -57,4 +57,5 @@ typedef struct{
 	MotorStatus motorStatus;
 	unsigned char currentLoad;
 }DisplayData;
-#endif /* LCD_H_ */
+
+#endif // __ST7565_KERNEL_MODULE_H

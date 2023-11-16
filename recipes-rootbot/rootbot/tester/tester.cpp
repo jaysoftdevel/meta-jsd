@@ -55,11 +55,36 @@ int main(void)
     }
     sleep(2);
     std::cout << "### Testing with parallel threads... " << ret << std::endl;
-    t_display = std::thread(testDisplay);
+    std::thread t_display(testDisplay);
+    pthread_t displayThreadHandle = t_display.native_handle();
+    auto threadError = pthread_setname_np(displayThreadHandle, "Display");
+    if (threadError) {
+        std::cerr << "Error setting thread name: " << threadError << std::endl;
+    }
     sleep(5);
-    t_hcsr04 = std::thread(testHCSR04);
-    t_stepperL = std::thread(testStepperL);
-    t_stepperR = std::thread(testStepperR);
+
+    std::thread t_hcsr04(testHCSR04);
+    pthread_t hcsr04ThreadHandle = t_hcsr04.native_handle();
+    threadError = pthread_setname_np(hcsr04ThreadHandle, "Sensors");
+    if (threadError) {
+        std::cerr << "Error setting thread name: " << threadError << std::endl;
+    }
+
+    auto fd_state = fcntl(fd_stepperL, F_GETFL);
+    std::cout << "### BEFORE: " << std::to_string(fd_state) << " #" << std::endl;
+    std::thread t_stepperL(testStepperL);
+    pthread_t stepperLThreadHandle = t_display.native_handle();
+    threadError = pthread_setname_np(stepperLThreadHandle, "StepperL");
+    if (threadError) {
+        std::cerr << "Error setting thread name: " << threadError << std::endl;
+    }
+
+    std::thread t_stepperR(testStepperR);
+    pthread_t stepperRThreadHandle = t_display.native_handle();
+    threadError = pthread_setname_np(stepperRThreadHandle, "StepperR");
+    if (threadError) {
+        std::cerr << "Error setting thread name: " << threadError << std::endl;
+    }
 
     std::cout << "### Waiting for threads to join" << std::endl;
     t_display.join();
@@ -70,66 +95,100 @@ int main(void)
     std::cout << "### StepperL joined" << std::endl;
     t_stepperR.join();
     std::cout << "### StepperR joined" << std::endl;
-    std::cout << "### All threads joined" << std::endl;
     return 0;
 }
 
 void sig_handler(int signo)
 {
+    // stop all threads and disarm motors
+    m_stop = true;
+
     if (signo == SIGINT)
     {
-        std::cout << "### Received signal: " << signo << std::endl;
-        if (t_display.joinable())
-        {
-            std::cout << "### display still running, detaching..." << std::endl;
-            t_display.detach();
-        }
-        if (t_stepperL.joinable())
-        {
-            std::cout << "### stepperL still running, detaching..." << std::endl;
-            t_stepperL.detach();
-        }
-        if (t_stepperR.joinable())
-        {
-            std::cout << "### stepperR still running, detaching..." << std::endl;
-            t_stepperR.detach();
-        }
-        if (t_hcsr04.joinable())
-        {
-            std::cout << "### HCSR04 still running, detaching..." << std::endl;
-            t_hcsr04.detach();
-        }
-        // check for open file descriptors
-        int fd_state = fcntl(fd_hcsr04, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### HCSR04 file stille open, closing" << std::endl;
-            close(fd_hcsr04);
-        }
-        fd_state = fcntl(fd_stepperL, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### stepperL file stille open, closing" << std::endl;
-            close(fd_stepperL);
-        }
-        fd_state = fcntl(fd_stepperR, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### stepperR file stille open, closing" << std::endl;
-            close(fd_stepperR);
-        }
-        fd_state = fcntl(fd_st7565, F_GETFL);
-        if (fd_state == -1)
-        {
-            std::cout << "### display file stille open, closing" << std::endl;
-            close(fd_st7565);
-        }
+        // std::cout << "### Received signal: " << signo << std::endl;
+        // if (t_display.joinable())
+        // {
+        //     std::cout << "### display still running, detaching..." << std::endl;
+        //     t_display.detach();
+        // }
+        // if (t_stepperL.joinable())
+        // {
+        //     std::cout << "### stepperL still running, detaching..." << std::endl;
+        //     t_stepperL.detach();
+        // }
+        // if (t_stepperR.joinable())
+        // {
+        //     std::cout << "### stepperR still running, detaching..." << std::endl;
+        //     t_stepperR.detach();
+        // }
+        // if (t_hcsr04.joinable())
+        // {
+        //     std::cout << "### HCSR04 still running, detaching..." << std::endl;
+        //     t_hcsr04.detach();
+        // }
+        // // check for open file descriptors
+        // int fd_state = fcntl(fd_hcsr04, F_GETFL);
+        // if (fd_state == -1)
+        // {
+        //     std::cout << "### HCSR04 file stille open, closing" << std::endl;
+        //     close(fd_hcsr04);
+        // }
+        // fd_state = fcntl(fd_stepperL, F_GETFL);
+        // if (fd_state == -1)
+        // {
+        //     std::cout << "### stepperL file still open, closing" << std::endl;
+        //     int ret = ioctl(fd_stepperL, IOCTL_STEPPER_R_STEP_NONE, NULL);
+        //     if (ret != 0)
+        //     {
+        //         std::cout << "## test StepperR none failed with: " << ret << std::endl;
+        //     }
+        //     close(fd_stepperL);
+        // }
+        // fd_state = fcntl(fd_stepperR, F_GETFL);
+        // std::cout << "#### FL: " << std::to_string(fd_state) << " # FD: " << std::to_string(fcntl(fd_stepperR, F_GETFD)) << " ##" << std::endl;
+        
+        // if (fd_state == -1)
+        // {
+        //     std::cout << "### stepperR file still open, closing" << std::endl;
+        //                 int ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);
+        //     if (ret != 0)
+        //     {
+        //         std::cout << "## test StepperR none failed with: " << ret << std::endl;
+        //     }
+        //     close(fd_stepperR);
+        // }
+        // fd_state = fcntl(fd_st7565, F_GETFL);
+        // if (fd_state == -1)
+        // {
+        //     std::cout << "### display file stille open, closing" << std::endl;
+        //     close(fd_st7565);
+        // }
 
-        std::cout << "###### Ultimately terminating everything..." << std::endl;
-        m_stop = true;
-        std::terminate();
-        //std::exit(SIGINT);
+        // close(fd_hcsr04);
+        // close(fd_st7565);
+        // auto ret = ioctl(fd_stepperL, IOCTL_STEPPER_R_STEP_NONE, NULL);
+        //     if (ret != 0)
+        //     {
+        //         std::cout << "## stop StepperL none failed with: " << ret << std::endl;
+        //     }
+        // close(fd_stepperL);
+        // ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);
+        // if (ret != 0)
+        // {
+        //     std::cout << "## test StepperR none failed with: " << ret << std::endl;
+        // }
+        // close(fd_stepperR);
+        // t_display.detach();
+        // t_hcsr04.detach();
+        // t_stepperL.detach();
+        // t_stepperR.detach();
+
+        // std::cout << "###### Ultimately terminating everything..." << std::endl;        
+        // std::exit(SIGINT);
         // raise(SIGKILL);
+    }
+    else{
+        std::cout << "###### Received non SIGINT signal: " << std::to_string(signo) << std::endl;
     }
 }
 
@@ -138,13 +197,14 @@ int testStepperL()
     int i, ret;
     fd_stepperL = open("/dev/stepperL", O_RDWR);
     std::cout << "## enter " << __FUNCTION__ << std::endl;
-    std::cout << "## testing stepperL forward" << std::endl;
-    for (i = 0; i < 1500; i++)
+    while (!m_stop)
     {
 
         if (dd.motorStatus.positionLeft++ > 359)
         {
             dd.motorStatus.positionLeft = 0;
+            auto fd_state = fcntl(fd_stepperL, F_GETFL);
+            std::cout << "### WITHIN: " << std::to_string(fd_state) << " #" << std::endl;
         }
 
         ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_FWD, NULL);
@@ -155,33 +215,14 @@ int testStepperL()
         }
         usleep(1300);
     }
+    std::cout << "## stopping StepperL" << std::endl;
     ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_NONE, NULL);
+    auto fd_state = fcntl(fd_stepperL, F_GETFL);
+            std::cout << "### AFTER: " << std::to_string(fd_state) << " #" << std::endl;
     if (ret != 0)
     {
         std::cout << "## test StepperL none failed with: " << ret << std::endl;
         return -2;
-    }
-    std::cout << "## testing stepperL reverse" << std::endl;
-    for (i = 0; i < 1500; i++)
-    {
-        if (dd.motorStatus.positionLeft-- <= 0)
-        {
-            dd.motorStatus.positionLeft = 359;
-        }
-
-        ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_REV, NULL);
-        if (ret != 0)
-        {
-            std::cout << "## test StepperL rev failed with: " << ret << std::endl;
-            return -3;
-        }
-        usleep(1300);
-    }
-    ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_NONE, NULL);
-    if (ret != 0)
-    {
-        std::cout << "## test StepperL none failed with: " << ret << std::endl;
-        return -4;
     }
     std::cout << "## Close stepperL " << std::endl;
     close(fd_stepperL);
@@ -194,30 +235,7 @@ int testStepperR()
     int i, ret;
     fd_stepperR = open("/dev/stepperR", O_RDWR);
     std::cout << "## enter " << __FUNCTION__ << std::endl;
-
-    std::cout << "## testing stepperR forward" << std::endl;
-    for (i = 0; i < 1500; i++)
-    {
-        ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_FWD, NULL);
-        if (ret != 0)
-        {
-            std::cout << "## test StepperR fwd failed with: " << ret << std::endl;
-            return -5;
-        }
-        if (++dd.motorStatus.positionRight >= 360)
-        {
-            dd.motorStatus.positionRight = 0;
-        }
-        usleep(1300);
-    }
-    ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);
-    if (ret != 0)
-    {
-        std::cout << "## test StepperR none failed with: " << ret << std::endl;
-        return -6;
-    }
-    std::cout << "## testing stepperR reverse" << std::endl;
-    for (i = 0; i < 1500; i++)
+    while (!m_stop)
     {
         ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_REV, NULL);
         if (ret != 0)
@@ -232,13 +250,14 @@ int testStepperR()
         }
         usleep(1300);
     }
+    std::cout << "## stopping StepperR" << std::endl;
     ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);
     if (ret != 0)
     {
         std::cout << "## test StepperR none failed with: " << ret << std::endl;
         return -8;
     }
-    std::cout << "## Close steppers " << std::endl;
+    std::cout << "## Close stepperR " << std::endl;
     close(fd_stepperR);
     std::cout << "## leave " << __FUNCTION__ << std::endl;
     return 0;
@@ -252,7 +271,6 @@ int testHCSR04()
 
     while (!m_stop)
     {
-        std::cout << ".";
         dd.distanceSensors.distFrontLeft = ioctl(fd_hcsr04, IOCTL_HCSR04_FL_TRIGGER, NULL);
         usleep(100 * 1000);
         // std::cout << "## FL value is: " << FL << std::endl;
