@@ -6,8 +6,9 @@ DISTRO_FEATURES += " \
 
 IMAGE_INSTALL += " \
 	perf \
-	bootchart2 \
 	systemd-bootchart \
 "
+#	bootchart2 \
+#
 
 export IMAGE_BASENAME = "${PN}"

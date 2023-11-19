@@ -16,7 +16,7 @@ DEPENDS += "rootbot"
 
 OECMAKE_GENERATOR = "Unix Makefiles"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/ \
 "
 

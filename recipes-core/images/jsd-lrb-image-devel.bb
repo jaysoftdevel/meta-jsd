@@ -49,9 +49,9 @@ WIFI_SUPPORT = " \
     crda \
     iw \
     linux-firmware-rtl8192cu \
-    dhcp-client \
     wpa-supplicant \
 "
+#dhcp-client \
 #    wireless-tools \
 #
 
@@ -137,37 +137,37 @@ ROOTFS_POSTPROCESS_COMMAND += " \
 
 export IMAGE_BASENAME = "${PN}"
 
-IMAGE_INSTALL_remove = "packagegroup-base-extended"
+IMAGE_INSTALL:remove = "packagegroup-base-extended"
 
 #CORE_IMAGE_EXTRA_INSTALL += " kernel-modules"
 #packagegroup-base-wifi 
-#DISTRO_FEATURES_append = " wifi"
+#DISTRO_FEATURES:append = " wifi"
 
 # To be placed into local.conf!
-#DISTRO_FEATURES_remove = "3g"
-#DISTRO_FEATURES_remove = "alsa"
-#DISTRO_FEATURES_remove = "alsa-lib"
-#DISTRO_FEATURES_remove = "alsa-state"
-#DISTRO_FEATURES_remove = "alsa-utils"
-#DISTRO_FEATURES_remove = "bluetooth"
-#DISTRO_FEATURES_remove = "bluez"
-#DISTRO_FEATURES_remove = "ext2"
-#DISTRO_FEATURES_remove = "gobject-introspection"
-#DISTRO_FEATURES_remove = "gobject-introspection-data"
-#DISTRO_FEATURES_remove = "nfc"
-##DISTRO_FEATURES_remove = "nfs"
-#DISTRO_FEATURES_remove = "opengl"
-#DISTRO_FEATURES_remove = "pulseaudio"
-#DISTRO_FEATURES_remove = "wayland"
-#DISTRO_FEATURES_remove = "x11"
+#DISTRO_FEATURES:remove = "3g"
+#DISTRO_FEATURES:remove = "alsa"
+#DISTRO_FEATURES:remove = "alsa-lib"
+#DISTRO_FEATURES:remove = "alsa-state"
+#DISTRO_FEATURES:remove = "alsa-utils"
+#DISTRO_FEATURES:remove = "bluetooth"
+#DISTRO_FEATURES:remove = "bluez"
+#DISTRO_FEATURES:remove = "ext2"
+#DISTRO_FEATURES:remove = "gobject-introspection"
+#DISTRO_FEATURES:remove = "gobject-introspection-data"
+#DISTRO_FEATURES:remove = "nfc"
+##DISTRO_FEATURES:remove = "nfs"
+#DISTRO_FEATURES:remove = "opengl"
+#DISTRO_FEATURES:remove = "pulseaudio"
+#DISTRO_FEATURES:remove = "wayland"
+#DISTRO_FEATURES:remove = "x11"
 
 # To be placed into MACHINE.conf!
-#MACHINE_FEATUES_remove = "alsa"
-#MACHINE_FEATUES_remove = "alsa-lib"
-#MACHINE_FEATUES_remove = "alsa-state"
-#MACHINE_FEATUES_remove = "alsa-utils"
-#MACHINE_FEATUES_remove = "apm"
-#MACHINE_FEATUES_remove = "gpu"
-#MACHINE_FEATUES_remove = "qemu-user-mode"
+#MACHINE_FEATUES:remove = "alsa"
+#MACHINE_FEATUES:remove = "alsa-lib"
+#MACHINE_FEATUES:remove = "alsa-state"
+#MACHINE_FEATUES:remove = "alsa-utils"
+#MACHINE_FEATUES:remove = "apm"
+#MACHINE_FEATUES:remove = "gpu"
+#MACHINE_FEATUES:remove = "qemu-user-mode"
 
 

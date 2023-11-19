@@ -17,7 +17,7 @@ DEPENDS += "rootbot nlohmann-json"
 
 OECMAKE_GENERATOR = "Unix Makefiles"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/ \
 "
 

@@ -18,6 +18,6 @@ SRC_URI = "file://Makefile \
 
 S = "${WORKDIR}"
 
-RPROVIDES_${PN} += "kernel-module-stepperL kernel-module-stepperR"
+RPROVIDES:${PN} += "kernel-module-stepperL kernel-module-stepperR"
 
-PKG_${PN} = "kernel-module-stepper"
+PKG:${PN} = "kernel-module-stepper"

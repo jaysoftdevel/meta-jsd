@@ -9,7 +9,7 @@ inherit systemd
 ACTIVE_SYSTEMD_SUPPORT = "1"
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "${PN}.service"
+SYSTEMD_SERVICE:${PN} = "${PN}.service"
 
 EXTERNALSRC = "${THISDIR}/${PN}"
 EXTERNALSRC_BUILD = "${EXTERNALSRC}/build"
@@ -24,11 +24,11 @@ DEPENDS += "rootbot nlohmann-json"
 
 OECMAKE_GENERATOR = "Unix Makefiles"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/ \
 "
 
-do_install_append () {
+do_install:append () {
 	install -d ${D}${systemd_unitdir}/system/
 	install -m 0644 ${S}/${PN}.service ${D}${systemd_unitdir}/system
 }

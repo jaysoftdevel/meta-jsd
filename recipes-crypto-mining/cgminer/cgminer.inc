@@ -37,7 +37,7 @@ PACKAGECONFIG[libsystemd]  	= "--enable-libsystemd,,"
 PACKAGECONFIG[wo-curses] 	= "--without-curses,,"
 PACKAGECONFIG[jansson]  	= "--with-system-jansson,,"
 
-do_install_append() {
+do_install:append() {
     install -d ${D}${bindir}
 }
 

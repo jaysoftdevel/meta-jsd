@@ -4,7 +4,7 @@ LICENSE = "MIT"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda2f7b4f302"
 
 SRCREV = "${AUTOREV}"
-SRC_URI = "git://github.com/beagleboard/am335x_pru_package.git;protocol=git;branch=master"
+SRC_URI = "git://github.com/beagleboard/am335x_pru_package.git;protocol=https;branch=master"
 
 # to prevent dependency build issues
 DEPENDS += "rootbot-src"

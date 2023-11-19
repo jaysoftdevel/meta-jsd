@@ -1,7 +1,7 @@
 # build dtbo target outside of kernel since overlays cannot be built by the kernel but need kernel context
 inherit devicetree
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files/dts:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files/dts:"
 
 # only list overlays, not blobs!
 SRC_URI = " \

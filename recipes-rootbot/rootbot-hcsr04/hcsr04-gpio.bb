@@ -15,7 +15,7 @@ EXTRA_OECMAKE += "-DDEBUG=ON"
 
 DEPENDS += "rootbot-gpio"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/ \
 "
 

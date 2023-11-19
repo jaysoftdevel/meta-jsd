@@ -18,9 +18,9 @@ DEST_PATH = "${INSTALL_PREFIX}"
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-staticdev"
 
-FILES_${PN}-dev += "iolib.h"
+FILES:${PN}-dev += "iolib.h"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	 ${DEST_PATH}/lib/*.a	\
 "
 

@@ -1,6 +1,6 @@
 inherit kernel-devicetree
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/files/dts:${THISDIR}/${PN}:${THISDIR}/${PN}/ti33x:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/files/dts:${THISDIR}/${PN}:${THISDIR}/${PN}/ti33x:"
 
 LINUX_VERSION_EXTENSION = "-jsd"
 

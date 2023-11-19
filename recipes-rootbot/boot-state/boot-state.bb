@@ -8,15 +8,15 @@ SRC_URI = " \
 	file://boot-state.sh \
 "
 
-RDEPENDS_${PN} += "bash"
+RDEPENDS:${PN} += "bash"
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	${systemd_system_unitdir}/boot-state.service \
 	${libexecdir}/boot-state.sh \
 	"
 
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "boot-state.service"
+SYSTEMD_SERVICE:${PN} = "boot-state.service"
 
 do_install() {
   install -d ${D}${systemd_system_unitdir}

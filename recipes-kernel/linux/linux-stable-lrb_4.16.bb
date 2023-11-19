@@ -16,7 +16,7 @@ LINUX_VERSION_EXTENSION = "-jsd"
 # Not yet tested...
 #LINUX_KERNEL_TYPE = "preempt-rt"
 
-FILESEXTRAPATHS_prepend := "${THISDIR}/beaglebone:"
+FILESEXTRAPATHS:prepend := "${THISDIR}/beaglebone:"
 
 S = "${WORKDIR}/git"
 

@@ -9,7 +9,7 @@ inherit systemd
 ACTIVE_SYSTEMD_SUPPORT = "1"
 SYSTEMD_PACKAGES = "${PN}"
 SYSTEMD_AUTO_ENABLE = "enable"
-SYSTEMD_SERVICE_${PN} = "${PN}.service"
+SYSTEMD_SERVICE:${PN} = "${PN}.service"
 
 #SRC_URI = " \
 #	file://CMakeLists.txt \
@@ -27,13 +27,13 @@ S = "${WORKDIR}/git"
 
 DEPENDS += "rootbot-gpio nlohmann-json"
 
-do_install_append () {
+do_install:append () {
 	install -d ${D}${systemd_unitdir}/system/
 	install -m 0644 ${S}/${PN}.service ${D}${systemd_unitdir}/system
 }
 
 
-FILES_${PN} += " \
+FILES:${PN} += " \
 	/ \
 "
 
