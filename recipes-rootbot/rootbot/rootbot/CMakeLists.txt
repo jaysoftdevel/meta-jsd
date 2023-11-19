@@ -15,6 +15,7 @@ target_link_libraries(rootbot nlohmann_json::nlohmann_json)
 
 # Disable optimization for GCC
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O0 -g")
+set(CMAKE_BUILD_TYPE Debug)
 
 # Specify the header files to be installed
 set(HEADERS
