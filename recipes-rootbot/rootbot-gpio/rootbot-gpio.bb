@@ -21,7 +21,7 @@ PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-staticdev"
 FILES:${PN}-dev += "iolib.h"
 
 FILES:${PN} += " \
-	 ${DEST_PATH}/lib/*.a	\
+	 ${DEST_PATH}/lib/*.a \
 "
 
 EXTRA_OECMAKE += " -DDEBUG=ON"
@@ -31,7 +31,7 @@ do_configure(){
 	cd ${EXTERNALSRC}
 	make
 }
-do_configure[depends] = "rootbot-source:do_unpack"
+do_configure[depends] += "rootbot-source:do_unpack"
 
 # no need to install the static lib, will just be linked against
 do_install() {

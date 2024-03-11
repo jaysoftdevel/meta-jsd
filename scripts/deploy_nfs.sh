@@ -2,7 +2,7 @@
 
 #IMAGE_NAME="jsd-lrb-image-devel-rootbot-bbb.tar.xz"
 #IMAGE_NAME="jsd-lrb-image-minimal-rootbot-bbb.tar.xz"
-IMAGE_NAME="jsd-lrb-profiling-image-rootbot-bbb.tar.xz"
+IMAGE_NAME="jsd-lrb-image-profiling-rootbot-bbb.tar.xz"
 
 BUILD_LOCATION="../../build/tmp/deploy/images/rootbot-bbb/"
 KERNEL_NAME="zImage"
@@ -17,9 +17,27 @@ TFTP_DIR="/opt/tftp/tftpboot"
 sudo /etc/init.d/tftpd-hpa stop
 sudo /etc/init.d/nfs-kernel-server stop
 
-if [ $# -eq 1 ] && [ $1 == "service" ]
+if [ $# -eq 1 ]
 then
-	echo "### only restarted service"
+	if [ $1 == "service" ]
+	then
+		echo "### only restarted service"
+		exit
+	elif [ $1 == "prof" ] || [ $1 == "profifling" ]
+	then
+		echo "### installing profiling image"
+		IMAGE_NAME="jsd-lrb-image-profiling-rootbot-bbb.tar.xz"
+	elif [ $1 == "min" ] || [ $1 == "minimal" ]
+	then
+		echo "### installing minimal image"
+		IMAGE_NAME="jsd-lrb-image-minimal-rootbot-bbb.tar.xz"
+	elif [ $1 == "dev" ] || [ $1 == "devel" ]
+	then
+		echo "### installing development image"
+		IMAGE_NAME="jsd-lrb-image-devel-rootbot-bbb.tar.xz"
+	fi
+else
+	echo "### usage: $(basename $0) [service|profiling|minimal|devel|prof|min|dev]"
 	exit
 fi
 
@@ -60,3 +78,4 @@ sync
 sudo ifconfig ${INTERFACE} ${HOST_IP}
 sudo /etc/init.d/tftpd-hpa start
 sudo /etc/init.d/nfs-kernel-server start
+echo "### DONE deployed ${IMAGE_NAME}"

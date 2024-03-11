@@ -98,6 +98,7 @@
         "ranges": "cpp",
         "span": "cpp",
         "syncstream": "cpp",
-        "*.def": "cpp"
+        "*.def": "cpp",
+        "stdbool.h": "c"
     }
 }

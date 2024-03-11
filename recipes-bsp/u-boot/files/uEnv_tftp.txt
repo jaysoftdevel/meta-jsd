@@ -1,0 +1,50 @@
+# You can either hardcode your fdtfile or use some sort of test
+# like I did here with findfdtfile.
+# If you do not provide an uEnv.txt, then am335x-boneblack.dtb
+# will be the default. (Hard coded in u-boot).
+arch=arm
+baudrate=115200
+board=am335x
+board_name=am335x
+cpu=armv7
+vendor=ti
+soc=am33xx
+bootargs=rw root=/dev/nfs nfsroot=192.168.5.1:/opt/nfs,vers=4 ip=192.168.5.10 console=ttyO0,115200n8
+bootcmd=tftp 0x81000000 zImage; tftp ${loadaddr} am335x-boneblack-rootbot.dtb;bootz 0x81000000 - ${loadaddr}
+bootpart=0:2
+bootdir=/boot
+bootenvfile=uEnv.txt
+overlaydir=/boot/devicetree
+bootfile=zImage
+ipaddr=192.168.5.10
+serverip=192.168.5.1
+netmask=255.255.255.0
+console=ttyS0,115200n8
+fdtaddr=0x88000000
+fdtfile=am335x-boneblack-rootbot.dtb
+loadaddr=0x82000000
+mmcroot=/dev/mmcblk0p2 ro
+mmcrootfstype=ext4 rootwait
+optargs=consoleblank=0
+mmcargs=setenv bootargs console=${console} ${optargs} root=${mmcroot} rootfstype=${mmcrootfstype}
+loadfdt=echo loading ${bootdir}/${fdtfile}; load mmc ${bootpart} ${fdtaddr} ${bootdir}/${fdtfile}
+dtbofile=NONE_DEFINED_AND_USED
+loaddtbo=echo loading ${overlaydir}/${dtbofile}; load ${devtype} ${bootpart} ${rdaddr} ${overlaydir}/${dtbofile};
+
+fdt addr ${fdtaddr}; fdt resize ${fdt_buffer}; fdt apply ${rdaddr}; fdt resize ${fdt_buffer};
+loadimage=load mmc ${bootpart} ${loadaddr} ${bootdir}/${bootfile}
+
+# Use below to append dt overlay, if needed
+#uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loaddtbo; then echo Loaded dtbo ${dtbofile};if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi; fi;
+# Use below without dtbo file
+#uenvcmd=if run loadfdt; then echo Loaded ${fdtfile}; if run loadimage; then run mmcargs; bootz ${loadaddr} - ${fdtaddr}; fi; fi;
+# Use below for TFTP and NFS boot
+uenvcmd=echo booting TFTP and NFS ${serverip}; run bootcmd
+
+# enable and activate PRU devictree overlay
+enable_uboot_overlays=1
+disable_uboot_overlay_video=1
+disable_uboot_overlay_audio=1
+disable_uboot_overlay_wireless=1
+disable_uboot_overlay_adc=1
+disable_uboot_overlay_emmc=1

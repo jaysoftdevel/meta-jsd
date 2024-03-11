@@ -11,6 +11,7 @@ inherit core-image
 SDCARD_ROOTFS_rootbot-bbb = "ext4"
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
+RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 
 IMAGE_INSTALL += " \
 	${CORE_OS} \
@@ -38,11 +39,12 @@ CORE_OS = " \
 
 # doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
-    kernel-modules \
     kernel-module-rootbot-lcd \
     kernel-module-rootbot-stepper \
     kernel-module-rootbot-hcsr04 \
     "
+#     kernel-modules \
+#
 
 # to be checked!
 WIFI_SUPPORT = " \
