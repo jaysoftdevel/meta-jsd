@@ -16,6 +16,8 @@ RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 IMAGE_INSTALL += " \
 	${CORE_OS} \
 	${KERNEL_EXTRA_INSTALL} \
+	dropbear \
+	tester-target-arch \
 "
 #	${WIFI_SUPPORT} \
 #	${DEV_INSTALL} \

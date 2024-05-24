@@ -9,8 +9,8 @@ import json
 
 class RootbotWidget(tk.Frame):
     PORT = 12345
-    ADDR = '192.168.5.10'
-    HOST = '192.168.5.1'
+    ADDR = '192.168.7.2'
+    HOST = '192.168.7.1'
     # ADDR = 'localhost'
     # HOST = 'localhost'
 
@@ -137,9 +137,9 @@ class RootbotWidget(tk.Frame):
         self.DisplayData.grid(column=0, row=1)
         self.ResponseFrame = tk.Frame(self)
         self.ResponseFrame.configure(height=200, width=200)
-        self.txtResponse = tk.Text(self.ResponseFrame)
+        self.txtResponse = Text(self.ResponseFrame)
         self.txtResponse.configure(height=20, width=80,state="disabled")
-        self.txtResponse.pack(side="top")
+        self.txtResponse.pack(side="bottom")
         self.ResponseFrame.grid(column=0, row=2)
         self.LiveFrame = tk.Frame(self)
         self.LiveFrame.configure(height=200, width=200)
@@ -290,7 +290,7 @@ class RootbotWidget(tk.Frame):
             self.entryPing.get(), self.ckbCS_state.get()], [self.entryML.get(), self.entryMR.get()], self.entryLoad.get()]).replace(" ", "")
         self.txtResponse.config(state="normal")
         self.txtResponse.insert(END, "\nSending: " + data)
-        self.txtResponse.config(state="disabled")
+        self.txtResponse.yview_pickplace(tk.END)
 
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             try:

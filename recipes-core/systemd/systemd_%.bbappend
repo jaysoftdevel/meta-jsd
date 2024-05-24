@@ -12,5 +12,3 @@ PACKAGECONFIG:remove = "resolved"
 PACKAGECONFIG:remove = "timedated"
 PACKAGECONFIG:remove = "timesyncd"
 PACKAGECONFIG:remove = "valgrind"
-
-

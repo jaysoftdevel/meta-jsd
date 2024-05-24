@@ -5,7 +5,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files/dts:${THISDIR}/${PN}:${THISDIR}/${P
 LINUX_VERSION_EXTENSION = "-jsd"
 
 SRC_URI += " \
-    file://.config \
+    file://defconfig \
     file://am335x-boneblack-rootbot.dts;subdir=git/arch/${ARCH}/boot/dts \
 "
 
@@ -13,6 +13,8 @@ SRC_URI += " \
 KERNEL_DEVICETREE = " \
    am335x-boneblack-rootbot.dtb \
 "
+
+KERNEL_FEATURES += "small"
 
 #do_set_uEnv(){
 #	cp -v ${THISDIR}/../../../../meta-jsd/scripts/uEnv_sdcard.txt ${DEPLOY_DIR_IMAGE}/uEnv.txt
