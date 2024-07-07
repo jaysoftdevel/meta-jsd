@@ -1,0 +1,187 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "ti,beaglebone", "ti,beaglebone-black";
+    part-number = "am335x-boneblack-st7565";
+    version = "00A0";
+
+    /* state the resources this cape uses */
+        exclusive-use =
+                /* the pin header uses */
+                "P8.11", /* doc */
+                "P8.18", 
+                "P8.13", 
+                "P8.14", 
+                "P8.41", 
+                "P8.40", 
+                "P8.39", 
+                "P8.38", 
+                "P8.37", 
+                "P8.27", 
+                "P8.28", 
+                "P8.29", 
+                "P8.30", 
+                "P8.33", 
+                "P8.34", 
+                "P8.35", 
+                "P8.36",
+                /* the hardware ip uses */
+                "uart1";
+
+    /* Overlay Information */
+    fragment@0 {
+        target = <&am33xx_pinmux>;
+        __overlay__ {
+            /* LRB Control Pins */
+            lrb_control_pins: pinmux_lrb_control_pins {
+                pinctrl-single,pins = <
+                    0x034 0x07  /* P8_11 (gpio1_13), MODE7 | OUTPUT */
+                    0x048 0x07  /* P8_18 (gpio2_1), MODE7 | OUTPUT */
+                    0x05C 0x07  /* P8_13 (gpio0_23), MODE7 | OUTPUT */
+                    0x060 0x07  /* P8_14 (gpio0_26), MODE7 | OUTPUT */
+                    0x0A8 0x07  /* P8_41 (gpio2_10), MODE7 | OUTPUT */
+                    0x0A4 0x07  /* P8_40 (gpio2_9), MODE7 | OUTPUT */
+                    0x0A0 0x07  /* P8_39 (gpio2_12), MODE7 | OUTPUT */
+                    0x09C 0x07  /* P8_38 (gpio2_13), MODE7 | OUTPUT */
+                    0x098 0x07  /* P8_37 (gpio2_14), MODE7 | OUTPUT */
+                    0x084 0x07  /* P8_27 (gpio2_22), MODE7 | OUTPUT */
+                    0x088 0x07  /* P8_28 (gpio2_24), MODE7 | OUTPUT */
+                    0x08C 0x07  /* P8_29 (gpio2_23), MODE7 | OUTPUT */
+                    0x080 0x07  /* P8_30 (gpio2_25), MODE7 | OUTPUT */
+                    0x1A4 0x07  /* P8_33 (gpio0_9), MODE7 | OUTPUT */
+                    0x1A8 0x07  /* P8_34 (gpio2_17), MODE7 | OUTPUT */
+                    0x1AC 0x07  /* P8_35 (gpio0_8), MODE7 | OUTPUT */
+                    0x1B0 0x07  /* P8_36 (gpio2_16), MODE7 | OUTPUT */
+                >;
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&ocp>;
+        __overlay__ {
+            /* GPIO Configuration */
+            gpio_keys {
+                compatible = "gpio-keys";
+                pinctrl-names = "default";
+                pinctrl-0 = <&lcd_control_pins>;
+
+                /* Output GPIOs */
+                gpio@0 {
+                    gpios = <&gpio2 22 0>; /* P8_27 */
+                    label = "P8_27";
+                };
+
+                gpio@1 {
+                    gpios = <&gpio2 24 0>; /* P8_28 */
+                    label = "P8_28";
+                };
+
+                gpio@2 {
+                    gpios = <&gpio2 23 0>; /* P8_29 */
+                    label = "P8_29";
+                };
+
+                gpio@3 {
+                    gpios = <&gpio2 25 0>; /* P8_30 */
+                    label = "P8_30";
+                };
+
+                gpio@4 {
+                    gpios = <&gpio0 9 0>;  /* P8_33 */
+                    label = "P8_33";
+                };
+
+                gpio@5 {
+                    gpios = <&gpio2 17 0>; /* P8_34 */
+                    label = "P8_34";
+                };
+
+                gpio@6 {
+                    gpios = <&gpio0 8 0>;  /* P8_35 */
+                    label = "P8_35";
+                };
+
+                gpio@7 {
+                    gpios = <&gpio2 16 0>; /* P8_36 */
+                    label = "P8_36";
+                };
+
+                gpio@8 {
+                    gpios = <&gpio2 10 0>; /* P8_41 */
+                    label = "P8_41";
+                };
+
+                gpio@9 {
+                    gpios = <&gpio2 9 0>;  /* P8_40 */
+                    label = "P8_40";
+                };
+
+                gpio@10 {
+                    gpios = <&gpio2 12 0>; /* P8_39 */
+                    label = "P8_39";
+                };
+
+                gpio@11 {
+                    gpios = <&gpio2 13 0>; /* P8_38 */
+                    label = "P8_38";
+                };
+
+                gpio@12 {
+                    gpios = <&gpio2 14 0>; /* P8_37 */
+                    label = "P8_37";
+                };
+
+
+                /* Input GPIOs */
+                gpio@13 {
+                    gpios = <&gpio3 21 1>; /* P8_46 */
+                    label = "P8_46";
+                };
+
+                gpio@14 {
+                    gpios = <&gpio3 20 1>; /* P8_45 */
+                    label = "P8_45";
+                };
+
+                gpio@15 {
+                    gpios = <&gpio3 14 1>; /* P8_32 */
+                    label = "P8_32";
+                };
+
+                gpio@16 {
+                    gpios = <&gpio3 19 1>; /* P8_43 */
+                    label = "P8_43";
+                };
+
+                gpio@17 {
+                    gpios = <&gpio3 18 1>; /* P8_42 */
+                    label = "P8_42";
+                };
+
+
+                /* more gpio for lcd */
+                gpio@18 {
+                    gpios = <&gpio1 13 0>; /* P8_11 */
+                    label = "P8_11";
+                };
+                
+                gpio@19 {
+                    gpios = <&gpio2 1 1>; /* P8_18 */
+                    label = "P8_18";
+                };
+                
+                gpio@20 {
+                    gpios = <&gpio0 23 0>; /* P8_13 */
+                    label = "P8_13";
+                };
+                
+                gpio@21 {
+                    gpios = <&gpio0 26 0>; /* P8_14 */
+                    label = "P8_14";
+                };
+            };
+        };
+    };
+};

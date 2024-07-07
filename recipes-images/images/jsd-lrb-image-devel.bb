@@ -2,60 +2,52 @@ SUMMARY = "A console development image with some C/C++ dev tools"
 LICENSE = "MIT"
 
 #IMAGE_FEATURES += "package-management"
-IMAGE_LINGUAS = "en-us"
+#IMAGE_LINGUAS = "en-us"
 
 inherit core-image
 
 # minimize amount of outputs during development
-#IMAGE_FSTYPES = "tar.xz wic ext4"
+IMAGE_FSTYPES = "wic"
 SDCARD_ROOTFS_rootbot-bbb = "ext4"
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
-RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 
 IMAGE_INSTALL += " \
 	${CORE_OS} \
 	${KERNEL_EXTRA_INSTALL} \
-	dropbear \
-	tester-target-arch \
+	${WIFI_SUPPORT} \
+	${DEV_INSTALL} \
+	${DEV_EXTRAS} \
+	${EXTRA_TOOLS_INSTALL} \
+	${EXTRA_TOOLS_INSTALL_PLUS} \
 "
-#	${WIFI_SUPPORT} \
-#	${DEV_INSTALL} \
-#	${DEV_EXTRAS} \
-#	${EXTRA_TOOLS_INSTALL} \
-#	${EXTRA_TOOLS_INSTALL_PLUS} \
-#
+
 
 CORE_OS = " \
     rootbot \
     tester \
     tester-stepper \
+	tester-target-arch \
 "
 #boot-state \
 #
 
-# set to local.conf
-#DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
-#VIRTUAL-RUNTIME_init_manager = "systemd"
-#VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
-
 # doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
+    kernel-modules \
     kernel-module-rootbot-lcd \
     kernel-module-rootbot-stepper \
     kernel-module-rootbot-hcsr04 \
     "
-#     kernel-modules \
-#
 
 # to be checked!
 WIFI_SUPPORT = " \
     crda \
     iw \
     linux-firmware-rtl8192cu \
-    dhcp-client \
     wpa-supplicant \
 "
+#dhcp-client \
 #    wireless-tools \
 #
 
@@ -80,10 +72,13 @@ DEV_INSTALL = " \
      "
 
 DEV_EXTRAS = " \
+    diffutils \
+    dtc \
+    file \
     gettext \
     git \
-    diffutils \
-    file \
+    libgpiod \
+    libgpiod-tools \
     make \
     perl-modules \
     pkgconfig \
@@ -146,32 +141,4 @@ IMAGE_INSTALL:remove = "packagegroup-base-extended"
 #CORE_IMAGE_EXTRA_INSTALL += " kernel-modules"
 #packagegroup-base-wifi 
 #DISTRO_FEATURES:append = " wifi"
-
-# To be placed into local.conf!
-#DISTRO_FEATURES:remove = "3g"
-#DISTRO_FEATURES:remove = "alsa"
-#DISTRO_FEATURES:remove = "alsa-lib"
-#DISTRO_FEATURES:remove = "alsa-state"
-#DISTRO_FEATURES:remove = "alsa-utils"
-#DISTRO_FEATURES:remove = "bluetooth"
-#DISTRO_FEATURES:remove = "bluez"
-#DISTRO_FEATURES:remove = "ext2"
-#DISTRO_FEATURES:remove = "gobject-introspection"
-#DISTRO_FEATURES:remove = "gobject-introspection-data"
-#DISTRO_FEATURES:remove = "nfc"
-##DISTRO_FEATURES:remove = "nfs"
-#DISTRO_FEATURES:remove = "opengl"
-#DISTRO_FEATURES:remove = "pulseaudio"
-#DISTRO_FEATURES:remove = "wayland"
-#DISTRO_FEATURES:remove = "x11"
-
-# To be placed into MACHINE.conf!
-#MACHINE_FEATUES:remove = "alsa"
-#MACHINE_FEATUES:remove = "alsa-lib"
-#MACHINE_FEATUES:remove = "alsa-state"
-#MACHINE_FEATUES:remove = "alsa-utils"
-#MACHINE_FEATUES:remove = "apm"
-#MACHINE_FEATUES:remove = "gpu"
-#MACHINE_FEATUES:remove = "qemu-user-mode"
-
 

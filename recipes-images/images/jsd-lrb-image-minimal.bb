@@ -2,56 +2,54 @@ SUMMARY = "A console development image with some C/C++ dev tools"
 LICENSE = "MIT"
 
 #IMAGE_FEATURES += "package-management"
-#IMAGE_LINGUAS = "en-us"
+IMAGE_LINGUAS = "en-us"
 
 inherit core-image
 
 # minimize amount of outputs during development
-#IMAGE_FSTYPES = "tar.xz wic ext4"
-SDCARD_ROOTFS_rootbot-bbb = "ext4"
+IMAGE_FSTYPES = "wic"
+# ext4 tar.xz
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
+RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 
 IMAGE_INSTALL += " \
 	${CORE_OS} \
 	${KERNEL_EXTRA_INSTALL} \
-	${WIFI_SUPPORT} \
-	${DEV_INSTALL} \
-	${DEV_EXTRAS} \
-	${EXTRA_TOOLS_INSTALL} \
-	${EXTRA_TOOLS_INSTALL_PLUS} \
 "
-
+#	${WIFI_SUPPORT} \
+#	${DEV_INSTALL} \
+#	${DEV_EXTRAS} \
+#	${EXTRA_TOOLS_INSTALL} \
+#	${EXTRA_TOOLS_INSTALL_PLUS} \
+#
 
 CORE_OS = " \
     rootbot \
     tester \
     tester-stepper \
+    dropbear \
+	tester-target-arch \
 "
 #boot-state \
 #
 
-# set to local.conf
-#DISTRO_FEATURES_BACKFILL_CONSIDERED += "sysvinit"
-#VIRTUAL-RUNTIME_init_manager = "systemd"
-#VIRTUAL-RUNTIME_initscripts = "systemd-compat-units"
-
-# doublecheck naming!
 KERNEL_EXTRA_INSTALL = " \
-    kernel-modules \
     kernel-module-rootbot-lcd \
     kernel-module-rootbot-stepper \
     kernel-module-rootbot-hcsr04 \
     "
+#     kernel-modules \
+#
 
 # to be checked!
 WIFI_SUPPORT = " \
     crda \
     iw \
     linux-firmware-rtl8192cu \
+    dhcp-client \
     wpa-supplicant \
 "
-#dhcp-client \
 #    wireless-tools \
 #
 

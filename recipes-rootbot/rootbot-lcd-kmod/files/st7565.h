@@ -15,12 +15,12 @@
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
 
 // Data and control lines
-#define ST7565_CS GPIO_TO_PIN(1, 13)  // P8_11
-#define ST7565_RST GPIO_TO_PIN(2, 1)  // P8_18
-#define ST7565_AP GPIO_TO_PIN(0, 23)  // P8_13
-#define ST7565_A0 GPIO_TO_PIN(0, 26)  // P8_14
-#define ST7565_CLK GPIO_TO_PIN(1, 15) // P8_15
-#define ST7565_SI GPIO_TO_PIN(1, 14)  // P8_16
+#define ST7565_CS 13 // GPIO_TO_PIN(1, 12)  // P8_11
+#define ST7565_RST 33 // GPIO_TO_PIN(2, 1)  // P8_18
+#define ST7565_AP 119 // GPIO_TO_PIN(0, 23)  // P8_13
+#define ST7565_A0 122 // GPIO_TO_PIN(0, 26)  // P8_14
+#define ST7565_CLK 15 // GPIO_TO_PIN(1, 15) // P8_15
+#define ST7565_SI 14 // GPIO_TO_PIN(1, 14)  // P8_16
 #define IOCTL_TEST _IOW(0, 6, unsigned long)
 
 /* Dont support text mode in IOCTL!!

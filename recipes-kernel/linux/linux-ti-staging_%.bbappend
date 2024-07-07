@@ -4,19 +4,22 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files/dts:${THISDIR}/${PN}:${THISDIR}/${P
 
 LINUX_VERSION_EXTENSION = "-jsd"
 
-SRC_URI += " \
-    file://defconfig \
-    file://am335x-boneblack-rootbot.dts;subdir=git/arch/${ARCH}/boot/dts \
-"
+#SRC_URI += " \
+#    file://am335x-boneblack-rootbot.dts;subdir=git/arch/${ARCH}/boot/dts \
+#    file://rootbot-beagleboneblack.dts;subdir=git/arch/${ARCH}/boot/dts \
+#"
+#file://defconfig_mini_kernel \
+#
 
-# test if the whole file can be removed due to machine config file defintions
-KERNEL_DEVICETREE = " \
-   am335x-boneblack-rootbot.dtb \
-"
+# Does not work, needs to be placed in machine config rootbot-bbb.conf
+#KERNEL_DEVICETREE = " \
+#   am335x-boneblack-rootbot.dtb \
+#   rootbot-beagleboneblack.dtb \
+#   am335x-boneblack.dtb \
+#"
 
-KERNEL_FEATURES += "small"
+#KERNEL_FEATURES:append = "small"
 
-#do_set_uEnv(){
-#	cp -v ${THISDIR}/../../../../meta-jsd/scripts/uEnv_sdcard.txt ${DEPLOY_DIR_IMAGE}/uEnv.txt
+#do_configure:prepend() {
+#    cp ${WORKDIR}/defconfig_mini_kernel ${S}/.config
 #}
-#addtask set_uEnv after do_deploy before do_package_qa

@@ -5,20 +5,20 @@
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
 
 // Data and control lines
-#define TRIGGER_FL	GPIO_TO_PIN(2, 10)	// P8_41, grey
-#define ECHO_FL		GPIO_TO_PIN(2, 7)	// P8_46  grey
+#define TRIGGER_FL	42 // GPIO_TO_PIN(2, 10)	// P8_41, grey
+#define ECHO_FL		39 // GPIO_TO_PIN(2, 7)	// P8_46  grey
 
-#define TRIGGER_FC	GPIO_TO_PIN(2, 13)	// P8_40, white
-#define ECHO_FC		GPIO_TO_PIN(2, 6)	// P8_45, white
+#define TRIGGER_FC	45 // GPIO_TO_PIN(2, 13)	// P8_40, white
+#define ECHO_FC		38 // GPIO_TO_PIN(2, 6)	// P8_45, white
 
-#define TRIGGER_FR	GPIO_TO_PIN(2, 12)	// P8_39, black
-#define ECHO_FR		GPIO_TO_PIN(0, 11)	// P8_32, black, instead of P8_44 which is a boot pin!
+#define TRIGGER_FR	44 // GPIO_TO_PIN(2, 12)	// P8_39, black
+#define ECHO_FR		107 // GPIO_TO_PIN(0, 11)	// P8_32, black, instead of P8_44 which is a boot pin!
 
-#define TRIGGER_RL	GPIO_TO_PIN(2, 15)	// P8_38, brown
-#define ECHO_RL		GPIO_TO_PIN(2, 8)	// P8_43, brown
+#define TRIGGER_RL	47 // GPIO_TO_PIN(2, 15)	// P8_38, brown
+#define ECHO_RL		40 // GPIO_TO_PIN(2, 8)	// P8_43, brown
 
-#define TRIGGER_RR	GPIO_TO_PIN(2, 14)	// P8_37, red
-#define ECHO_RR		GPIO_TO_PIN(2, 11)	// P8_42, red
+#define TRIGGER_RR	46 // GPIO_TO_PIN(2, 14)	// P8_37, red
+#define ECHO_RR		43 // GPIO_TO_PIN(2, 11)	// P8_42, red
 
 #define IOCTL_HCSR04_FL_TRIGGER _IOW(7, 0, unsigned long)
 #define IOCTL_HCSR04_FC_TRIGGER _IOW(7, 1, unsigned long)

@@ -17,10 +17,10 @@
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))
 
 // Data and control lines
-#define COIL_PIN_NORTH	GPIO_TO_PIN(2, 16)	// P8_36, blue
-#define COIL_PIN_EAST	GPIO_TO_PIN(0, 8)	// P8_35  red
-#define COIL_PIN_SOUTH	GPIO_TO_PIN(2, 17)	// P8_34, green
-#define COIL_PIN_WEST	GPIO_TO_PIN(0, 9)	// P8_33, black
+#define COIL_PIN_NORTH	48 // GPIO_TO_PIN(2, 16)	// P8_36, blue
+#define COIL_PIN_EAST	104 // GPIO_TO_PIN(0, 8)	// P8_35  red
+#define COIL_PIN_SOUTH	49 // GPIO_TO_PIN(2, 17)	// P8_34, green
+#define COIL_PIN_WEST	105 // GPIO_TO_PIN(0, 9)	// P8_33, black
 
 #define COIL_PIN_OFFSET COIL_PIN_WEST	// offset for base pin in iolib
 #define NUM_OF_COILS 4	// for the 4 coil stepper motor
