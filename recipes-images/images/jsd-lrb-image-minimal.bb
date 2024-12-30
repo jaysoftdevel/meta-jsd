@@ -6,9 +6,6 @@ IMAGE_LINGUAS = "en-us"
 
 inherit core-image
 
-# minimize amount of outputs during development
-IMAGE_FSTYPES = "wic"
-# ext4 tar.xz
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"
 RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
@@ -16,6 +13,8 @@ RDEPENDS_${KERNEL_PACKAGE_NAME}-base = ""
 IMAGE_INSTALL += " \
 	${CORE_OS} \
 	${KERNEL_EXTRA_INSTALL} \
+    libgpiod \
+    libgpiod-tools \
 "
 #	${WIFI_SUPPORT} \
 #	${DEV_INSTALL} \

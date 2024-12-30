@@ -1,12 +1,12 @@
 #!/bin/bash
 
-#IMAGE_NAME="jsd-lrb-image-devel-rootbot-bbb.tar.xz"
+IMAGE_NAME="jsd-lrb-image-devel-rootbot-bbb.tar.xz"
 #IMAGE_NAME="jsd-lrb-image-minimal-rootbot-bbb.tar.xz"
-IMAGE_NAME="jsd-lrb-image-profiling-rootbot-bbb.tar.xz"
+#IMAGE_NAME="jsd-lrb-image-profiling-rootbot-bbb.tar.xz"
 
 BUILD_LOCATION="../../build/tmp/deploy/images/rootbot-bbb/"
 KERNEL_NAME="zImage"
-DTB_NAME="am335x-boneblack-rootbot.dtb"
+DTB_NAME="rootbot-beagleboneblack"
 INTERFACE="enx000ec6d96a80"
 HOST_IP="192.168.5.1"
 

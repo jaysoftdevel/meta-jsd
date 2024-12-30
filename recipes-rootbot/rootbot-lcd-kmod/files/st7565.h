@@ -9,7 +9,7 @@
 #define __ST7565_KERNEL_MODULE_H
 //#include <stdbool.h>
 
-#define DEBUG
+//#define DEBUG
 
 // macro to convert bank and gpio into pin number
 #define GPIO_TO_PIN(bank, gpio) (32 * (bank) + (gpio))

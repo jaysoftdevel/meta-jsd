@@ -7,7 +7,7 @@ LICENSE = "MIT"
 inherit core-image
 
 # minimize amount of outputs during development
-IMAGE_FSTYPES = "wic"
+IMAGE_FSTYPES = "wic tar.xz"
 SDCARD_ROOTFS_rootbot-bbb = "ext4"
 IMAGE_OVERHEAD_FACTOR = "1.1"
 #IMAGE_ROOTFS_EXTRA_SPACE = "100000"

@@ -213,7 +213,7 @@ int testStepperL()
             std::cout << "## test StepperL fwd failed with: " << ret << std::endl;
             return -1;
         }
-        usleep(1300);
+        usleep(1500);
     }
     std::cout << "## stopping StepperL" << std::endl;
     ret = ioctl(fd_stepperL, IOCTL_STEPPER_L_STEP_NONE, NULL);
@@ -248,7 +248,7 @@ int testStepperR()
         {
             dd.motorStatus.positionRight = 359;
         }
-        usleep(1300);
+        usleep(1500);
     }
     std::cout << "## stopping StepperR" << std::endl;
     ret = ioctl(fd_stepperR, IOCTL_STEPPER_R_STEP_NONE, NULL);

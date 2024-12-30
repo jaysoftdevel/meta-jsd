@@ -8,7 +8,7 @@ while $(sleep 2); do
 done
 
 echo "  ready, waiting..." > /dev/st7565
-slepp 2
+sleep 2
 
 /home/root/tester
 echo "  prepare rootbot main..." > /dev/st7565

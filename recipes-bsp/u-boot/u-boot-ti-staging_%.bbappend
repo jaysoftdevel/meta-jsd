@@ -1,17 +1,18 @@
 FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
-#SRC_URI += " \
-#	file://am335x-boneblack-rootbot.dts \
-#	file://rootbot-beagleboneblack.dts \
-#"
+SRC_URI += " \
+	file://am335x-boneblack-rootbot.dts \
+"
+#		file://rootbot-beagleboneblack.dts \
+#
 
 #KBUILD_DEFCONFIG = "am335x-boneblack.dts"
 #U_BOOT_DTBO = "am335x-boneblack.dts"
 
-UBOOT_EXTLINUX_BOOT_FILES="extlinux/extlinux.conf     zImage         am335x-boneblack.dtb"
+UBOOT_EXTLINUX_BOOT_FILES="extlinux/extlinux.conf     zImage         am335x-boneblack-rootbot.dtb"
 UBOOT_EXTLINUX_CONFIG="${WORKDIR}/extlinux.conf"
 UBOOT_EXTLINUX_CONF_NAME="extlinux.conf"
-UBOOT_EXTLINUX_FDT="/am335x-boneblack.dtb"
+UBOOT_EXTLINUX_FDT="/am335x-boneblack-rootbot.dtb"
 UBOOT_EXTLINUX_INSTALL_DIR="/boot/extlinux"
 UBOOT_EXTLINUX_KERNEL_ARGS="rootwait rw earlycon"
 UBOOT_EXTLINUX_KERNEL_IMAGE="/zImage"

@@ -6,11 +6,19 @@ BBPATH = "${TOPDIR}"
 BBFILES ?= ""
 
 BBLAYERS ?= " \
-  ${HOME}/poky-krogoth/meta \
-  ${HOME}/poky-krogoth/meta-poky \
-  ${HOME}/poky-krogoth/meta-openembedded/meta-oe \
-  ${HOME}/poky-krogoth/meta-openembedded/meta-networking \
-  ${HOME}/poky-krogoth/meta-openembedded/meta-python \
-  ${HOME}/poky-krogoth/meta-qt5 \
-  ${HOME}/bbb/meta-bbb \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/poky/meta \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/poky/meta-poky \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-openembedded/meta-oe \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-openembedded/meta-networking \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-openembedded/meta-python \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-qt5 \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-ti/meta-ti-bsp \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-ti/meta-ti-extras \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-arm/meta-arm \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-arm/meta-arm-bsp \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-arm/meta-arm-toolchain \
+  /media/junske/yocto/Yocto/poky-kirkstone_bbb/meta-jsd \
   "
+# /media/junske/yocto/Yocto/poky-kirkstone_bbb/poky/meta-yocto-bsp \
+#
+
