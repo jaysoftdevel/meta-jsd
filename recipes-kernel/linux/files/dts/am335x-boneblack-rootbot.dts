@@ -54,6 +54,18 @@
 			0xC8 0x07 /* West: P8_36 gpio2[16] pin 50 GPIO80 out floating Mode: 7 */
 		>;
 	};
+	
+	usb0_pins_default: usb0_pins_default {
+        pinctrl-single,pins = <
+            0x8a8 0x00 /* USB0_DRVVBUS - Output, pulldown */
+        >;
+    };
+
+    usb1_pins_default: usb1_pins_default {
+        pinctrl-single,pins = <
+            0x8ac 0x10 /* USB1_DRVVBUS - Input, pullup */
+        >;
+    };
 };
 
 &pruss {
@@ -62,7 +74,7 @@
 };
 
 /* Reserve 256kB DDR memory for the ping/pong buffers */
-/{	
+/{		
 	/*reserved-memory {
 		#address-cells = <1>;
 		#size-cells = <1>;
@@ -78,6 +90,19 @@
 	hdmi {
 		status = "disabled";
 	};
+};
+
+
+&usb0 {
+	dr_mode = "peripheral";
+	interrupts-extended = <&intc 18 &tps 0>;
+	interrupt-names = "mc", "vbus";
+	status = "okay";
+};
+
+&usb1 {
+	dr_mode = "host";
+	status = "okay";
 };
 
 /* Disable the following nodes due to pin mux conflicts with PRU signals needed */

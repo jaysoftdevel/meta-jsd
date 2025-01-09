@@ -15,8 +15,15 @@ IMAGE_INSTALL += " \
 	${KERNEL_EXTRA_INSTALL} \
     libgpiod \
     libgpiod-tools \
+    usbutils \
+    usbinit \
+    libusb1 \
+    libusbg \
+    libusbgx \
+    libusbgx-config \
+    ${WIFI_SUPPORT} \
 "
-#	${WIFI_SUPPORT} \
+#	
 #	${DEV_INSTALL} \
 #	${DEV_EXTRAS} \
 #	${EXTRA_TOOLS_INSTALL} \
@@ -46,7 +53,7 @@ WIFI_SUPPORT = " \
     crda \
     iw \
     linux-firmware-rtl8192cu \
-    dhcp-client \
+    dhcpcd \
     wpa-supplicant \
 "
 #    wireless-tools \

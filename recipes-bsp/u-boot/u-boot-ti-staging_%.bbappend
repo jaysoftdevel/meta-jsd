@@ -6,7 +6,7 @@ SRC_URI += " \
 #		file://rootbot-beagleboneblack.dts \
 #
 
-#KBUILD_DEFCONFIG = "am335x-boneblack.dts"
+#KBUILD_DEFCONFIG = "am335x-boneblack-rootbot.dts"
 #U_BOOT_DTBO = "am335x-boneblack.dts"
 
 UBOOT_EXTLINUX_BOOT_FILES="extlinux/extlinux.conf     zImage         am335x-boneblack-rootbot.dtb"
