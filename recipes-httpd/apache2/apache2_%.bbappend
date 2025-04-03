@@ -21,7 +21,7 @@ DestPath = "/var/www/html"
 do_install:append:class-target() {
     install -d ${D}${DestPath}
     install ${WORKDIR}/index.html ${D}${DestPath}
-    install ${WORKDIR}/SampleVideo_640x360_30mb.mp4 ${D}${DestPath}
+    install ${WORKDIR}/output.mp4 ${D}${DestPath}
 
     # Generate self-signed SSL certificate if they don't exist
     install -d ${D}/etc/ssl/certs ${D}/etc/ssl/private
