@@ -7,7 +7,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI += " \
     file://index.html \
     file://httpd.conf \
-    file://moister_log.csv \
+    file://moist_log.csv \
     file://output.mp4 \
     "
 #
@@ -22,7 +22,7 @@ DestPath = "/var/www/html"
 do_install:append:class-target() {
     install -d ${D}${DestPath}
     install ${WORKDIR}/index.html ${D}${DestPath}
-    install ${WORKDIR}/moister_log.csv ${D}${DestPath}
+    install ${WORKDIR}/moist_log.csv ${D}${DestPath}
     install ${WORKDIR}/output.mp4 ${D}${DestPath}
 
     # Generate self-signed SSL certificate if they don't exist

@@ -13,4 +13,6 @@ IMAGE_INSTALL += " \
     ffmpeg \
     v4l-utils \
     gstreamer1.0-vaapi \
+    python3 \
+    python3-pyserial \
     "
