@@ -13,4 +13,8 @@ IMAGE_INSTALL += " \
     ffmpeg \
     v4l-utils \
     gstreamer1.0-vaapi \
+    man-db \
     "
+
+ROOTFS_POSTPROCESS_COMMAND:remove = " update_mandb"
+INSANE_SKIP:${PN} += "postinst"
