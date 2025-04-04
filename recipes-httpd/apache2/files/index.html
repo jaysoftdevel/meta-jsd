@@ -18,7 +18,7 @@
                 justify-content: center;
                 align-items: center;
             }
-    
+
             /* Fix the canvas size */
             canvas {
                 width: 100% !important;
@@ -27,71 +27,170 @@
         </style>
     </head>
 <body>
-    <h1>This samples a video frame with embedded media</h1>
-    <video width="640" height="360" controls>
-        <source src="output.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
+    <h2>Webcam Stream and Line Chart</h2>
 
-    <h2>Live Updating Line Chart</h2>
-    
-    <div class="chart-container">
-        <canvas id="myChart" width="400" height="200"></canvas>
-    </div>
-    
+    <!-- Webcam Stream Section -->
+    <h3>Webcam Stream:</h3>
+    <video id="webcam" width="640" height="480" autoplay></video>
+
+    <!-- Button to Switch Camera -->
+    <button onclick="switchCamera()">Switch Camera</button>
+
+    <!-- Line Chart Section -->
+    <h3>Line Chart from CSV Data:</h3>
+    <canvas id="myChart"></canvas>
+
     <script>
-        let chart; // Store chart instance
+        let currentStream = null;
+        let currentCameraIndex = 0;
+        let videoDevices = [];
+        let chart = null; // Store the chart instance
 
-        async function fetchCSV() {
+        // 🔹 Get available cameras
+        async function getVideoDevices() {
             try {
-                const response = await fetch('moister_log.csv?' + new Date().getTime()); // Prevent caching
-                const data = await response.text();
-                const rows = data.split("\n").slice(1);
+                const devices = await navigator.mediaDevices.enumerateDevices();
+                videoDevices = devices.filter(device => device.kind === 'videoinput');
 
-                let labels = [], values = [];
+                if (videoDevices.length === 0) {
+                    console.error("No webcam found.");
+                    alert("No webcam detected. Please check your camera.");
+                    return;
+                }
 
-                rows.forEach(row => {
-                    const [label, value] = row.split(",");
-                    labels.push(label);
-                    values.push(parseFloat(value));
-                });
-
-                updateChart(labels, values);
-            } catch (error) {
-                console.error("Error fetching CSV:", error);
+                console.log("Available cameras:", videoDevices);
+                startWebcam(videoDevices[currentCameraIndex].deviceId);
+            } catch (err) {
+                console.error("Error getting camera devices:", err);
             }
         }
 
-        function createChart(labels, values) {
+        // 🔹 Start webcam with the selected device ID
+        async function startWebcam(deviceId) {
+            try {
+                // Stop the current stream if it exists
+                if (currentStream) {
+                    currentStream.getTracks().forEach(track => track.stop());
+                }
+
+                const stream = await navigator.mediaDevices.getUserMedia({
+                    video: { deviceId: deviceId ? { exact: deviceId } : undefined }
+                });
+
+                const webcamElement = document.getElementById('webcam');
+                webcamElement.srcObject = stream;
+                currentStream = stream;
+            } catch (err) {
+                console.error("Error accessing webcam:", err);
+                alert("Could not access webcam. Make sure it's not in use by another application.");
+            }
+        }
+
+        // 🔹 Switch to the next available camera
+        function switchCamera() {
+            if (videoDevices.length < 2) {
+                alert("Only one camera found, cannot switch.");
+                return;
+            }
+
+            currentCameraIndex = (currentCameraIndex + 1) % videoDevices.length;
+            console.log("Switching to camera:", videoDevices[currentCameraIndex].label);
+            startWebcam(videoDevices[currentCameraIndex].deviceId);
+        }
+
+        // Fetch and parse the CSV data for the chart
+        async function fetchCSV() {
+            const response = await fetch('moist_log.csv?' + new Date().getTime()); // Replace with your CSV file path
+            const data = await response.text();
+            const rows = data.split("\n").slice(1); // Skip the header row
+
+            let dates = [], value1 = [], value2 = [], state1 = [], state2 = [];
+            let backgroundColor = []; // For background blocks (state1 and state2)
+
+            rows.forEach(row => {
+                const [date, v1, s1, v2, s2] = row.split(",");
+                if (date && v1 && v2) {
+                    dates.push(date); // Dates as x-axis
+                    value1.push(parseInt(v1, 10)); // int value1
+                    value2.push(parseInt(v2, 10)); // int value2
+                    state1.push(s1); // string state1
+                    state2.push(s2); // string state2
+                }
+            });
+
+            // Create background color regions based on states
+            for (let i = 0; i < state1.length; i++) {
+                if (state1[i] === "active") {
+                    backgroundColor.push('rgba(0, 255, 0, 0.2)'); // Green for active
+                } else if (state1[i] === "inactive") {
+                    backgroundColor.push('rgba(255, 0, 0, 0.2)'); // Red for inactive
+                } else {
+                    backgroundColor.push('rgba(0, 0, 255, 0.2)'); // Blue for others
+                }
+            }
+
+            createChart(dates, value1, value2, backgroundColor);
+        }
+
+        // Create the chart with parsed CSV data
+        function createChart(dates, value1, value2, backgroundColor) {
             const ctx = document.getElementById('myChart').getContext('2d');
             chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Live Data',
-                        data: values,
-                        borderColor: 'blue',
-                        borderWidth: 2,
-                        fill: false
-                    }]
+                    labels: dates, // Use dates as the x-axis labels
+                    datasets: [
+                        {
+                            label: 'Value 1',
+                            data: value1,
+                            borderColor: 'blue',
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {
+                            label: 'Value 2',
+                            data: value2,
+                            borderColor: 'red',
+                            borderWidth: 2,
+                            fill: false
+                        },
+                        {
+                            label: 'State 1 Background',
+                            data: Array(dates.length).fill(null), // No data, just to create the background block
+                            backgroundColor: backgroundColor,
+                            borderWidth: 0,
+                            borderColor: 'transparent',
+                            fill: true,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'category',
+                            labels: dates
+                        },
+                        y: {
+                            min: Math.min(...value1, ...value2) - 10, // Slightly adjusted for visual comfort
+                            max: Math.max(...value1, ...value2) + 10 // Slightly adjusted for visual comfort
+                        }
+                    }
                 }
             });
         }
 
-        function updateChart(labels, values) {
-            if (chart) {
-                chart.data.labels = labels;
-                chart.data.datasets[0].data = values;
-                chart.update();
-            } else {
-                createChart(labels, values);
-            }
+        // Start webcam and fetch CSV data
+        async function initialize() {
+            await getVideoDevices();
+            fetchCSV(); // Initial chart data fetch
+
+            // Set interval to automatically update the chart every 10 seconds
+            setInterval(fetchCSV, 10000); // Update chart every 10 seconds
         }
 
-        // Fetch data and update chart every 5 seconds
-        fetchCSV(); // Initial fetch
-        setInterval(fetchCSV, 5000);
+        // Start the initialization process
+        initialize();
     </script>
 </body>
 </html>
