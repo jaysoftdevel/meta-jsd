@@ -13,8 +13,8 @@ IMAGE_INSTALL += " \
     ffmpeg \
     v4l-utils \
     gstreamer1.0-vaapi \
-    man-db \
+    python3 \
+    python3-pyserial \
+    mjpg-streamer \
+    kernel-modules \
     "
-
-ROOTFS_POSTPROCESS_COMMAND:remove = " update_mandb"
-INSANE_SKIP:${PN} += "postinst"

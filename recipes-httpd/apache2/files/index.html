@@ -21,8 +21,8 @@
 
             /* Fix the canvas size */
             canvas {
-                width: 100% !important;
-                height: 100% !important;
+                width: 50% !important;
+                height: 50%;
             }
         </style>
     </head>
@@ -31,166 +31,67 @@
 
     <!-- Webcam Stream Section -->
     <h3>Webcam Stream:</h3>
-    <video id="webcam" width="640" height="480" autoplay></video>
+    <img src="https://192.168.10.20/stream?action=stream" alt="Webcam Feed">
 
-    <!-- Button to Switch Camera -->
-    <button onclick="switchCamera()">Switch Camera</button>
-
-    <!-- Line Chart Section -->
-    <h3>Line Chart from CSV Data:</h3>
+    <h2>Line Chart from CSV with Time and Uint8 Data</h2>
     <canvas id="myChart"></canvas>
 
     <script>
-        let currentStream = null;
-        let currentCameraIndex = 0;
-        let videoDevices = [];
-        let chart = null; // Store the chart instance
-
-        // 🔹 Get available cameras
-        async function getVideoDevices() {
-            try {
-                const devices = await navigator.mediaDevices.enumerateDevices();
-                videoDevices = devices.filter(device => device.kind === 'videoinput');
-
-                if (videoDevices.length === 0) {
-                    console.error("No webcam found.");
-                    alert("No webcam detected. Please check your camera.");
-                    return;
-                }
-
-                console.log("Available cameras:", videoDevices);
-                startWebcam(videoDevices[currentCameraIndex].deviceId);
-            } catch (err) {
-                console.error("Error getting camera devices:", err);
-            }
-        }
-
-        // 🔹 Start webcam with the selected device ID
-        async function startWebcam(deviceId) {
-            try {
-                // Stop the current stream if it exists
-                if (currentStream) {
-                    currentStream.getTracks().forEach(track => track.stop());
-                }
-
-                const stream = await navigator.mediaDevices.getUserMedia({
-                    video: { deviceId: deviceId ? { exact: deviceId } : undefined }
-                });
-
-                const webcamElement = document.getElementById('webcam');
-                webcamElement.srcObject = stream;
-                currentStream = stream;
-            } catch (err) {
-                console.error("Error accessing webcam:", err);
-                alert("Could not access webcam. Make sure it's not in use by another application.");
-            }
-        }
-
-        // 🔹 Switch to the next available camera
-        function switchCamera() {
-            if (videoDevices.length < 2) {
-                alert("Only one camera found, cannot switch.");
-                return;
-            }
-
-            currentCameraIndex = (currentCameraIndex + 1) % videoDevices.length;
-            console.log("Switching to camera:", videoDevices[currentCameraIndex].label);
-            startWebcam(videoDevices[currentCameraIndex].deviceId);
-        }
-
-        // Fetch and parse the CSV data for the chart
         async function fetchCSV() {
-            const response = await fetch('moist_log.csv?' + new Date().getTime()); // Replace with your CSV file path
+            // Fetch the CSV file
+            const response = await fetch('data.csv'); // Replace with your CSV file path
             const data = await response.text();
             const rows = data.split("\n").slice(1); // Skip the header row
 
-            let dates = [], value1 = [], value2 = [], state1 = [], state2 = [];
-            let backgroundColor = []; // For background blocks (state1 and state2)
+            let times = [], values = [];
 
+            // Parse each row of the CSV
             rows.forEach(row => {
-                const [date, v1, s1, v2, s2] = row.split(",");
-                if (date && v1 && v2) {
-                    dates.push(date); // Dates as x-axis
-                    value1.push(parseInt(v1, 10)); // int value1
-                    value2.push(parseInt(v2, 10)); // int value2
-                    state1.push(s1); // string state1
-                    state2.push(s2); // string state2
+                const [time, uint8, label] = row.split(",");
+
+                if (time && uint8) {
+                    times.push(time); // Time as x-axis
+                    values.push(parseInt(uint8, 10)); // uint8 as y-axis data
                 }
             });
 
-            // Create background color regions based on states
-            for (let i = 0; i < state1.length; i++) {
-                if (state1[i] === "active") {
-                    backgroundColor.push('rgba(0, 255, 0, 0.2)'); // Green for active
-                } else if (state1[i] === "inactive") {
-                    backgroundColor.push('rgba(255, 0, 0, 0.2)'); // Red for inactive
-                } else {
-                    backgroundColor.push('rgba(0, 0, 255, 0.2)'); // Blue for others
-                }
-            }
-
-            createChart(dates, value1, value2, backgroundColor);
+            // Create the chart with parsed data
+            createChart(times, values);
         }
 
-        // Create the chart with parsed CSV data
-        function createChart(dates, value1, value2, backgroundColor) {
+        // Function to create the chart
+        function createChart(times, values) {
             const ctx = document.getElementById('myChart').getContext('2d');
-            chart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: dates, // Use dates as the x-axis labels
-                    datasets: [
-                        {
-                            label: 'Value 1',
-                            data: value1,
-                            borderColor: 'blue',
-                            borderWidth: 2,
-                            fill: false
-                        },
-                        {
-                            label: 'Value 2',
-                            data: value2,
-                            borderColor: 'red',
-                            borderWidth: 2,
-                            fill: false
-                        },
-                        {
-                            label: 'State 1 Background',
-                            data: Array(dates.length).fill(null), // No data, just to create the background block
-                            backgroundColor: backgroundColor,
-                            borderWidth: 0,
-                            borderColor: 'transparent',
-                            fill: true,
-                            pointRadius: 0
-                        }
-                    ]
+                    labels: times, // Use times as the x-axis labels
+                    datasets: [{
+                        label: 'Uint8 Data',
+                        data: values,
+                        borderColor: 'blue',
+                        borderWidth: 2,
+                        fill: false
+                    }]
                 },
                 options: {
                     scales: {
                         x: {
                             type: 'category',
-                            labels: dates
+                            labels: times
                         },
                         y: {
-                            min: Math.min(...value1, ...value2) - 10, // Slightly adjusted for visual comfort
-                            max: Math.max(...value1, ...value2) + 10 // Slightly adjusted for visual comfort
+                            min: 0,
+                            max: 255 // uint8 max value
                         }
                     }
                 }
             });
         }
 
-        // Start webcam and fetch CSV data
-        async function initialize() {
-            await getVideoDevices();
-            fetchCSV(); // Initial chart data fetch
-
-            // Set interval to automatically update the chart every 10 seconds
-            setInterval(fetchCSV, 10000); // Update chart every 10 seconds
-        }
-
-        // Start the initialization process
-        initialize();
+        // Call the function to fetch and display the data
+        fetchCSV();
     </script>
+
 </body>
 </html>
