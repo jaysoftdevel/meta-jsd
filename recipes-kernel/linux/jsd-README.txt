@@ -1,3 +1,0 @@
-# stuff to be placed here...
-- include the hcsr04.dtsi into the meta-bbb/recipes/kernel/linux-stable-4.XXX/bbb-nohdmi.dts
-

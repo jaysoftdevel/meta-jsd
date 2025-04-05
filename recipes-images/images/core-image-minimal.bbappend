@@ -15,4 +15,6 @@ IMAGE_INSTALL += " \
     gstreamer1.0-vaapi \
     python3 \
     python3-pyserial \
+    mjpg-streamer \
+    kernel-modules \
     "
