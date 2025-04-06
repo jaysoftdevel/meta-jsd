@@ -156,12 +156,28 @@
     <button onclick="setDataLimit(8640)">1 day</button>
     <button onclick="setDataLimit(60480)">1 week</button>
     <button onclick="setDataLimit('all')">All</button>
+    <br>
+    <button onclick="triggerWater()">Water</button>
   </div>
 
   <script>
     let myChartInstance = null;
     let fullData = { times: [], data0: [], data1: [] };
     let currentLimit = 60;
+
+    function triggerWater() {
+        fetch('/water', {
+          method: 'POST'
+        })
+        .then(response => response.text())
+        .then(data => {
+          console.log('Water triggered:', data);
+        })
+        .catch(error => {
+          console.error('Water trigger error:', error);
+          alert("Failed to trigger watering.");
+        });
+      }
 
     async function fetchCSV() {
       try {

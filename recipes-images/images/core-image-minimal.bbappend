@@ -14,7 +14,11 @@ IMAGE_INSTALL += " \
     v4l-utils \
     gstreamer1.0-vaapi \
     python3 \
+    python3-flask \
     python3-pyserial \
+    python3-gpiod \
+    libgpiod \
     mjpg-streamer \
     kernel-modules \
+    water-control \
     "
