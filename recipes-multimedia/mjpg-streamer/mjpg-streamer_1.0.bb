@@ -10,13 +10,13 @@ SRC_URI = " \
 SRCREV = "${AUTOREV}"
 
 # Enable the systemd service to start at boot
-SYSTEMD_SERVICE_${PN} = "mjpg-streamer.service"
+SYSTEMD_SERVICE:${PN} = "mjpg-streamer.service"
 
 S = "${WORKDIR}/${PN}-experimental"
 
 DEPENDS = "libjpeg-turbo"
 
-inherit cmake
+inherit cmake systemd
 
 EXTRA_OECMAKE = "-DENABLE_HTTPD=ON"
 
