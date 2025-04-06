@@ -35,7 +35,7 @@ print("Starting soil moist monitor, logging into ")
 m = moist_logger()
 
 # empty log file
-open(LOGFILE, "w").close()
+#open(LOGFILE, "w").close()
 while True:
     try:
         with open(LOGFILE, "a") as file:

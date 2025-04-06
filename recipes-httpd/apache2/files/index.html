@@ -13,6 +13,7 @@
       --accent-blue: #3b82f6;
       --accent-green: #10b981;
       --accent-dark: #111827;
+      --header-gradient: linear-gradient(45deg, #6a5acd, #3b82f6, #10b981);
     }
 
     body {
@@ -21,6 +22,29 @@
       padding: 0;
       background-color: var(--bg-color);
       color: var(--text-color);
+      overflow-x: hidden;
+    }
+
+    /* Shiny chromy header with animation */
+    header {
+      text-align: center;
+      font-size: 3rem;
+      font-weight: bold;
+      background: var(--header-gradient);
+      -webkit-background-clip: text;
+      color: transparent;
+      padding: 2rem;
+      position: relative;
+      animation: shine 2s infinite linear;
+    }
+
+    @keyframes shine {
+      0% {
+        background-position: -200%;
+      }
+      100% {
+        background-position: 200%;
+      }
     }
 
     .main-content {
@@ -84,12 +108,35 @@
     }
 
     .button-container button.active {
-      background-color: var(--accent-dark);
-      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+      background-color: var(--accent-green);
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.6);
+      transform: scale(1.1);
+      animation: pulse 0.5s infinite alternate;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+      100% {
+        transform: scale(1.1);
+      }
+    }
+
+    /* Make the selected button greenish */
+    .active {
+      background-color: var(--accent-green);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
+      animation: pulse 0.5s infinite alternate;
     }
   </style>
 </head>
 <body>
+
+  <!-- Shiny Header -->
+  <header>
+    JSDs Growbot
+  </header>
 
   <!-- Webcam and Chart Section -->
   <div class="main-content">
@@ -208,7 +255,6 @@
     }
 
     function parseTimeToDate(timeStr) {
-      // Assuming time format is HH:MM:SS
       const [hours, minutes, seconds] = timeStr.split(":").map(num => parseInt(num, 10));
       const now = new Date();
       now.setHours(hours, minutes, seconds, 0); // Set to today's date with the given time
@@ -217,20 +263,20 @@
 
     function updateChart(times, data0, data1) {
       if (myChartInstance) {
-        myChartInstance.data.labels = times;
-        myChartInstance.data.datasets[0].data = data0;
-        myChartInstance.data.datasets[1].data = data1;
+        myChartInstance.data.labels = times.reverse(); // Reverse the times to show latest on the right
+        myChartInstance.data.datasets[0].data = data0.reverse(); // Reverse the data to show latest on the right
+        myChartInstance.data.datasets[1].data = data1.reverse(); // Reverse the data to show latest on the right
         myChartInstance.update();
       } else {
         const ctx = document.getElementById('myChart').getContext('2d');
         myChartInstance = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: times,
+            labels: times.reverse(), // Reverse the times to show latest on the right
             datasets: [
               {
                 label: 'Sensor 1',
-                data: data0,
+                data: data0.reverse(), // Reverse the data to show latest on the right
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
                 borderWidth: 2,
@@ -239,7 +285,7 @@
               },
               {
                 label: 'Sensor 2',
-                data: data1,
+                data: data1.reverse(), // Reverse the data to show latest on the right
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',
                 borderWidth: 2,
@@ -251,9 +297,27 @@
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            plugins: {
+              title: {
+                display: true,
+                text: 'Soil moisture',
+                font: {
+                  size: 18,
+                  weight: 'bold'
+                },
+                color: '#f1f1f1'
+              }
+            },
             scales: {
               x: {
-                ticks: { color: '#ccc' },
+                reverse: true, // This makes the chart render from right to left
+                ticks: {
+                  color: '#ccc',
+                  callback: function(value, index) {
+                    // Show only every 10th tick on the x-axis
+                    return index % 10 === 0 ? this.getLabelForValue(value) : '';
+                  }
+                },
                 title: {
                   display: true,
                   text: 'Time',
@@ -261,21 +325,22 @@
                 }
               },
               y: {
-                beginAtZero: true,
-                suggestedMax: 700,
+                beginAtZero: false,
+                min: 0,  // Set the minimum value of the y-axis to 150
+                max: 600,  // Set the maximum value of the y-axis to 550
                 ticks: { color: '#ccc' },
                 title: {
                   display: true,
-                  text: 'Uint16 Value',
+                  text: 'Moisture',
                   color: '#eee'
                 }
               }
             },
-            plugins: {
-              legend: {
-                labels: {
-                  color: '#f1f1f1'
-                }
+            animation: {
+              duration: 2000, // Animation duration
+              easing: 'easeOutQuart', // Smooth easing for the drawing animation
+              onComplete: function() {
+                console.log("Animation complete");
               }
             }
           }
