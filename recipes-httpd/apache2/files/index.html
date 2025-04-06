@@ -1,97 +1,291 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chart.js on Apache</title>
-        <!-- Load Chart.js first -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <style>
-            /* Center and fix the graph size */
-            .chart-container {
-                width: 500px;  /* Fixed width */
-                height: 300px; /* Fixed height */
-                position: relative; /* Absolute positioning */
-                border: 2px solid black; /* Optional: Adds a border */
-                background-color: white; /* Ensures visibility */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-            }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dual Line Chart</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    :root {
+      --bg-color: #1e1e2f;
+      --card-bg: #2c2c3e;
+      --text-color: #f1f1f1;
+      --accent-blue: #3b82f6;
+      --accent-green: #10b981;
+      --accent-dark: #111827;
+    }
 
-            /* Fix the canvas size */
-            canvas {
-                width: 50% !important;
-                height: 50%;
-            }
-        </style>
-    </head>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 2rem;
+    }
+
+    .webcam-frame,
+    .chart-container {
+      flex: 1 1 45%;
+      min-width: 300px;
+      background-color: var(--card-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .webcam-frame img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 10px;
+      display: block;
+    }
+
+    .chart-container canvas {
+      width: 100% !important;
+      height: 400px !important;
+    }
+
+    #chart-info {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+
+    .button-container {
+      text-align: center;
+      padding: 1rem;
+      background: var(--bg-color);
+    }
+
+    .button-container button {
+      margin: 0 8px;
+      padding: 10px 20px;
+      font-size: 15px;
+      border: none;
+      background-color: var(--accent-blue);
+      color: white;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      cursor: pointer;
+    }
+
+    .button-container button:hover {
+      background-color: #2563eb;
+      box-shadow: 0 0 10px var(--accent-blue);
+    }
+
+    .button-container button.active {
+      background-color: var(--accent-dark);
+      box-shadow: 0 0 12px rgba(255, 255, 255, 0.2);
+    }
+  </style>
+</head>
 <body>
-    <h2>Webcam Stream and Line Chart</h2>
 
-    <!-- Webcam Stream Section -->
-    <h3>Webcam Stream:</h3>
-    <img src="https://192.168.10.20/stream?action=stream" alt="Webcam Feed">
+  <!-- Webcam and Chart Section -->
+  <div class="main-content">
+    <div class="webcam-frame">
+      <img src="https://192.168.10.20/stream?action=stream" alt="Webcam Feed" />
+    </div>
+    <div class="chart-container">
+      <canvas id="myChart"></canvas>
+      <div id="chart-info"></div>
+    </div>
+  </div>
 
-    <h2>Line Chart from CSV with Time and Uint8 Data</h2>
-    <canvas id="myChart"></canvas>
+  <!-- Option Buttons -->
+  <div class="button-container">
+    <button onclick="setDataLimit(60)">10 min</button>
+    <button onclick="setDataLimit(360)">1 hour</button>
+    <button onclick="setDataLimit(8640)">1 day</button>
+    <button onclick="setDataLimit(60480)">1 week</button>
+    <button onclick="setDataLimit('all')">All</button>
+  </div>
 
-    <script>
-        async function fetchCSV() {
-            // Fetch the CSV file
-            const response = await fetch('data.csv'); // Replace with your CSV file path
-            const data = await response.text();
-            const rows = data.split("\n").slice(1); // Skip the header row
+  <script>
+    let myChartInstance = null;
+    let fullData = { times: [], data0: [], data1: [] };
+    let currentLimit = 60;
 
-            let times = [], values = [];
+    async function fetchCSV() {
+      try {
+        const response = await fetch('moist_log.csv');
+        const data = await response.text();
+        const rows = data.split("\n").slice(1); // Skip header
 
-            // Parse each row of the CSV
-            rows.forEach(row => {
-                const [time, uint8, label] = row.split(",");
+        fullData.times = [];
+        fullData.data0 = [];
+        fullData.data1 = [];
 
-                if (time && uint8) {
-                    times.push(time); // Time as x-axis
-                    values.push(parseInt(uint8, 10)); // uint8 as y-axis data
-                }
-            });
+        rows.forEach(row => {
+          const [time, val0, val1] = row.split(",");
+          if (time && val0 && val1) {
+            fullData.times.push(time.trim());
+            fullData.data0.push(parseInt(val0.trim(), 10));
+            fullData.data1.push(parseInt(val1.trim(), 10));
+          }
+        });
 
-            // Create the chart with parsed data
-            createChart(times, values);
+        renderChartWithLimit();
+      } catch (error) {
+        console.error("Error fetching CSV:", error);
+      }
+    }
+
+    function setDataLimit(limit) {
+      currentLimit = limit;
+      renderChartWithLimit();
+
+      const buttons = document.querySelectorAll('.button-container button');
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      const limitMap = {
+        60: "10 min",
+        360: "1 hour",
+        8640: "1 day",
+        60480: "1 week",
+        all: "All"
+      };
+
+      buttons.forEach(btn => {
+        if (btn.textContent.trim() === limitMap[limit]) {
+          btn.classList.add('active');
         }
+      });
+    }
 
-        // Function to create the chart
-        function createChart(times, values) {
-            const ctx = document.getElementById('myChart').getContext('2d');
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: times, // Use times as the x-axis labels
-                    datasets: [{
-                        label: 'Uint8 Data',
-                        data: values,
-                        borderColor: 'blue',
-                        borderWidth: 2,
-                        fill: false
-                    }]
-                },
-                options: {
-                    scales: {
-                        x: {
-                            type: 'category',
-                            labels: times
-                        },
-                        y: {
-                            min: 0,
-                            max: 255 // uint8 max value
-                        }
-                    }
+    function renderChartWithLimit() {
+      let { times, data0, data1 } = fullData;
+
+      if (!times.length) return;
+
+      let startTime = times[0];
+      let endTime = times[times.length - 1];
+      let entryCount = times.length;
+
+      if (currentLimit !== 'all') {
+        times = times.slice(-currentLimit);
+        data0 = data0.slice(-currentLimit);
+        data1 = data1.slice(-currentLimit);
+      }
+
+      updateChart(times, data0, data1);
+
+      // Calculate duration (based on full CSV data, not filtered)
+      const start = parseTimeToDate(fullData.times[0]);
+      const end = parseTimeToDate(fullData.times[fullData.times.length - 1]);
+      const diffMs = end - start;
+
+      let duration = "N/A";
+      if (!isNaN(diffMs)) {
+        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minutes = totalMinutes % 60;
+
+        duration = [
+          days ? `${days}d` : "",
+          hours ? `${hours}h` : "",
+          `${minutes}m`
+        ].filter(Boolean).join(" ");
+      }
+
+      const infoBox = document.getElementById('chart-info');
+      infoBox.innerHTML = `
+        📅 <strong>Start:</strong> ${startTime} &nbsp; |
+        🧮 <strong>Entries:</strong> ${entryCount} &nbsp; |
+        ⏱️ <strong>Duration:</strong> ${duration}
+      `;
+    }
+
+    function parseTimeToDate(timeStr) {
+      // Assuming time format is HH:MM:SS
+      const [hours, minutes, seconds] = timeStr.split(":").map(num => parseInt(num, 10));
+      const now = new Date();
+      now.setHours(hours, minutes, seconds, 0); // Set to today's date with the given time
+      return now;
+    }
+
+    function updateChart(times, data0, data1) {
+      if (myChartInstance) {
+        myChartInstance.data.labels = times;
+        myChartInstance.data.datasets[0].data = data0;
+        myChartInstance.data.datasets[1].data = data1;
+        myChartInstance.update();
+      } else {
+        const ctx = document.getElementById('myChart').getContext('2d');
+        myChartInstance = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: times,
+            datasets: [
+              {
+                label: 'Sensor 1',
+                data: data0,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
+                backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3
+              },
+              {
+                label: 'Sensor 2',
+                data: data1,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
+                backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                borderWidth: 2,
+                fill: false,
+                tension: 0.3
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: {
+                ticks: { color: '#ccc' },
+                title: {
+                  display: true,
+                  text: 'Time',
+                  color: '#eee'
                 }
-            });
-        }
+              },
+              y: {
+                beginAtZero: true,
+                suggestedMax: 700,
+                ticks: { color: '#ccc' },
+                title: {
+                  display: true,
+                  text: 'Uint16 Value',
+                  color: '#eee'
+                }
+              }
+            },
+            plugins: {
+              legend: {
+                labels: {
+                  color: '#f1f1f1'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
 
-        // Call the function to fetch and display the data
-        fetchCSV();
-    </script>
-
+    fetchCSV();
+    setDataLimit(60); // default to "10 min"
+    setInterval(fetchCSV, 10000);
+  </script>
 </body>
 </html>

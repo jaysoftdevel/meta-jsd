@@ -21,7 +21,7 @@ class moist_logger:
                 ser.flush()
                 time.sleep(0.1)
                 moist0 = ser.readline().decode('utf-8', errors='ignore').strip()
-                date=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                date=datetime.datetime.now().strftime('%H:%M:%S')
                 return f"{date},{moist0}\n"
 
         except serial.SerialException as e:
