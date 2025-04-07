@@ -6,6 +6,8 @@ SRC_URI += " \
     file://runtimeServer.service \
     "
 
+inherit systemd
+
 S = "${WORKDIR}"
 
 FILES:${PN} += "/"
@@ -13,7 +15,7 @@ FILES:${PN} += "/"
 do_install(){
     install -d ${D}/root
     install -m 0644 ${S}/PumpController.py ${D}/root
-    install -m 0644 ${S}/runtimeServer.py ${D}/
+    install -m 0644 ${S}/runtimeServer.py ${D}/root
 
     # Install the systemd service
     install -d ${D}${systemd_unitdir}/system

@@ -55,21 +55,23 @@ class PumpController:
         else:
             print(datetime.now().strftime("%H:%M:%S") + ": Request for " + str(pump_name) + " received but no such pump available!")
 
-# if __name__ == "__main__":
-#     #controller = PumpController()
 
-#     try:
-#             print("Pump 1 ON")
-#             controller.set_pump("pump0", PUMP_ON)
-#             print("Pump 2 ON")
-#             controller.set_pump("pump1", PUMP_ON)
-#             print("Pump 1 OFF")
-#             time.sleep(self.duration)
-#             controller.set_pump("pump0", PUMP_OFF)
-#             print("Pump 2 OFF")
-#             controller.set_pump("pump1", PUMP_OFF)
-#             controller.shutdown()
+# When standalone fired, to test run!
+if __name__ == "__main__":
+    controller = PumpController()
 
-#     except KeyboardInterrupt:
-#         print("Shutting down pumps safely...")
-#         controller.shutdown()
+    try:
+            print("Pump 1 ON")
+            controller.set_pump("pump0", PUMP_ON)
+            print("Pump 2 ON")
+            controller.set_pump("pump1", PUMP_ON)
+            print("Pump 1 OFF")
+            time.sleep(self.duration)
+            controller.set_pump("pump0", PUMP_OFF)
+            print("Pump 2 OFF")
+            controller.set_pump("pump1", PUMP_OFF)
+            controller.shutdown()
+
+    except KeyboardInterrupt:
+        print("Shutting down pumps safely...")
+        controller.shutdown()
