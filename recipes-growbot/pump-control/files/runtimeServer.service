@@ -1,0 +1,14 @@
+[Unit]
+Description=Start runtimeServer Python script at boot
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /root/runtimeServer.py
+WorkingDirectory=/root
+User=root
+Group=root
+Restart=always
+Environment=PATH=/usr/bin:/usr/sbin:/bin:/sbin
+
+[Install]
+WantedBy=multi-user.target
