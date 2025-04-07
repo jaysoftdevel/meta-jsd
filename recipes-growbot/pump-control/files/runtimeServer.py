@@ -1,20 +1,33 @@
-from flask import Flask
-import subprocess
-from waterControl import GPIOWaterController  # Import your class
+from flask import Flask, request, jsonify
+from PumpController import PumpController  # Assuming you have the class in pump_controller.py
 
 app = Flask(__name__)
 
+# Initialize PumpController
+pump_controller = PumpController()
+
 @app.route('/water', methods=['POST'])
 def water():
-    print("### enter watering")
     try:
-        # Run water.py as a script (this will call the __main__ block)
-        print("### trigger subprocess")
-        subprocess.run(['python3', 'waterControl.py'], check=True)
-        print("### done triggering subprocess")
-        return 'Watering script executed successfully', 200
-    except subprocess.CalledProcessError as e:
-        return f'Error executing watering script: {e}', 500
+        # Get data from the request (sent as JSON)
+        data = request.get_json()  # Parse the incoming JSON data
+        water_duration = data.get('water_duration')  # Extract the water level value
+        pump_selection = data.get('pump_selection')  # Extract the pump selection value
+        
+        if water_duration is None or pump_selection is None:
+            return jsonify({"error": "Missing watering duration (" + str(water_duration) + ") or pump selection(" + pump_selection + ")"}), 400
+        
+        # Use the water_duration to control the pump (send selected pump to the controller)
+        if pump_selection == 'pump0':
+            pump_controller.pump_water(int(water_duration), "pump0")  # Pump 0
+        elif pump_selection == 'pump1':
+            pump_controller.pump_water(int(water_duration), "pump1")  # Pump 1
+        else:
+            return jsonify({"error": "Invalid pump selection"}), 400
+
+        return jsonify({"message": "Watering triggered successfully", "water_duration": water_duration, "pump_selection": pump_selection}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     print("### starting service")

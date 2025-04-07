@@ -1,4 +1,8 @@
 IMAGE_FSTYPES = "wic"
+
+RPI_EXTRA_CONFIG += "dtoverlay=set-pump-pins"
+RPI_EXTRA_CONFIG += "enable_uart=1"
+
 IMAGE_INSTALL += " \
     apache2 \
     dropbear \

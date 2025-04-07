@@ -58,7 +58,7 @@
     .webcam-frame,
     .chart-container {
       flex: 1 1 45%;
-      min-width: 300px;
+      min-width: 300px;	
       background-color: var(--card-bg);
       padding: 1.5rem;
       border-radius: 12px;
@@ -129,6 +129,99 @@
       box-shadow: 0 0 10px rgba(16, 185, 129, 0.6);
       animation: pulse 0.5s infinite alternate;
     }
+    /* Style for the container and buttons */
+    .button-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+  
+    .chart-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+  
+    .chart-buttons button {
+      padding: 10px;
+    }
+  
+    .watering-section {
+      display: flex;
+      justify-content: center;
+      padding-right: 50%;
+      margin-top: 20px;
+      text-align: center;
+    }
+  
+    .watering-frame {
+      transition: opacity 0.3s ease;
+      border: 2px solid #333;
+      padding: 20px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+  
+      /* Wrapper that contains the checkbox and watering frame */
+  .watering-wrapper {
+    display: inline-block;
+    position: relative;
+    text-align: left;
+  }
+
+  /* Optional: Add more styling for the page if needed */
+  .watering-section {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  /* Positioning for checkbox to be directly above the watering frame */
+  .watering-wrapper label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+
+  /* Optional: Center the section if desired */
+  .watering-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+  }
+
+    .watering-frame button {
+      padding: 15px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+  
+    .watering-frame button:hover {
+      background-color: #45a099;
+    }
+  
+    .watering-frame button:disabled {
+      background-color: #661616;
+    }
+  
+    .watering-frame input[type="range"] {
+      width: 150px;
+    }
+    
+    .watering-frame label {
+      font-size: 14px;
+    }
+  
+    .watering-frame span {
+      font-size: 16px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
@@ -146,18 +239,48 @@
     <div class="chart-container">
       <canvas id="myChart"></canvas>
       <div id="chart-info"></div>
+      <div class="button-container">
+        <!-- Chart Buttons (horizontally aligned) -->
+        <div class="chart-buttons">
+          <button onclick="setDataLimit(360)">1 hour</button>
+          <button onclick="setDataLimit(8640)">1 day</button>
+          <button onclick="setDataLimit(60480)">1 week</button>
+          <button onclick="setDataLimit('all')">All</button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Option Buttons -->
-  <div class="button-container">
-    <button onclick="setDataLimit(60)">10 min</button>
-    <button onclick="setDataLimit(360)">1 hour</button>
-    <button onclick="setDataLimit(8640)">1 day</button>
-    <button onclick="setDataLimit(60480)">1 week</button>
-    <button onclick="setDataLimit('all')">All</button>
-    <br>
-    <button onclick="triggerWater()">Water</button>
+  <!-- Watering Section (centered with frame) -->
+  <div class="watering-section">
+    <!-- Wrapper to group the checkbox and watering frame -->
+    <div class="watering-wrapper">
+      <!-- Override checkbox (positioned directly above the watering frame) -->
+      <label>
+        <input type="checkbox" id="override-checkbox"> Override
+      </label>
+
+      <!-- Watering Frame -->
+      <div class="watering-frame" id="watering-frame">
+        <!-- Watering button (initially disabled) -->
+        <button id="water-button" onclick="triggerWater()" disabled>Water</button>
+
+        <!-- Slider next to the Water button with live update -->
+        <label for="water-level">Water Level (1-10):</label>
+        <input type="range" id="water-level" name="water-level" min="1" max="10" value="5" oninput="updateWaterLevel(this.value)">
+        <span id="water-level-value">5</span> <!-- Display current slider value -->
+
+        <!-- Radio buttons for selecting pump0 or pump1 -->
+        <div>
+          <label>
+            <input type="radio" name="pump" value="pump0" checked> Pump 0
+          </label>
+          <label>
+            <input type="radio" name="pump" value="pump1"> Pump 1
+          </label>
+        </div>
+      </div>
+    </div>
   </div>
 
   <script>
@@ -165,19 +288,86 @@
     let fullData = { times: [], data0: [], data1: [] };
     let currentLimit = 60;
 
-    function triggerWater() {
-        fetch('/water', {
-          method: 'POST'
-        })
-        .then(response => response.text())
-        .then(data => {
-          console.log('Water triggered:', data);
-        })
-        .catch(error => {
-          console.error('Water trigger error:', error);
-          alert("Failed to trigger watering.");
-        });
+    // Wait until the DOM is fully loaded before accessing elements
+    document.addEventListener('DOMContentLoaded', function () {
+      const waterButton = document.getElementById('water-button');
+      const overrideCheckbox = document.getElementById('override-checkbox');
+      const wateringFrame = document.getElementById('watering-frame');
+
+      // Ensure that the elements exist
+      if (!waterButton || !overrideCheckbox || !wateringFrame) {
+        console.error("Error: One or more required elements are missing in the DOM.");
+        return;
       }
+
+      // Function to enable or disable the Water button based on the checkbox status
+      function toggleWaterButton() {
+        console.log('Override Checkbox Checked:', overrideCheckbox.checked);
+
+        // If the checkbox is checked, enable the Water button; otherwise, disable it
+        waterButton.disabled = !overrideCheckbox.checked;
+
+        // If the checkbox is unchecked, disable the whole watering frame and gray it out
+        if (overrideCheckbox.checked) {
+          wateringFrame.style.pointerEvents = 'auto';  // Enable interactions
+          wateringFrame.style.opacity = '1';  // Restore opacity
+        } else {
+          wateringFrame.style.pointerEvents = 'none';  // Disable interactions
+          wateringFrame.style.opacity = '0.5';  // Apply gray out effect
+        }
+      }
+
+      // Attach the toggle function to the checkbox event listener
+      overrideCheckbox.addEventListener('click', toggleWaterButton);
+
+      // Initialize button state on page load based on checkbox status
+      toggleWaterButton(); // To handle initial state based on checkbox status
+    });
+
+    // Trigger the watering request after confirmation
+    function triggerWater() {
+      const waterLevel = document.getElementById('water-level').value; // Get the current slider value
+      const pumpSelection = document.querySelector('input[name="pump"]:checked').value; // Get selected pump (pump0 or pump1)
+      
+      // Show a confirmation dialog before sending the request
+      const userConfirmed = confirm(`Are you sure you want to water with Pump ${pumpSelection} at level ${waterLevel}?`);
+
+      if (userConfirmed) {
+        // Send the water level and pump selection to the Flask backend if confirmed
+        fetch('/water', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            water_duration: waterLevel,
+            pump_selection: pumpSelection // Send pump selection as part of the request
+          })
+        })
+          .then(response => response.json()) // Expecting JSON response
+          .then(data => {
+            console.log('Water triggered:', data);
+          })
+          .catch(error => {
+            console.error('Water trigger error:', error);
+            alert("Failed to trigger watering.");
+          });
+      } else {
+        console.log("Watering cancelled by user.");
+      }
+    }
+
+    // Update the value of the slider as it's moved
+    function updateWaterLevel(value) {
+      document.getElementById('water-level-value').textContent = value;
+    }
+
+  
+    // For setting data limit (chart buttons)
+    function setDataLimit(limit) {
+      // Your code for handling data limit
+      console.log(`Data limit set to: ${limit}`);
+    }
 
     async function fetchCSV() {
       try {
