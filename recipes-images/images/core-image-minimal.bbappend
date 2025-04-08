@@ -25,13 +25,21 @@ IMAGE_INSTALL += " \
     mjpg-streamer \
     kernel-modules \
     water-control \
+    glibc-localedata-i18n \
+    tzdata \
     "
 
-IMAGE_INSTALL:append = " tzdata"
+ROOTFS_POSTPROCESS_COMMAND:append = " set_locale_de; set_timezone_munich; "
 
-ROOTFS_POSTPROCESS_COMMAND:append = " set_timezone_germany; "
+set_locale_de() {
+    echo 'LANG=de_DE.UTF-8' > ${IMAGE_ROOTFS}/etc/locale.conf
+    echo 'LANGUAGE=de_DE:de' >> ${IMAGE_ROOTFS}/etc/locale.conf
 
-set_timezone_germany() {
-    ln -sf /usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime
-    echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone
+    # Generate the locale (glibc)
+    chroot ${IMAGE_ROOTFS} localedef -i de_DE -f UTF-8 de_DE.UTF-8 || true
+}
+
+set_timezone_munich() {
+    ln -sf /usr/share/zoneinfo/Europe/Munich ${IMAGE_ROOTFS}/etc/localtime
+    echo 'Europe/Munich' > ${IMAGE_ROOTFS}/etc/timezone
 }
