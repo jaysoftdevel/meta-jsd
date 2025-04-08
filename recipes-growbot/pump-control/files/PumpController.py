@@ -10,7 +10,7 @@ PUMP_OFF = Value.ACTIVE    # HIGH = OFF (deactivates relay)
 
 class PumpController:
     def __init__(self, chip_path="/dev/gpiochip0"):
-        print("### Initializing")
+        print("### Initializing PumpController")
         self.chip_path = chip_path
 
         self.line_offsets = {
@@ -32,6 +32,7 @@ class PumpController:
                 )
             },
         )
+        print("### Done, waiting for requests...")
 
     def set_pump(self, pump_name, state):
         if pump_name not in self.line_offsets:

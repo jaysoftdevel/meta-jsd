@@ -31,7 +31,6 @@
       font-size: 3rem;
       font-weight: bold;
       background: var(--header-gradient);
-      -webkit-background-clip: text;
       color: transparent;
       padding: 2rem;
       position: relative;
@@ -58,15 +57,17 @@
     .webcam-frame,
     .chart-container {
       flex: 1 1 45%;
-      min-width: 300px;	
       background-color: var(--card-bg);
       padding: 1.5rem;
+      max-width: 45%;
+      display: block;
       border-radius: 12px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
     }
 
     .webcam-frame img {
       height: auto;
+      max-width: 100%;
       border-radius: 10px;
     }
 
@@ -261,7 +262,7 @@
       <!-- Watering Frame -->
       <div class="watering-frame" id="watering-frame">
         <!-- Watering button (initially disabled) -->
-        <button id="water-button" onclick="triggerWater()" disabled>Water</button>
+        <button id="water-button" onclick="triggerWater()">Water</button>
 
         <!-- Slider next to the Water button with live update -->
         <label for="water-level">Water Level (1-10):</label>
@@ -330,8 +331,14 @@
       // Show a confirmation dialog before sending the request
       const userConfirmed = confirm(`Are you sure you want to water with Pump ${pumpSelection} at level ${waterLevel}?`);
 
+      console.log("### waterLevel ", waterLevel, " #");
+      console.log("### pumpSelection ", pumpSelection, " #");
       if (userConfirmed) {
         // Send the water level and pump selection to the Flask backend if confirmed
+        console.log("stinging: ",JSON.stringify({
+          water_duration: waterLevel,
+          pump_selection: pumpSelection // Send pump selection as part of the request
+        }))
         fetch('/water', {
           method: 'POST',
           headers: {
@@ -339,17 +346,29 @@
           },
           body: JSON.stringify({
             water_duration: waterLevel,
-            pump_selection: pumpSelection // Send pump selection as part of the request
+            pump_selection: pumpSelection
           })
         })
-          .then(response => response.json()) // Expecting JSON response
-          .then(data => {
-            console.log('Water triggered:', data);
-          })
-          .catch(error => {
-            console.error('Water trigger error: ', error);
-            alert("Failed to trigger watering.");
-          });
+        .then(async response => {
+          const contentType = response.headers.get("content-type");
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Server returned error:", errorText);
+            throw new Error("Server error");
+          }
+          if (contentType && contentType.includes("application/json")) {
+            return response.json();
+          } else {
+            throw new TypeError("Expected JSON, got: " + contentType);
+          }
+        })
+        .then(data => {
+          console.log('Water triggered: ', data);
+        })
+        .catch(error => {
+          console.error('Water trigger error: ', error);
+          alert("Failed to trigger watering.");
+        });
       } else {
         console.log("Watering cancelled by user.");
       }
