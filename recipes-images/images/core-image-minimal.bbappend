@@ -26,3 +26,12 @@ IMAGE_INSTALL += " \
     kernel-modules \
     water-control \
     "
+
+IMAGE_INSTALL:append = " tzdata"
+
+ROOTFS_POSTPROCESS_COMMAND:append = " set_timezone_germany; "
+
+set_timezone_germany() {
+    ln -sf /usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime
+    echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone
+}

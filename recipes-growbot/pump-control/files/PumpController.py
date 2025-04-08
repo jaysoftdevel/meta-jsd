@@ -10,7 +10,7 @@ PUMP_OFF = Value.ACTIVE    # HIGH = OFF (deactivates relay)
 
 # Configure logging
 logging.basicConfig(
-    filename="pump-logs.log",
+    filename="/var/www/html/pump-logs.log",
     level=logging.DEBUG,  # Set the log level to DEBUG to capture all levels of logs
     format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
 )
@@ -68,7 +68,7 @@ class PumpController:
 
 # When standalone fired, to test run!
 if __name__ == "__main__":
-    
+
 
     controller = PumpController()
 

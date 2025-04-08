@@ -9,7 +9,7 @@ pump_controller = PumpController()
 
 # Configure logging
 logging.basicConfig(
-    filename="server-logs.log",
+    filename="/var/www/html/server-logs.log",
     level=logging.DEBUG,  # Set the log level to DEBUG to capture all levels of logs
     format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
 )
@@ -27,7 +27,7 @@ def water():
         logging.info("## Check data")
         if water_duration is None or pump_selection is None:
             return jsonify({"error": "Missing watering duration (" + str(water_duration) + ") or pump selection(" + pump_selection + ")"}), 400
-        
+
         logging.info("## Address pump")
         # Use the water_duration to control the pump (send selected pump to the controller)
         if pump_selection == 'pump0':

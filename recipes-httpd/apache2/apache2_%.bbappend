@@ -31,6 +31,9 @@ do_install:append:class-target() {
         -subj "/C=US/ST=State/L=City/O=GrowBot/OU=IT/CN=growbot.jsd"
 
     install -m 0644 ${WORKDIR}/httpd.conf ${D}${sysconfdir}/apache2/httpd.conf
+
+    touch ${D}${DestPath}/server-logs.log
+    touch ${D}${DestPath}/pump-logs.log
 }
 
 FILES:${PN} += "/*"
