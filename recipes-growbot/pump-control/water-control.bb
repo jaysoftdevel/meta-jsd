@@ -8,6 +8,9 @@ SRC_URI += " \
 
 inherit systemd
 
+# Make sure systemd service is enabled
+SYSTEMD_SERVICE:${PN} = "runtimeServer.service"
+
 S = "${WORKDIR}"
 
 FILES:${PN} += "/"
@@ -19,8 +22,5 @@ do_install(){
 
     # Install the systemd service
     install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/runtimeServer.service ${D}${systemd_unitdir}/system/
+    install -m 0644 ${WORKDIR}/runtimeServer.service ${D}${systemd_unitdir}/system/runtimeServer.service
 }
-
-# Make sure systemd service is enabled
-SYSTEMD_SERVICE:${PN} = "runtimeServer.service"
