@@ -1,4 +1,4 @@
-DSRC_URI += " \
+SRC_URI += " \
     file://ntpd.service \
     file://ntpd.conf
     "
