@@ -27,8 +27,13 @@ IMAGE_INSTALL += " \
     water-control \
     glibc-localedata-i18n \
     ntp \
+    tzdata \
     "
 
-#ROOTFS_POSTPROCESS_COMMAND:append = " set_locale_de; set_timezone_munich; "
+ROOTFS_POSTPROCESS_COMMAND:append = " \
+    install -d ${IMAGE_ROOTFS}/etc; \
+    echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf; \
+    cp ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime; \
+    "
 
 TIMEZONE = "Europe/Berlin"
