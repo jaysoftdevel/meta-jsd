@@ -30,11 +30,23 @@ IMAGE_INSTALL += " \
     tzdata \
     "
 
-ROOTFS_POSTPROCESS_COMMAND += "\
-    install -d ${IMAGE_ROOTFS}/etc; \
-    echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf; \
-    cp ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime; \
-    echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone; \
-"
+do_set_timezone() {
+    # Ensure the /etc directory exists in the root filesystem
+    install -d ${IMAGE_ROOTFS}/etc
+
+    # Set DNS servers in resolv.conf
+    echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf
+    touch ${IMAGE_ROOTFS}/etc/ntpd.conf
+
+    # Set the default servers for ntpd by modifying ntpd.conf
+    sed -i -z 's@restrict -6 default notrap nomodify nopeer noquery\n\nrestrict 127.0.0.1    # allow local host@restrict -6 default notrap nomodify nopeer noquery\nserver 0.pool.ntp.org\nserver 1.pool.ntp.org\nserver 2.pool.ntp.org\n\nrestrict 127.0.0.1    # allow local host@g' ${IMAGE_ROOTFS}/etc/ntpd.conf
+
+    # Install the correct timezone and set localtime
+    install -m 0644 ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime
+    echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone
+}
+
+# Add the task to run after do_rootfs and before do_image_complete
+addtask set_timezone after do_rootfs before do_image_complete
 
 TIMEZONE = "Europe/Berlin"
