@@ -26,8 +26,7 @@ IMAGE_INSTALL += " \
     kernel-modules \
     water-control \
     glibc-localedata-i18n \
-    tzdata \
-    systemd-timesyncd \
+    ntpd \
     "
 
 #ROOTFS_POSTPROCESS_COMMAND:append = " set_locale_de; set_timezone_munich; "
