@@ -29,17 +29,6 @@ IMAGE_INSTALL += " \
     tzdata \
     "
 
-ROOTFS_POSTPROCESS_COMMAND:append = " set_locale_de; set_timezone_munich; "
+#ROOTFS_POSTPROCESS_COMMAND:append = " set_locale_de; set_timezone_munich; "
 
-set_locale_de() {
-    echo 'LANG=de_DE.UTF-8' > ${IMAGE_ROOTFS}/etc/locale.conf
-    echo 'LANGUAGE=de_DE:de' >> ${IMAGE_ROOTFS}/etc/locale.conf
-
-    # Generate the locale (glibc)
-    chroot ${IMAGE_ROOTFS} localedef -i de_DE -f UTF-8 de_DE.UTF-8 || true
-}
-
-set_timezone_munich() {
-    ln -sf /usr/share/zoneinfo/Europe/Munich ${IMAGE_ROOTFS}/etc/localtime
-    echo 'Europe/Munich' > ${IMAGE_ROOTFS}/etc/timezone
-}
+TIMEZONE = "Europe/Berlin"

@@ -8,6 +8,8 @@ WorkingDirectory=/root
 User=root
 Group=root
 Restart=always
+StandardOutput=journal
+StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
