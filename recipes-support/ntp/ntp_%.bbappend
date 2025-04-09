@@ -1,3 +1,5 @@
+FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
+
 SRC_URI += " \
     file://ntpd.service \
     file://ntpd.conf
