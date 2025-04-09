@@ -30,10 +30,11 @@ IMAGE_INSTALL += " \
     tzdata \
     "
 
-ROOTFS_POSTPROCESS_COMMAND:append = " \
+ROOTFS_POSTPROCESS_COMMAND += "\
     install -d ${IMAGE_ROOTFS}/etc; \
     echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf; \
     cp ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime; \
-    "
+    echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone; \
+"
 
 TIMEZONE = "Europe/Berlin"
