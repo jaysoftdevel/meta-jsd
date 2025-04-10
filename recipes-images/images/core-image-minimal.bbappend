@@ -25,9 +25,8 @@ IMAGE_INSTALL += " \
     mjpg-streamer \
     kernel-modules \
     water-control \
-    glibc-localedata-i18n \
-    ntp \
     tzdata \
+    ntp \
     "
 
 do_set_timezone() {
@@ -36,10 +35,6 @@ do_set_timezone() {
 
     # Set DNS servers in resolv.conf
     echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf
-    touch ${IMAGE_ROOTFS}/etc/ntpd.conf
-
-    # Set the default servers for ntpd by modifying ntpd.conf
-    sed -i -z 's@restrict -6 default notrap nomodify nopeer noquery\n\nrestrict 127.0.0.1    # allow local host@restrict -6 default notrap nomodify nopeer noquery\nserver 0.pool.ntp.org\nserver 1.pool.ntp.org\nserver 2.pool.ntp.org\n\nrestrict 127.0.0.1    # allow local host@g' ${IMAGE_ROOTFS}/etc/ntpd.conf
 
     # Install the correct timezone and set localtime
     install -m 0644 ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime

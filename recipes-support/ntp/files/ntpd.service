@@ -3,8 +3,7 @@ Description=Network Time Protocol Daemon
 After=network.target
 
 [Service]
-ExecStart=/usr/sbin/ntpd -u ntp:ntp -gq
-Restart=on-failure
+ExecStart=/usr/sbin/ntpd -gq
 
 [Install]
 WantedBy=multi-user.target

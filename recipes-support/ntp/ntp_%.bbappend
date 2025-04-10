@@ -2,7 +2,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 SRC_URI += " \
     file://ntpd.service \
-    file://ntpd.conf
+    file://ntpd.conf \
     "
 
 SYSROOT_DESTDIR = "${D}"
@@ -17,4 +17,9 @@ do_install:append() {
     install -m 0644 ${WORKDIR}/ntpd.conf ${D}/etc/
 }
 
+FILES:${PN} += "/"
+
 SYSTEMD_SERVICE:${PN} += "ntpd.service"
+
+PACKAGES:remove = "ntp-tickadj"
+RDEPENDS:${PN}:remove = "ntp-tickadj"
