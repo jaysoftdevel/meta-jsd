@@ -7,7 +7,6 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI += " \
     file://index.html \
     file://httpd.conf \
-    file://moist_log.csv \
     "
 #
 #
