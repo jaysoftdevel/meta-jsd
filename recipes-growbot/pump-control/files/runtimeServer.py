@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
 from PumpController import PumpController  # Assuming you have the class in pump_controller.py
 import logging
+import subprocess
 
 app = Flask(__name__)
-
-# Initialize PumpController
-pump_controller = PumpController()
 
 logging.basicConfig(
     filename="/var/www/html/growbot-logs.log",
@@ -41,9 +39,46 @@ def water():
         logger.info("## Send response back")
         return jsonify({"message": "Watering triggered successfully", "water_duration": water_duration, "pump_selection": pump_selection}), 200
     except Exception as e:
-        logger.error("## ERROR")
+        logger.error("## ERROR during watering")
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/control', methods=['POST'])
+def control():
+    try:
+        data = request.get_json().get('command')
+        if data == 'restartRuntimeServer':
+            logger.info("## Request to restart runtimeServer received")
+            pump_controller.shutdown()
+            try:
+                subprocess.Popen([ 'systemctl', 'restart', 'runtimeServer'])
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error restarting runtimeServer: {e}")
+        if data == 'restartSystem':
+            logger.info("Request to reboot system received")
+            pump_controller.shutdown()
+            try:
+                subprocess.Popen([ 'reboot'])
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error restarting apache2/runtimeServer: {e}") 
+        else:
+            logger.warning({"error": "Invalid control sequence: " + str(data)})
+            return jsonify({"error": "Invalid control sequence: " + str(data)}), 400
+        return jsonify({"message": "controlled successfully", "command ": data}), 200
+    except Exception as e:
+        logger.error(f"## ERROR during control: {e}")
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
+    try:
+        import ntplib, os, time
+        client = ntplib.NTPClient()
+        response = client.request('144.76.76.107')
+        os.system('date ' + time.strftime('%m%d%H%M%Y.%S',time.localtime(response.tx_time)))
+        logger.info("# Fetched time successful!")
+    except Exception as e:
+        logger.info('Could not sync with time server: ' + str(e))
+    # Initialize PumpController
+    logger.info("# Initializing PumpController")
+    pump_controller = PumpController()
     logger.info("## Starting service")
     app.run(host='0.0.0.0')

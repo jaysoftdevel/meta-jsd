@@ -21,6 +21,7 @@ IMAGE_INSTALL += " \
     python3-flask \
     python3-pyserial \
     python3-gpiod \
+    python3-ntplib \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
@@ -29,7 +30,9 @@ IMAGE_INSTALL += " \
     ntp \
     "
 
-do_set_timezone() {
+ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
+
+set_timezone() {
     # Ensure the /etc directory exists in the root filesystem
     install -d ${IMAGE_ROOTFS}/etc
 
@@ -40,8 +43,5 @@ do_set_timezone() {
     install -m 0644 ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime
     echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone
 }
-
-# Add the task to run after do_rootfs and before do_image_complete
-addtask set_timezone after do_rootfs before do_image_complete
 
 TIMEZONE = "Europe/Berlin"

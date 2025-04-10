@@ -1,6 +1,7 @@
 [Unit]
 Description=Network Time Protocol Daemon
-After=network.target
+After=network-online.target
+Requires=network-online.target 
 
 [Service]
 ExecStart=/usr/sbin/ntpd -gq
