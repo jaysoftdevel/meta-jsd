@@ -1,0 +1,45 @@
+import serial
+import datetime
+import time
+import logging
+
+# Define the serial port and baud rate
+SERIAL_PORT = "/dev/ttyAMA1"  # Change to match your device
+BAUD_RATE = 115200
+#DATA_BITS = serial.EIGHTBITS
+#PARITY = serial.PARITY_NONE  # 'N' (None)
+#STOP_BITS = serial.STOPBITS_ONE  # 1 stop bit
+TIMEOUT = 1
+LOGFILE = "/var/www/html/moist_log.csv"
+
+ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=1)
+
+class moist_logger:
+    def getMoist(self):
+        try:
+            ser.write("2".encode()) # Request both ADC values
+            time.sleep(0.1)
+            moist0 = ser.readline().decode('utf-8', errors='ignore').strip()
+            date=datetime.datetime.now().strftime('%H:%M:%S')
+            
+            return f"{date},{moist0}\n"
+
+        except serial.SerialException as e:
+            logging.info(f"Error: {e.text()}")
+
+        except serial.Timeout:
+            logging.info("Timeout!")
+
+###### start ######
+#open("/var/www/html/growbot-logs.log", "a+").write("Starting soil moist monitor, logging into " + LOGFILE)
+m = moist_logger()
+
+while True:
+    try:
+        with open(LOGFILE, "a") as file:
+            file.write(m.getMoist())
+            file.flush()
+        time.sleep(10)
+    except KeyboardInterrupt:
+        logging.info("\nSerial reading stopped.")
+        exit()

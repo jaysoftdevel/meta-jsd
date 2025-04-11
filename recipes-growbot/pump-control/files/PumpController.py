@@ -11,7 +11,7 @@ PUMP_OFF = Value.ACTIVE    # HIGH = OFF (deactivates relay)
 # Configure logger
 logging.basicConfig(
     filename="/var/www/html/growbot-logs.log",
-    filemode="w",
+    datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.DEBUG,  # Set the log level to DEBUG to capture all levels of logs
     format='%(asctime)s - %(processName)s - %(levelname)s - %(message)s',  # Log format
 )
@@ -29,7 +29,6 @@ class PumpController:
             "pump1": 3,
         }
 
-        logger.info("## Trigger request for GPIO lines")
         self.request = gpiod.request_lines(
             self.chip_path,
             consumer="pump-controller",
@@ -44,7 +43,7 @@ class PumpController:
                 )
             },
         )
-        logger.info("## Initialization done, waiting for requests...")
+        logger.info("## PumpController initialization done")
 
     def set_pump(self, pump_name, state):
         if pump_name not in self.line_offsets:

@@ -4,8 +4,8 @@ After=network-online.target ntpd.service
 Requires=network-online.target ntpd.service
 
 [Service]
-ExecStart=runtimeServer.py
-WorkingDirectory=/root
+ExecStart=/usr/bin/python3 /var/www/html/runtimeServer.py
+WorkingDirectory=/var/www/html
 User=root
 Group=root
 Restart=always

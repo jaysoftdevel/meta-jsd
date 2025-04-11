@@ -2,15 +2,14 @@ from flask import Flask, request, jsonify
 from PumpController import PumpController  # Assuming you have the class in pump_controller.py
 import logging
 from flask import render_template
-from flask_socketio import SocketIO, emit
 import subprocess
-import threading
 
 app = Flask(__name__)
-socketio = SocketIO(app)
 
 logging.basicConfig(
     filename="/var/www/html/growbot-logs.log",
+    filemode='w',
+    datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.DEBUG,  # Set the log level to DEBUG to capture all levels of logs
     format='%(asctime)s - %(loggerName)s - %(levelname)s - %(message)s',  # Log format
 )
@@ -22,16 +21,14 @@ logger.addFilter(type('F', (logging.Filter,), {'filter': lambda self, record: se
 def water():
     try:
         # Get data from the request (sent as JSON)
-        logger.info("## Collect data")
         data = request.get_json()  # Parse the incoming JSON data
         water_duration = data.get('water_duration')  # Extract the water level value
         pump_selection = data.get('pump_selection')  # Extract the pump selection value
 
-        logger.info("## Check data")
         if water_duration is None or pump_selection is None:
             return jsonify({"error": "Missing watering duration (" + str(water_duration) + ") or pump selection(" + pump_selection + ")"}), 400
 
-        logger.info("## Address pump")
+        logger.info("## Address pump: " + pump_selection)
         # Use the water_duration to control the pump (send selected pump to the controller)
         if pump_selection == 'pump0':
             pump_controller.pump_water(int(water_duration), "pump0")  # Pump 0
@@ -40,7 +37,6 @@ def water():
         else:
             return jsonify({"error": "Invalid pump selection"}), 400
 
-        logger.info("## Send response back")
         return jsonify({"message": "Watering triggered successfully", "water_duration": water_duration, "pump_selection": pump_selection}), 200
     except Exception as e:
         logger.error("## ERROR during watering")
@@ -50,61 +46,101 @@ def water():
 def control():
     try:
         data = request.get_json().get('command')
-        if data == 'restartRuntimeServer':
-            logger.info("## Request to restart runtimeServer received")
-            pump_controller.shutdown()
-            try:
-                subprocess.Popen([ 'systemctl', 'restart', 'runtimeServer'])
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Error restarting runtimeServer: {e}")
-        if data == 'restartSystem':
-            logger.info("Request to reboot system received")
-            pump_controller.shutdown()
-            try:
-                subprocess.Popen([ 'reboot'])
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Error restarting apache2/runtimeServer: {e}") 
-        else:
-            logger.warning({"error": "Invalid control sequence: " + str(data)})
-            return jsonify({"error": "Invalid control sequence: " + str(data)}), 400
+        match data:
+            case 'restartRuntimeServer':
+                logger.info("## Request to restart runtimeServer received")
+                pump_controller.shutdown()
+                try:
+                    subprocess.Popen([ 'systemctl', 'restart', 'runtimeServer'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error restarting runtimeServer: {e}")
+            case 'restartWebServer':
+                logger.info("## Request to restart webServer received")
+                pump_controller.shutdown()
+                try:
+                    subprocess.Popen([ 'systemctl', 'restart', 'apache2'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error restarting webserver: {e}")
+            case 'restartMoistLogger':
+                logger.info("## Request to restart moist logger received")
+                try:
+                    subprocess.Popen([ 'systemctl', 'restart', 'moister'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error restarting moist logger: {e}")
+            case 'restartSystem':
+                logger.info("## Request to reboot system received")
+                pump_controller.shutdown()
+                try:
+                    subprocess.Popen([ 'reboot'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error rebooting: {e}") 
+            case 'stopCamera':
+                logger.info("## Request to stop camera stream received")
+                try:
+                    subprocess.Popen([ 'systemctl', 'stop', 'mjpg-streamer'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error stopping camera stream: {e}") 
+            case 'startCamera':
+                logger.info("## Request to start camera stream received")
+                try:
+                    subprocess.Popen([ 'systemctl', 'start', 'mjpg-streamer'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error starting camera stream: {e}") 
+            case 'statusRuntimeServer':
+                logger.info("## Status of RuntimeServer recieved")
+                try:
+                    return jsonify({"message": subprocess.run([ 'systemctl', 'is-active', 'runtimeServer'], capture_output=True, text=True).stdout, "command ": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of runtimeServer: {e}")
+            case 'statusMoister':
+                logger.info("## Status of Moister recieved")
+                try:
+                    return jsonify({"message": subprocess.run([ 'systemctl', 'is-active', 'moister'], capture_output=True, text=True).stdout, "command ": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of moister: {e}")
+            case 'statusWebserver':
+                logger.info("## Status of Webserver recieved")
+                try:
+                    return jsonify({"message": subprocess.run([ 'systemctl', 'is-active', 'apache2'], capture_output=True, text=True).stdout, "command ": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of webserver: {e}")
+            case 'statusCamera':
+                logger.info("## Status of camera stream recieved")
+                try:
+                    return jsonify({"message": subprocess.run([ 'systemctl', 'is-active', 'mjpg-streamer'], capture_output=True, text=True).stdout, "command ": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of camera stream: {e}")
+                    
+            case 'clearServerLogs':
+                logger.info("## Clearing of server log files requested")
+                try:
+                    open('/var/www/html/growbot-logs.log', 'a').truncate(0)
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of camera stream: {e}")
+            case 'clearMoistLogs':
+                logger.info("## Clearing of moister log files requested")
+                try:
+                    open('/var/www/html/moist_log.csv', 'a').truncate(0)
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of camera stream: {e}")
+            case _:
+                logger.warning({"error": "Invalid control sequence: " + str(data)})
+                return jsonify({"error": "Invalid control sequence: " + str(data)}), 400
         return jsonify({"message": "controlled successfully", "command ": data}), 200
     except Exception as e:
         logger.error(f"## ERROR during control: {e}")
         return jsonify({"error": str(e)}), 500
 
-@app.route('/execute', methods=['POST'])
-def execute_command():
-    logger.info("## doing some execute stuff")
-    data = request.get_json()
-    command = data.get('command', '')
-
-    if not command:
-        return jsonify({"success": False, "error": "No command provided"}), 400
-
-    try:
-        # Run the shell command and capture stdout and stderr
-        result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        
-        if result.returncode == 0:
-            return jsonify({"success": True, "output": result.stdout})
-        else:
-            return jsonify({"success": False, "error": result.stderr})
-    
-    except Exception as e:
-        logging.error(f"Error executing command: {e}")
-        return jsonify({"success": False, "error": str(e)}), 500
-        
 if __name__ == '__main__':
+    logger.info("**** GROWBOT ****")
     try:
         import ntplib, os, time
         client = ntplib.NTPClient()
-        response = client.request('144.76.76.107') # use static address to opt out DNS 
+        response = client.request('144.76.76.107')
         os.system('date ' + time.strftime('%m%d%H%M%Y.%S',time.localtime(response.tx_time)))
         logger.info("# Fetched time successful!")
     except Exception as e:
         logger.info('Could not sync with time server: ' + str(e))
-    # Initialize PumpController
-    logger.info("# Initializing PumpController")
     pump_controller = PumpController()
     logger.info("## Starting service")
     app.run(host='0.0.0.0')

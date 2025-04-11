@@ -402,6 +402,40 @@
       white-space: pre-wrap;
       word-wrap: break-word;
     }
+    .status-card {
+      background-color: #1e1e1e;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+      border: 1px solid #333;
+    }
+
+    .lamp-container {
+      display: flex;
+      gap: 2rem;
+      margin-top: 1rem;
+      justify-content: center;
+    }
+
+    .lamp {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: gray;
+      box-shadow: 0 0 10px #000;
+      transition: background-color 0.3s;
+    }
+
+    .label {
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .lamp-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
   </style>
 
   </head>
@@ -413,7 +447,7 @@
     <!-- Webcam and Chart -->
     <div class="main-content">
       <div class="webcam-frame">
-        <img src="/stream?action=stream" alt="Webcam Feed">
+        <img src="/stream?action=stream" id="webcamstream" alt="Webcam Feed">
       </div>
 
       <div class="chart-container">
@@ -426,6 +460,27 @@
             <button onclick="setDataLimit(60480)">1 week</button>
             <button onclick="setDataLimit('all')">All</button>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-card">
+      <div class="lamp-container">
+        <div class="lamp-wrapper">
+          <div id="lamp-statusRuntimeServer" class="lamp"></div>
+          <div class="label">statusRuntimeServer</div>
+        </div>
+        <div class="lamp-wrapper">
+          <div id="lamp-statusMoister" class="lamp"></div>
+          <div class="label">statusMoister</div>
+        </div>
+        <div class="lamp-wrapper">
+          <div id="lamp-statusWebserver" class="lamp"></div>
+          <div class="label">statusWebserver</div>
+        </div>
+        <div class="lamp-wrapper">
+          <div id="lamp-statusCamera" class="lamp"></div>
+          <div class="label">statusCamera</div>
         </div>
       </div>
     </div>
@@ -453,31 +508,49 @@
 
       <h2 class="custom-frame-title">Server Handling</h2>
       <div class="watering-frame" id="watering-frame">
-          <!-- Button Container -->
-  <div class="server-button-container-vertical">
-    <!-- Button 1 -->
-    <button onclick="sendServerCommand('restartRuntimeServer')" class="server-button resrestart-runtimeServer-btn">
-      Restart runtimeServer
-    </button>
-
-    <!-- Button 2 -->
-    <button onclick="sendServerCommand('restartSystem')" class="server-button resrestart-runtimeServer-btn">
-      Restart system
-    </button>
-  </div>
-
+        <!-- Button Container with Two Columns -->
+        <div style="display: flex; gap: 150px;">
+          
+          <div>
+            <button id="toggle-button"
+              class="server-button resrestart-runtimeServer-btn"
+              onclick="toggleCamera()">
+              Toggle Camera
+            </button>
+              <button
+              class="server-button resrestart-runtimeServer-btn"
+              onclick="sendServerCommand('clearServerLogs')">
+              Clear Server Logs
+            </button>
+            <button
+            class="server-button resrestart-runtimeServer-btn"
+            onclick="sendServerCommand('clearMoistLogs')">
+            Clear Moister Logs
+          </button>
+          </div>
+      
+          <!-- Right Column (Existing Buttons) -->
+          <div class="server-button-container-vertical">
+            <button onclick="sendServerCommand('restartRuntimeServer')" class="server-button">
+              Restart Runtime Server
+            </button>
+            <button onclick="sendServerCommand('restartWebServer')" class="server-button">
+              Restart Webserver
+            </button>
+            <button onclick="sendServerCommand('restartMoistLogger')" class="server-button">
+              Restart Moist Logger
+            </button>
+            <button onclick="sendServerCommand('restartSystem')" class="server-button">
+              Restart System
+            </button>
+          </div>
+      
+        </div>
+      </div>
+      
+        
       </div>
     </div>
-
-
-  <div id="input-container">
-	#### hallo, hier!!!!
-    <input type="text" id="command-input" placeholder="Type a command..." />
-    <button onclick="executeCommand()">Execute</button>
-  </div>
-
-  <div id="output"></div>
-
 
     <div class="log-section"
       style="display: flex; justify-content: center; padding: 2rem;">
@@ -489,7 +562,7 @@
 
         <div style="
         background-color: #141414; /* Dark background for terminal effect */
-        color: #e5e7eb; /* Light text */
+        color: #ebe5e5; /* Light text */
         font-family: 'Courier New', monospace;
         font-size: 0.85rem;
         border-radius: 8px;
@@ -519,39 +592,77 @@
     let myChartInstance = null;
     let fullData = { times: [], data0: [], data1: [] };
     let currentLimit = 60;
+    
+    let serviceRunning = false;
+    let statusCamera = "inactive";
 
-    async function executeCommand() {
-      const command = document.getElementById('command-input').value;
+    const updateLamp = (id, state) => {
+      const lamp = document.getElementById(`lamp-${id}`);
+      lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
+    };
+
+    function toggleCamera() {
+      if (statusCamera.trim() === "inactive") {
+        sendServerCommand("startCamera");  // Send command to stop camera
+        //toggle-button.textContent = "Start Camera";  // Update button text
+        statusCamera = "active";  // Toggle state to active
+        setTimeout(() => {
+          let imageElement = document.getElementById("webcamstream");
+          imageElement.src = "/stream?action=stream&t=" + new Date().getTime();
+        }, 2000);
+      } else if (statusCamera.trim() === "active") {
+        sendServerCommand("stopCamera");  // Send command to start camera
+        //toggle-button. = "Stop Camera";  // Update button text
+        statusCamera = "inactive";  // Toggle state to inactive
+        let imageElement = document.getElementById("webcamstream");
+
+        // Replace the webcam image with a message when deactivated
+        imageElement.src = "";  // Stops the webcam feed
+        
+        // Create or update a message div
+        let messageDiv = document.getElementById("camera-status-message");
+        if (!messageDiv) {
+          // If the message div doesn't exist, create it
+          messageDiv = document.createElement("div");
+          messageDiv.id = "camera-status-message";
+          messageDiv.style.textAlign = "center"; // Center the message
+          messageDiv.style.color = "#d9534f"; // Set a red color to indicate deactivation
+          messageDiv.style.fontSize = "18px";
+          messageDiv.textContent = "Camera deactivated, hit 'Toggle Camera'";
       
-      if (!command) return; // Don't execute if input is empty
-
-      // Clear output area before showing new output
-      const outputArea = document.getElementById('output');
-      outputArea.textContent = "Executing command...\n";
-
-      try {
-        const response = await fetch('/execute', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ command: command })
-        });
-
-        const result = await response.json();
-        
-        if (result.success) {
-          console.log("sending command ok!");
-          outputArea.textContent = result.output;
+          // Append the message div after the image
+          imageElement.parentNode.appendChild(messageDiv);
         } else {
-          console.log("sending command NOK!");
-          outputArea.textContent = `Error: ${result.error}`;
+          // If the message div exists, just update its text
+          messageDiv.textContent = "Camera deactivated, hit 'Toggle Camera'";
         }
-      } catch (error) {
-		  console.log("executon error!!!");
-        outputArea.textContent = `Failed to execute command: ${error}`;
-        
       }
+    
+      console.log("** toggle to " + statusCamera);
     }
     
+    const checkStatus = () => {
+      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera"].forEach(key => {
+        fetch('/control', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ command: key })
+        })
+        .then(res => res.json())
+        .then(json => {
+          if(key === "statusCamera"){
+
+          }
+          updateLamp(key, json.message);
+        })
+        .catch(err => {
+          console.error(`Error fetching status for ${key}:`, err);
+        });
+      });
+    };
+
     function sendServerCommand(command) {
             // Show a confirmation dialog before sending the request
             const userConfirmed = confirm(`Are you sure you want to trigger the execution of ${command}?\nThe services may be unavailable for a few minutes until the are restarted!`);
@@ -890,8 +1001,11 @@
     }
 
     fetchCSV();
+    checkStatus();
     setDataLimit(60); // default to 60 read cycles
     setInterval(fetchCSV, 10000);
+    setInterval(checkStatus, 10000);
+
     // Auto-load logs on page load
     document.addEventListener('DOMContentLoaded', reloadLogs);
   </script>

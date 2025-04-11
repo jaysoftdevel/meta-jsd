@@ -1,0 +1,15 @@
+[Unit]
+Description=Frequently read soil moist level
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 /var/www/html/moist_logger.py
+WorkingDirectory=/var/www/html
+User=root
+Group=root
+Restart=always
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
