@@ -2,21 +2,24 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 
 inherit systemd
 
+# ACTIVE_SYSTEMD_SUPPORT = "1"
+SYSTEMD_PACKAGES = "${PN}"
+_ENABLE = "enable"
+SYSTEMD_SERVICE:${PN} = "wifi.service"
+
 SRC_URI += " \
-	file://wpa_supplicant-wlan0.conf \
-	file://wlan0.network \
+	file://wifi.sh \
+	file://wifi.service \
 "
-
-RDEPENDS:${PN} = "systemd wpa-supplicant"
-
-SYSTEMD_SERVICE:${PN} = "wpa_supplicant@wlan0.service"
-
 do_install:append () {
-	install -d ${D}${sysconfdir}/wpa_supplicant
-	install -m 0600 ${WORKDIR}/wpa_supplicant-wlan0.conf ${D}${sysconfdir}/wpa_supplicant/
+	echo "## appending..."
+	install -d ${D}${libexecdir}
+	install -m 0755 ${WORKDIR}/wifi.sh ${D}${libexecdir}/
 
-	install -d ${D}${sysconfdir}/systemd/network
-	install -m 0644 ${WORKDIR}/wlan0.network ${D}${sysconfdir}/systemd/network/
+	install -d ${D}${systemd_unitdir}/system/
+	install -m 0644 ${WORKDIR}/wifi.service ${D}${systemd_unitdir}/system
 }
 
-FILES:${PN} += "/"
+FILES:${PN} += " \
+	${ROOT_HOME}/wifi.sh \
+"
