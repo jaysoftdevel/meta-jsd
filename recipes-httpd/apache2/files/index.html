@@ -82,6 +82,7 @@
 
     .webcam-frame img {
       height: auto;
+	  transform-origin: center center;
       max-width: 100%;
       border-radius: 10px;
       display: block;
@@ -447,7 +448,7 @@
     <!-- Webcam and Chart -->
     <div class="main-content">
       <div class="webcam-frame">
-        <img src="/stream?action=stream" id="webcamstream" alt="Webcam Feed">
+        <img src="/stream?action=stream" id="webcamstream" class="webcamstream" alt="Webcam Feed">
       </div>
 
       <div class="chart-container">
@@ -511,7 +512,7 @@
         <!-- Button Container with Two Columns -->
         <div style="display: flex; gap: 150px;">
           
-          <div>
+          <div class="server-button-container-vertical">
             <button id="toggle-button"
               class="server-button resrestart-runtimeServer-btn"
               onclick="toggleCamera()">
@@ -927,7 +928,7 @@
             labels: times.reverse(), // Reverse the times to show latest on the right
             datasets: [
               {
-                label: 'Sensor 1',
+                label: 'SOIL',
                 data: data0.reverse(), // Reverse the data to show latest on the right
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
                 backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -936,7 +937,7 @@
                 tension: 0.3
               },
               {
-                label: 'Sensor 2',
+                label: 'Hydration',
                 data: data1.reverse(), // Reverse the data to show latest on the right
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
                 backgroundColor: 'rgba(16, 185, 129, 0.1)',

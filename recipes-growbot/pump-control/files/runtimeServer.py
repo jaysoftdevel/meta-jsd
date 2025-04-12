@@ -8,7 +8,7 @@ app = Flask(__name__)
 
 logging.basicConfig(
     filename="/var/www/html/growbot-logs.log",
-    filemode='w',
+    filemode='a',
     datefmt='%Y-%m-%d %H:%M:%S',
     level=logging.DEBUG,  # Set the log level to DEBUG to capture all levels of logs
     format='%(asctime)s - %(loggerName)s - %(levelname)s - %(message)s',  # Log format

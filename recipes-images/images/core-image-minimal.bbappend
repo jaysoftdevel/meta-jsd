@@ -26,6 +26,7 @@ IMAGE_INSTALL += " \
     tzdata \
     ntp \
     moister \
+    wpa-supplicant \
     "
 
 ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
