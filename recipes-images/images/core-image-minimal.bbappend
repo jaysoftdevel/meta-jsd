@@ -29,7 +29,7 @@ IMAGE_INSTALL += " \
     wpa-supplicant \
     "
 
-ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
+#ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
 
 set_timezone() {
     # Ensure the /etc directory exists in the root filesystem

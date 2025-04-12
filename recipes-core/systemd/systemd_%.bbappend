@@ -8,7 +8,7 @@
 #PACKAGECONFIG:remove = "nss-mymachines"
 #PACKAGECONFIG:remove = "nss-resolve"
 #PACKAGECONFIG:remove = "randomseed"
-#PACKAGECONFIG:remove = "resolved"
+##PACKAGECONFIG:remove = "resolved"
 #PACKAGECONFIG:remove = "timedated"
 #PACKAGECONFIG:remove = "timesyncd"
 #PACKAGECONFIG:remove = "valgrind"
