@@ -13,4 +13,4 @@ PACKAGECONFIG:remove = "timedated"
 PACKAGECONFIG:remove = "timesyncd"
 PACKAGECONFIG:remove = "valgrind"
 
-
+SYSTEMD_SERVICE:${PN} = "systemd-networkd.service systemd-resolved.service"
