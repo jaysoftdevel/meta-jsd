@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GrowBot Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     *,
@@ -915,11 +915,11 @@
         myChartInstance = new Chart(ctx, {
           type: 'line',
           data: {
-            labels: times.reverse(),
+            labels: times,
             datasets: [
               {
                 label: 'SOIL',
-                data: data0.reverse(),
+                data: data0,
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
                 backgroundColor: 'rgba(59, 130, 246, 0.25)',
                 borderWidth: 2,
@@ -929,7 +929,7 @@
               },
               {
                 label: 'Hydration',
-                data: data1.reverse(),
+                data: data1,
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
                 backgroundColor: 'rgba(16, 185, 129, 0.25)',
                 borderWidth: 2,

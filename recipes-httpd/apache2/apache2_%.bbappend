@@ -8,19 +8,13 @@ SRC_URI += " \
     file://index.html \
     file://httpd.conf \
     "
-#
-#
 
-#S = "${WORKDIR}"
-
-#DestPath = "/usr/share/apache2/default-site/htdocs/"
 DestPath = "/var/www/html"
 
 # Only install into target, not native*
 do_install:append:class-target() {
     install -d ${D}${DestPath}
     install -m 0644 ${WORKDIR}/index.html ${D}${DestPath}
-    install -m 0644 ${WORKDIR}/moist_log.csv ${D}${DestPath}
 
     # Generate self-signed SSL certificate if they don't exist
     install -d ${D}/etc/ssl/certs ${D}/etc/ssl/private

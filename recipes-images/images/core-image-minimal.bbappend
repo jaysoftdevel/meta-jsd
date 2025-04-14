@@ -22,21 +22,21 @@ IMAGE_INSTALL += " \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
+    linux-firmware \
     water-control \
     tzdata \
     ntp \
     moister \
     wpa-supplicant \
+    connman \
+    udhcpd \
     "
 
-#ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
+ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
 
 set_timezone() {
     # Ensure the /etc directory exists in the root filesystem
     install -d ${IMAGE_ROOTFS}/etc
-
-    # Set DNS servers in resolv.conf
-    echo 'nameserver 8.8.8.8' > ${IMAGE_ROOTFS}/etc/resolv.conf
 
     # Install the correct timezone and set localtime
     install -m 0644 ${IMAGE_ROOTFS}/usr/share/zoneinfo/Europe/Berlin ${IMAGE_ROOTFS}/etc/localtime
