@@ -6,27 +6,31 @@ static int avVal1[ITERATIONS] = {0};
 
 void setup()
 {
+      Serial.begin(115200);
       Serial1.begin(115200);
 }
 
 void loop()
 {
-      int valA0 = analogRead(A0);
-      int valA1 = analogRead(A1);
-      int total0, total1 = 0;
+      int total0 = 0;
+      int total1 = 0;
 
-      for (int i = 0; i < ITERATIONS - 1; i++)
+      avVal0[0] = analogRead(A0);
+      avVal1[0] = analogRead(A1);
+  
+      for (int i = ITERATIONS - 1; i > 0; i--)
       {
-            avVal0[i] = avVal0[i + 1];
+            avVal0[i] = avVal0[i - 1];
             total0 += avVal0[i];
-            avVal1[i] = avVal1[i + 1];
+            avVal1[i] = avVal1[i - 1];
             total1 += avVal1[i];
       }
 
       // overwrite first entry which gets dropped in each
       // iteation and does not influence the calculation
-      avVal0[0] = total0 / ITERATIONS;
-      avVal1[0] = total1 / ITERATIONS;
+      avVal0[0] = total0 / (ITERATIONS - 1);
+      avVal1[0] = total1 / (ITERATIONS - 1);
+
       if (
           Serial.available() ||
           Serial1.available()) // check for any data received
