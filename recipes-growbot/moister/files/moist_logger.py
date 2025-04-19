@@ -18,10 +18,10 @@ class moist_logger:
     def getMoist(self):
         try:
             ser.write("2".encode()) # Request both ADC values
-            time.sleep(0.1)
+            time.sleep(0.5)
             moist0 = ser.readline().decode('utf-8', errors='ignore').strip()
             date=datetime.datetime.now().strftime('%H:%M:%S')
-            
+
             return f"{date},{moist0}\n"
 
         except serial.SerialException as e:
