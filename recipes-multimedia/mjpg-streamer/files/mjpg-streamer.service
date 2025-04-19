@@ -1,9 +1,21 @@
 [Unit]
-Description=MJPG Streamer
+Description=MJPG-streamer webcam service
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/mjpg_streamer -i "/usr/lib/mjpg-streamer/input_uvc.so -d /dev/video0 -r 1280x720 -f 30" -o "/usr/lib/mjpg-streamer/output_http.so -p 8080 -l 0.0.0.0 -w /usr/share/mjpg-streamer/www"
+Type=simple
+User=pi
+Group=video
+
+# Set camera controls before starting
+ExecStartPre=/usr/bin/v4l2-ctl -d /dev/video0 --set-ctrl=power_line_frequency=2
+ExecStartPre=/usr/bin/v4l2-ctl -d /dev/video0 --set-ctrl=auto_exposure=1
+ExecStartPre=/usr/bin/v4l2-ctl -d /dev/video0 --set-ctrl=exposure_time_absolute=200
+
+# Start MJPG-streamer directly
+ExecStart=/usr/bin/mjpg_streamer \
+  -i "/usr/lib/mjpg-streamer/input_uvc.so -d /dev/video0 -r 1920x1080 -f 30" \
+  -o "/usr/lib/mjpg-streamer/output_http.so -p 8080 -l 0.0.0.0 -w /usr/share/mjpg-streamer/www"
 Restart=on-failure
 User=root
 Group=root

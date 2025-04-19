@@ -470,9 +470,10 @@
       <div class="button-container">
         <div class="chart-buttons">
           <button onclick="setDataLimit('all')">All</button>
-          <button onclick="setDataLimit(1000)">1000</button>
-          <button onclick="setDataLimit(100)">100</button>
-          <button onclick="setDataLimit(10)">10</button>
+          <button onclick="setDataLimit(1440)">1d</button>
+          <button onclick="setDataLimit(360)">6h</button>
+          <button onclick="setDataLimit(120)">2h</button>
+          <button onclick="setDataLimit(30)">30m</button>
         </div>
       </div>
     </div>
@@ -508,9 +509,9 @@
       <div class="watering-frame" id="watering-frame">
         <button id="water-button" onclick="triggerWater()">Water</button>
 
-        <label for="water-level">Water Level (1-10)</label>
-        <input type="range" id="water-level" min="1" max="10" value="5" oninput="updateWaterLevel(this.value)">
-        <span id="water-level-value">5</span>
+        <label for="water-level">Water Level (1-5)</label>
+        <input type="range" id="water-level" min="1" max="5" value="2" oninput="updateWaterLevel(this.value)">
+        <span id="water-level-value">2</span>
 
         <div>
           <label><input type="radio" name="pump" value="pump0" checked>Top</label>
@@ -596,7 +597,7 @@
   <script>
     let myChartInstance = null;
     let fullData = { times: [], data0: [], data1: [] };
-    let currentLimit = 10;
+    let currentLimit = 30;
 
     let serviceRunning = false;
     let statusCamera = "inactive";
@@ -976,7 +977,6 @@ infoBox.innerHTML = `
                 }
               },
               y: {
-                min: 0,
                 ticks: {
                   color: '#ccc'
                 },

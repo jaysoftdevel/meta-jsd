@@ -26,6 +26,8 @@ IMAGE_INSTALL += " \
     tzdata \
     ntp \
     moister \
+    usbutils \
+    pciutils \
     "
 
 # WIFI!!

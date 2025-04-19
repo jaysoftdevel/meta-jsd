@@ -39,8 +39,8 @@ while True:
         with open(LOGFILE, "a") as file:
             file.write(m.getMoist())
             file.flush()
-        # once every minute
-        time.sleep(60)
+        # once every minute (- drift correction, due to measurement)
+        time.sleep(59)
     except KeyboardInterrupt:
         logging.info("\nSerial reading stopped.")
         exit()
