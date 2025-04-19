@@ -1,69 +1,63 @@
 #define USB_DEBUG
+#define ITERATIONS 10
 
-static int avVal0 = 0;
-static int avVal1 = 0;
+static int avVal0[ITERATIONS] = {0};
+static int avVal1[ITERATIONS] = {0};
 
 void setup()
 {
-#ifdef USB_DEBUG
-      Serial.begin(115200);
-#endif // USB_DEBUG
       Serial1.begin(115200);
 }
 
 void loop()
 {
+      int valA0 = analogRead(A0);
+      int valA1 = analogRead(A1);
+      int total0, total1 = 0;
+
+      for (int i = 0; i < ITERATIONS - 1; i++)
+      {
+            avVal0[i] = avVal0[i + 1];
+            total0 += avVal0[i];
+            avVal1[i] = avVal1[i + 1];
+            total1 += avVal1[i];
+      }
+
+      // overwrite first entry which gets dropped in each
+      // iteation and does not influence the calculation
+      avVal0[0] = total0 / ITERATIONS;
+      avVal1[0] = total1 / ITERATIONS;
       if (
-#ifdef USB_DEBUG
           Serial.available() ||
-#endif                         // USB_DEBUG
           Serial1.available()) // check for any data received
       {
-             int valA0 = analogRead(A0);
-             int valA1 = analogRead(A1);
-
-#ifdef USB_DEBUG
             char received_data0 = Serial.read();  // read received data
-#endif                                            // USB_DEBUG
             char received_data1 = Serial1.read(); // read received data
             if (
-#ifdef USB_DEBUG
                 received_data0 == '0' ||
-#endif // USB_DEBUG
                 received_data1 == '0')
             {
-#ifdef USB_DEBUG
-                  Serial.println(valA0);
-#endif // USB_DEBUG
-                  Serial1.println(valA0);
+                  Serial.println(avVal0[0]);
+                  Serial1.println(avVal1[0]);
             }
             else if (
-#ifdef USB_DEBUG
                 received_data0 == '1' ||
-#endif // USB_DEBUG
                 received_data1 == '1')
             {
-#ifdef USB_DEBUG
-                  Serial.println(valA1);
-#endif // USB_DEBUG
-                  Serial1.println(valA1);
+                  Serial.println(avVal0[0]);
+                  Serial1.println(avVal1[0]);
             }
             else if (
-#ifdef USB_DEBUG
                 received_data0 == '2' ||
-#endif // USB_DEBUG
                 received_data1 == '2')
             {
-#ifdef USB_DEBUG
-                  Serial.print(valA0);
+                  Serial.print(avVal0[0]);
                   Serial.print(",");
-                  Serial.println(valA1);
-#endif // USB_DEBUG
-                  Serial1.print(valA0);
+                  Serial.println(avVal1[0]);
+                  Serial1.print(avVal0[0]);
                   Serial1.print(",");
-                  Serial1.println(valA1);
+                  Serial1.println(avVal1[0]);
             }
-#ifdef USB_DEBUG
             else
             {
                   Serial.print("# ");
@@ -72,11 +66,6 @@ void loop()
                   Serial1.println(received_data1);
                   return;
             }
-#endif // USB_DEBUG
-
-            // collect average data
-            //delay(1000);
-            // avVal0 = (avVal0 + valA0) / 2;
-            // avVal1 = (avVal1 + valA1) / 2;
       }
+      delay(1000);
 }
