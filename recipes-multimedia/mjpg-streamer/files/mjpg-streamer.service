@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 ExecStart=/usr/bin/mjpg_streamer -i "/usr/lib/mjpg-streamer/input_uvc.so -d /dev/video0 -r 1280x720 -f 30" -o "/usr/lib/mjpg-streamer/output_http.so -p 8080 -l 0.0.0.0 -w /usr/share/mjpg-streamer/www"
-Restart=always
+Restart=on-failure
 User=root
 Group=root
 StandardOutput=journal

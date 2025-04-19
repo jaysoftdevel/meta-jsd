@@ -22,15 +22,17 @@ IMAGE_INSTALL += " \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
-    linux-firmware \
     water-control \
     tzdata \
     ntp \
     moister \
-    wpa-supplicant \
-    connman \
-    udhcpd \
     "
+
+# WIFI!!
+#   wpa-supplicant \
+#    connman \
+#    dhcpcd \
+#
 
 ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
 
@@ -43,4 +45,3 @@ set_timezone() {
     echo 'Europe/Berlin' > ${IMAGE_ROOTFS}/etc/timezone
 }
 
-TIMEZONE = "Europe/Berlin"

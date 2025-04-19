@@ -7,16 +7,15 @@ SRC_URI += " \
 	file://wlan0.network \
 "
 
-#RDEPENDS:${PN} = "systemd wpa-supplicant"
+RDEPENDS:${PN} = "systemd wpa-supplicant"
 
-#SYSTEMD_SERVICE:${PN} = "wpa_supplicant@wlan0.service"
+SYSTEMD_SERVICE:${PN} = "wpa_supplicant@wlan0.service"
+SYSTEMD_AUTO_ENABLE:${PN} = "enable"
 
 do_install:append () {
 	install -d ${D}${sysconfdir}/wpa_supplicant
 	install -m 0600 ${WORKDIR}/wpa_supplicant-wlan0.conf ${D}${sysconfdir}/wpa_supplicant/wpa_supplicant-wlan0.conf
 
-	#install -d ${D}${sysconfdir}/systemd/network
-	#install -m 0644 ${WORKDIR}/wlan0.network ${D}${sysconfdir}/systemd/network/
 }
 
 FILES:${PN} += "/"

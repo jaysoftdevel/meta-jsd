@@ -1,16 +1,16 @@
 auto lo
 iface lo inet loopback
 
-auto eth0
-iface eth0 inet static
-  address 192.168.5.10
-  netmask 255.255.255.0
-  netork 192.168.5.0
-  gateway 192.168.5.1
-  broadcast 192.168.5.255
+#auto eth0
+#iface eth0 inet static
+#  address 192.168.5.10
+#  netmask 255.255.255.0
+#  netork 192.168.5.0
+#  gateway 192.168.5.1
+#  broadcast 192.168.5.255
 
 
-#auto wlan0
-#iface wlan0 inet dhcp
-#        wireless_mode managed
-#        wpa-conf /etc/wpa_supplicant.conf
+auto wlan0
+iface wlan0 inet dhcp
+        wireless_mode managed
+        wpa-conf /etc/wpa_supplicant/wpa_supplicant-wlan0.conf
