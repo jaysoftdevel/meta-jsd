@@ -28,12 +28,12 @@ IMAGE_INSTALL += " \
     moister \
     usbutils \
     pciutils \
-    "
+    wpa-supplicant \
+    connman \
+    dhcpcd \
+"
 
 # WIFI!!
-#   wpa-supplicant \
-#    connman \
-#    dhcpcd \
 #
 
 ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "

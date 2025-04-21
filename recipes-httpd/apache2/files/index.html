@@ -890,7 +890,7 @@
     }
 
     function reloadLogs() {
-      fetch('growbot-logs.log')
+      fetch('moist_log.csv')
         .then(response => {
           if (!response.ok) throw new Error("Failed to load log");
           return response.text();
