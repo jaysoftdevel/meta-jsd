@@ -1110,9 +1110,9 @@ infoBox.innerHTML = `
 
     function updateChart(times, data0, data1) {
       if (myChartInstance) {
-        myChartInstance.data.labels = times.reverse(); // Reverse the times to show latest on the right
-        myChartInstance.data.datasets[0].data = data0.reverse(); // Reverse the data to show latest on the right
-        myChartInstance.data.datasets[1].data = data1.reverse(); // Reverse the data to show latest on the right
+        myChartInstance.data.labels = times;
+        myChartInstance.data.datasets[0].data = data0;
+        myChartInstance.data.datasets[1].data = data1;
         myChartInstance.update();
       } else {
         const ctx = document.getElementById('myChart').getContext('2d');
