@@ -9,8 +9,10 @@ SRC_URI = " \
 
 SRCREV = "${AUTOREV}"
 
-# Enable the systemd service to start at boot
+# Deploy service file
 SYSTEMD_SERVICE:${PN} = "mjpg-streamer.service"
+# dont autostart, only on demand!
+SYSTEMD_AUTO_ENABLE:${PN} = "disable"
 
 S = "${WORKDIR}/${PN}-experimental"
 

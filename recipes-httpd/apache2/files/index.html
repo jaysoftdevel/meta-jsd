@@ -634,6 +634,10 @@
   </div>
 
   <div class="status-card">
+    <div class="label">
+      <div>Connected clients:</div>
+      <label id="clientsConnected"></label>
+    </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
         <div id="lamp-statusRuntimeServer" class="lamp"></div>
@@ -802,6 +806,11 @@
     });
 
     const updateLamp = (id, state) => {
+      if (id === "statusClients") {
+        document.getElementById('clientsConnected').textContent = state.trim();
+        return;
+      }
+
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
     };
@@ -847,7 +856,7 @@
     }
 
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {
@@ -857,9 +866,6 @@
         })
           .then(res => res.json())
           .then(json => {
-            if (key === "statusCamera") {
-
-            }
             updateLamp(key, json.message);
           })
           .catch(err => {

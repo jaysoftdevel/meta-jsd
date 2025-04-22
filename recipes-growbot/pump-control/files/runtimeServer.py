@@ -46,7 +46,6 @@ def water():
 def control():
     try:
         data = request.get_json().get('command')
-        print("### data: " + str(data))
         match data:
             case 'restartRuntimeServer':
                 logger.info("## Request to restart runtimeServer received")
@@ -82,19 +81,19 @@ def control():
                 try:
                     subprocess.Popen([ 'reboot'])
                 except subprocess.CalledProcessError as e:
-                    logger.error(f"Error rebooting: {e}") 
+                    logger.error(f"Error rebooting: {e}")
             case 'stopCamera':
                 logger.info("## Request to stop camera stream received")
                 try:
                     subprocess.Popen([ 'systemctl', 'stop', 'mjpg-streamer'])
                 except subprocess.CalledProcessError as e:
-                    logger.error(f"Error stopping camera stream: {e}") 
+                    logger.error(f"Error stopping camera stream: {e}")
             case 'startCamera':
                 logger.info("## Request to start camera stream received")
                 try:
                     subprocess.Popen([ 'systemctl', 'start', 'mjpg-streamer'])
                 except subprocess.CalledProcessError as e:
-                    logger.error(f"Error starting camera stream: {e}") 
+                    logger.error(f"Error starting camera stream: {e}")
             case 'statusRuntimeServer':
                 logger.info("## Status of RuntimeServer recieved")
                 try:
@@ -119,7 +118,13 @@ def control():
                     return jsonify({"message": subprocess.run([ 'systemctl', 'is-active', 'mjpg-streamer'], capture_output=True, text=True).stdout, "command ": data}), 200
                 except subprocess.CalledProcessError as e:
                     logger.error(f"Error reading status of camera stream: {e}")
-                    
+            case 'statusClients':
+                logger.info("## Status of connected clients recieved")
+                try:
+                    return jsonify({"message": str(int(subprocess.run("netstat -an | grep :80 | grep ESTABLISHED | wc -l", shell=True, capture_output=True, text=True).stdout.strip()) // 2), "command": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading status of camera stream: {e}")
+
             case 'clearServerLogs':
                 logger.info("## Clearing of server log files requested")
                 try:
@@ -152,4 +157,5 @@ if __name__ == '__main__':
         logger.info('Could not sync with time server: ' + str(e))
     pump_controller = PumpController()
     logger.info("## Starting service")
+    #cc = connectionCounter.connectionCounter()
     app.run(host='0.0.0.0')
