@@ -9,10 +9,10 @@ BAUD_RATE = 115200
 #DATA_BITS = serial.EIGHTBITS
 #PARITY = serial.PARITY_NONE  # 'N' (None)
 #STOP_BITS = serial.STOPBITS_ONE  # 1 stop bit
-TIMEOUT = 1
+TIMEOUT = 5
 LOGFILE = "/var/www/html/moist_log.csv"
 
-ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=1)
+ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
 
 class moist_logger:
     def getMoist(self):
