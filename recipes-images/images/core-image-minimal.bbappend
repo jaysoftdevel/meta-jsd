@@ -31,6 +31,7 @@ IMAGE_INSTALL += " \
     wpa-supplicant \
     connman \
     dhcpcd \
+    linux-firmware-rtl8822 \
 "
 
 # WIFI!!

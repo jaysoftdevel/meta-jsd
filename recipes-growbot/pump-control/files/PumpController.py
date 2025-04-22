@@ -5,8 +5,10 @@ from gpiod.line import Direction, Value
 import logging
 
 # Custom logic level constants for the relay
-PUMP_ON = Value.INACTIVE   # LOW = ON (activates relay)
-PUMP_OFF = Value.ACTIVE    # HIGH = OFF (deactivates relay)
+PUMP_ON = Value.INACTIVE    # LOW = ON (activates relay)
+PUMP_OFF = Value.ACTIVE     # HIGH = OFF (deactivates relay)
+NO_RESET = Value.ACTIVE     # HIGH = Reset line not pulled to ground
+RESET = Value.INACTIVE      # LOW = Reset line pulled to ground for reset
 
 # Configure logger
 logging.basicConfig(
@@ -27,6 +29,7 @@ class PumpController:
         self.line_offsets = {
             "pump0": 2,
             "pump1": 3,
+            "moister": 16,
         }
 
         self.request = gpiod.request_lines(
@@ -40,6 +43,10 @@ class PumpController:
                 self.line_offsets["pump1"]: gpiod.LineSettings(
                     direction=Direction.OUTPUT,
                     output_value=PUMP_OFF
+                ),
+                self.line_offsets["moister"]: gpiod.LineSettings(
+                    direction=Direction.OUTPUT,
+                    output_value=NO_RESET
                 )
             },
         )
@@ -68,23 +75,35 @@ class PumpController:
         else:
             logger.info("## Request for " + str(pump_name).upper() + " received but no such pump available!")
 
+    def reset_moister(self):
+        logger.info("## Resetting Arduino Soil Moist Mesurement ##")
+        self.request.set_value(self.line_offsets["moister"],RESET)
+        time.sleep(1)
+        self.request.set_value(self.line_offsets["moister"],NO_RESET)
+        logger.info("## Done...")
 
 # When standalone fired, to test run!
 if __name__ == "__main__":
+    logger.info("### staritng...")
     controller = PumpController()
-
+    logger.info("### init done...")
+    
     try:
-        logger.info("Pump 1 ON")
-        controller.set_pump("pump0", PUMP_ON)
-        logger.info("Pump 2 ON")
-        controller.set_pump("pump1", PUMP_ON)
-        logger.info("Pump 1 OFF")
-        time.sleep(2)
-        controller.set_pump("pump0", PUMP_OFF)
-        logger.info("Pump 2 OFF")
-        controller.set_pump("pump1", PUMP_OFF)
-        logger.info("Shutting down...")
-        controller.shutdown()
+        # logger.info("Pump 1 ON")
+        # controller.set_pump("pump0", PUMP_ON)
+        # logger.info("Pump 2 ON")
+        # controller.set_pump("pump1", PUMP_ON)
+        # logger.info("Pump 1 OFF")
+        # time.sleep(2)
+        # controller.set_pump("pump0", PUMP_OFF)
+        # logger.info("Pump 2 OFF")
+        # controller.set_pump("pump1", PUMP_OFF)
+        # logger.info("Shutting down...")
+        # controller.shutdown()
+        logger.info("### Trigger reset: ")
+        controller.reset_moister()
+        logger.info("### done resetting")
+        exit()
 
     except KeyboardInterrupt:
         logger.warning("Shutting down pumps safely after keyboard interrupt...")

@@ -46,6 +46,7 @@ def water():
 def control():
     try:
         data = request.get_json().get('command')
+        print("### data: " + str(data))
         match data:
             case 'restartRuntimeServer':
                 logger.info("## Request to restart runtimeServer received")
@@ -65,6 +66,14 @@ def control():
                 logger.info("## Request to restart moist logger received")
                 try:
                     subprocess.Popen([ 'systemctl', 'restart', 'moister'])
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error restarting moist logger: {e}")
+            case 'restartMoistMeasure':
+                print("restarting...")
+                logger.info("## Request to restart moist measurement ECU received")
+                try:
+                    pump_controller.reset_moister()
+                    pump_controller.shutdown()
                 except subprocess.CalledProcessError as e:
                     logger.error(f"Error restarting moist logger: {e}")
             case 'restartSystem':
