@@ -769,6 +769,7 @@
     let serviceRunning = false;
     let statusCamera = "inactive";
 
+    const btn = document.getElementById('toggle-button');
     const webcamFrame = document.getElementById('webcamFrame');
     const chartFrame = document.getElementById('chartFrame');
     const loginOverlay = document.getElementById('loginOverlay');
@@ -820,53 +821,40 @@
         document.getElementById('uptime').textContent = state.trim();
         return;
       }
+      if(id === "statusCamera"){
+        if (statusCamera.trim() === "active") {
+          btn.textContent = "Stop Camera";  // Update button text
+          btn.style.backgroundColor = "tomato";
+        }
+        else if (statusCamera.trim() === "inactive") {
+          btn.textContent = "Start Camera";  // Update button text
+          btn.style.backgroundColor = "#4CAF50";
+        }
+      }
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
     };
 
     function toggleCamera() {
-      const btn = document.getElementById('toggle-button');
-
       if (statusCamera.trim() === "inactive") {
         sendServerCommand("startCamera");  // Send command to stop camera
-        btn.textContent = "Stop Camera";  // Update button text
-        btn.style.backgroundColor = "tomato";
+
         statusCamera = "active";  // Toggle state to active
+
         setTimeout(() => {
           let imageElement = document.getElementById("webcamstream");
           imageElement.src = "/stream?action=stream&t=" + new Date().getTime();
         }, 2000);
       } else if (statusCamera.trim() === "active") {
         sendServerCommand("stopCamera");  // Send command to start camera
-        btn.textContent = "Start Camera";  // Update button text
-        btn.style.backgroundColor = "#4CAF50";
+
         statusCamera = "inactive";  // Toggle state to inactive
         let imageElement = document.getElementById("webcamstream");
 
         // Replace the webcam image with a message when deactivated
         imageElement.src = "";  // Stops the webcam feed
-
-        // Create or update a message div
-        let messageDiv = document.getElementById("camera-status-message");
-        if (!messageDiv) {
-          // If the message div doesn't exist, create it
-          messageDiv = document.createElement("div");
-          messageDiv.id = "camera-status-message";
-          messageDiv.style.textAlign = "center"; // Center the message
-          messageDiv.style.color = "#d9534f"; // Set a red color to indicate deactivation
-          messageDiv.style.fontSize = "18px";
-          messageDiv.textContent = "Camera deactivated, hit 'Toggle Camera'";
-
-          // Append the message div after the image
-          imageElement.parentNode.appendChild(messageDiv);
-        } else {
-          // If the message div exists, just update its text
-          messageDiv.textContent = "Camera deactivated, hit 'Toggle Camera'";
-        }
-      }
-
-      console.log("** toggle to " + statusCamera);
     }
+  }
 
     const checkStatus = () => {
       ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients", "statusUptime"].forEach(key => {
