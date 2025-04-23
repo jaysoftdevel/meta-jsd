@@ -813,6 +813,7 @@
     });
 
     const updateLamp = (id, state) => {
+
       if (id === "statusClients") {
         document.getElementById('clientsConnected').textContent = state.trim();
         return;
@@ -822,14 +823,16 @@
         return;
       }
       if(id === "statusCamera"){
-        if (statusCamera.trim() === "active") {
+        statusCamera = state.trim()
+        if (statusCamera === "active") {
           btn.textContent = "Stop Camera";  // Update button text
           btn.style.backgroundColor = "tomato";
         }
-        else if (statusCamera.trim() === "inactive") {
+        else if (statusCamera === "inactive") {
           btn.textContent = "Start Camera";  // Update button text
           btn.style.backgroundColor = "#4CAF50";
         }
+        statusCamera = statusCamera
       }
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
