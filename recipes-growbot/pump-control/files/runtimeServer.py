@@ -152,7 +152,7 @@ def control():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    logger.info("**** GROWBOT ****")
+    logger.info("**** starting GROWBOT (" + str(subprocess.run('uptime -s', shell=True, capture_output=True, text=True).stdout.strip()) + ") ****")
     try:
         import ntplib, os, time
         client = ntplib.NTPClient()
