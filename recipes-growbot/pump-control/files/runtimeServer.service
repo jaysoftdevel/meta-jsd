@@ -1,7 +1,7 @@
 [Unit]
 Description=Start runtimeServer Python script at boot
-After=network-online.target ntpd.service
-Requires=network-online.target ntpd.service
+After=network.target ntpd.service
+Requires=network.target ntpd.service
 
 [Service]
 ExecStart=/usr/bin/python3 /var/www/html/runtimeServer.py

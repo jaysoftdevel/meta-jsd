@@ -3,6 +3,7 @@ from PumpController import PumpController  # Assuming you have the class in pump
 import logging
 from flask import render_template
 import subprocess
+import streamHandler
 
 app = Flask(__name__)
 
@@ -162,7 +163,7 @@ if __name__ == '__main__':
         logger.error('Could not sync with time server: ' + str(e))
     pump_controller = PumpController()
     logger.info("## Starting service")
-    #cc = connectionCounter.connectionCounter()
+    sh = streamHandler.streamHandler(interval=10)
     try:
         app.run(host='0.0.0.0')
     except Exception as e:
