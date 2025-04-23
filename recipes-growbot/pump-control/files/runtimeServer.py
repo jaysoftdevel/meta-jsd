@@ -123,8 +123,13 @@ def control():
                 try:
                     return jsonify({"message": str(int(subprocess.run("netstat -an | grep :80 | grep ESTABLISHED | wc -l", shell=True, capture_output=True, text=True).stdout.strip()) // 2), "command": data}), 200
                 except subprocess.CalledProcessError as e:
-                    logger.error(f"Error reading status of camera stream: {e}")
-
+                    logger.error(f"Error reading number of connected clients: {e}")
+            case 'statusUptime':
+                logger.info("## Uptime requestr recieved")
+                try:
+                    return jsonify({"message": subprocess.run("uptime", shell=True, capture_output=True, text=True).stdout.strip(), "command": data}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading uptime: {e}")
             case 'clearServerLogs':
                 logger.info("## Clearing of server log files requested")
                 try:

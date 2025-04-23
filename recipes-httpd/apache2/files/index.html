@@ -599,9 +599,11 @@
   <div class="login-overlay" id="loginOverlay">
     <div class="login-modal">
       <h2>Login</h2>
-      <input type="text" id="username" placeholder="Username" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button onclick="handleLogin()">Login</button>
+      <form onsubmit="handleLogin(event)">
+        <input type="text" id="username" placeholder="Username" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+      </form>
     </div>
   </div>
 
@@ -635,8 +637,12 @@
 
   <div class="status-card">
     <div class="label">
-      <div>Connected clients:</div>
-      <label id="clientsConnected"></label>
+      <div>Connected clients:
+      <label id="clientsConnected"></label></div>
+    </div>
+    <div class="label">
+      <div>Uptime:
+      <label id="uptime"></label></div>
     </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
@@ -810,7 +816,10 @@
         document.getElementById('clientsConnected').textContent = state.trim();
         return;
       }
-
+      if (id === "statusUptime") {
+        document.getElementById('uptime').textContent = state.trim();
+        return;
+      }
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
     };
@@ -856,7 +865,7 @@
     }
 
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients", "statusUptime"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {
@@ -1204,6 +1213,7 @@ infoBox.innerHTML = `
     }
 
     function handleLogin() {
+      if (event) event.preventDefault(); // Prevents the default form submit
       const username = document.getElementById('username').value.trim();
       const password = document.getElementById('password').value;
 
