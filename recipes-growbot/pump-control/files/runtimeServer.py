@@ -159,8 +159,12 @@ if __name__ == '__main__':
         os.system('date ' + time.strftime('%m%d%H%M%Y.%S',time.localtime(response.tx_time)))
         logger.info("# Fetched time successful!")
     except Exception as e:
-        logger.info('Could not sync with time server: ' + str(e))
+        logger.error('Could not sync with time server: ' + str(e))
     pump_controller = PumpController()
     logger.info("## Starting service")
     #cc = connectionCounter.connectionCounter()
-    app.run(host='0.0.0.0')
+    try:
+        app.run(host='0.0.0.0')
+    except Exception as e:
+        logger.error('#### Failed to run flask app: ' + str(e))
+

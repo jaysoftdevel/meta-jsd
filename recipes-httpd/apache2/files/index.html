@@ -825,9 +825,12 @@
     };
 
     function toggleCamera() {
+      const btn = document.getElementById('toggle-button');
+
       if (statusCamera.trim() === "inactive") {
         sendServerCommand("startCamera");  // Send command to stop camera
-        //toggle-button.textContent = "Start Camera";  // Update button text
+        btn.textContent = "Stop Camera";  // Update button text
+        btn.style.backgroundColor = "tomato";
         statusCamera = "active";  // Toggle state to active
         setTimeout(() => {
           let imageElement = document.getElementById("webcamstream");
@@ -835,7 +838,8 @@
         }, 2000);
       } else if (statusCamera.trim() === "active") {
         sendServerCommand("stopCamera");  // Send command to start camera
-        //toggle-button. = "Stop Camera";  // Update button text
+        btn.textContent = "Start Camera";  // Update button text
+        btn.style.backgroundColor = "#4CAF50";
         statusCamera = "inactive";  // Toggle state to inactive
         let imageElement = document.getElementById("webcamstream");
 
