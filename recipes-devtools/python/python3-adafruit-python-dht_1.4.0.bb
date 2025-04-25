@@ -1,28 +1,40 @@
-SUMMARY = "Python library for DHT11/DHT22 temperature/humidity sensors"
-HOMEPAGE = "https://github.com/adafruit/Adafruit_Python_DHT"
+#do_compile() {
+#        cd ${SETUPTOOLS_SETUP_PATH}
+#        NO_FETCH_BUILD=1 \
+#        STAGING_INCDIR=${STAGING_INCDIR} \
+#        STAGING_LIBDIR=${STAGING_LIBDIR} \
+#        ${STAGING_BINDIR_NATIVE}/python3-native/python3 setup.py \
+#        bdist_wheel --force-pi --verbose --dist-dir ${PEP517_WHEEL_PATH} ${SETUPTOOLS_BUILD_ARGS} || \
+#        bbfatal_log "'python3 setup.py bdist_wheel ${SETUPTOOLS_BUILD_ARGS}' execution failed."
+#}
+
+
+SUMMARY = "Adafruit DHT Sensor Library"
+HOMEPAGE = "https://github.com/adafruit/Adafruit_CircuitPython_DHT"
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://LICENSE;md5=bda1c9cc018bbe5da02d845724b71d55"
+LIC_FILES_CHKSUM = "file://LICENSE;md5=1a1448fedfbea080fbee2538674706d5"
 
 SRC_URI = " \
-    git://github.com/adafruit/Adafruit_Python_DHT.git;branch=master \
+    git://github.com/adafruit/Adafruit_CircuitPython_DHT.git;branch=main \
     "
-
 SRCREV = "${AUTOREV}"
+
 S = "${WORKDIR}/git"
 
-do_compile() {
-        cd ${SETUPTOOLS_SETUP_PATH}
-        NO_FETCH_BUILD=1 \
-        STAGING_INCDIR=${STAGING_INCDIR} \
-        STAGING_LIBDIR=${STAGING_LIBDIR} \
-        ${STAGING_BINDIR_NATIVE}/python3-native/python3 setup.py \
-        bdist_wheel --force-pi --verbose --dist-dir ${PEP517_WHEEL_PATH} ${SETUPTOOLS_BUILD_ARGS} || \
-        bbfatal_log "'python3 setup.py bdist_wheel ${SETUPTOOLS_BUILD_ARGS}' execution failed."
+inherit python3-dir
+
+do_install() {
+    install -d ${D}${PYTHON_SITEPACKAGES_DIR}/adafruit_dht
+    install -m 0644 ${S}/adafruit_dht.py ${D}${PYTHON_SITEPACKAGES_DIR}/adafruit_dht/
 }
 
-inherit setuptools3
+RDEPENDS:${PN} += " \
+    python3-core \
+    python3-adafruit-circuitpython-busdevice \
+    python3-adafruit-blinka \
+    python3-adafruit-circuitpython-register \
+"
 
-RDEPENDS:${PN} += "python3"
+FILES:${PN} += "/"
 
-# Ensure it uses Python 3
-PYTHON_TARGET_VERSION = "3"
+DEPENDS += "python3-adafruit-circuitpython-busdevice python3-adafruit-blinka python3-adafruit-circuitpython-register"
