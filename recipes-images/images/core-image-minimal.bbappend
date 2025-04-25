@@ -19,7 +19,7 @@ IMAGE_INSTALL += " \
     python3-pyserial \
     python3-gpiod \
     python3-ntplib \
-    python3-adafruit-python-dht \
+    python3-adafruit-circuitpython-dht \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
