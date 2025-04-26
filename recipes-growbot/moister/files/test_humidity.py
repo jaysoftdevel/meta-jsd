@@ -17,11 +17,8 @@ class DHT22:
         timeout_s = timeout_us / 1000000
         while (time.perf_counter() - start) < timeout_s:
             val = self.request.get_value(self.line_offset)
-            print("### val1: " + str(val))
             if val == expected_level:
-                print("### val2: " + str(val))
                 return True
-            print("### val3: " + str(val))
         return False
 
     def _send_start_signal(self):
@@ -43,17 +40,16 @@ class DHT22:
         self.request = gpiod.request_lines(self.chip, consumer="dht22", config={self.line_offset : gpiod.LineSettings(direction=Direction.INPUT)})
 
     def _read_bit(self):
-        if not self._wait_for_level(0, 1000):
-
+        if not self._wait_for_level(Value.INACTIVE, 100):
             return None
-        if not self._wait_for_level(1, 1000):
+        if not self._wait_for_level(Value.ACTIVE, 100):
             return None
         start = time.perf_counter()
-        while self.request.get_value(self.line_offset) == 1:
+        while self.request.get_value(self.line_offset) == Value.ACTIVE:
             if (time.perf_counter() - start) > 0.0001:  # 100 us
                 break
         pulse_length = (time.perf_counter() - start)
-        return 1 if pulse_length > 0.00004 else 0
+        return 1 if pulse_length > 0.00006 else 0
 
     def _read_data(self):
         bits = []
@@ -74,26 +70,30 @@ class DHT22:
         return bytes_list
 
     def read(self):
-        print("## reading, send start sequence...")
-        self._send_start_signal()
-        print("## read data")
-        bits = self._read_data()
-        print("## convert")
-        data = self._bits_to_bytes(bits)
-        print("## shifting")
-        humidity = (data[0] << 8) | data[1]
-        temperature = (data[2] << 8) | data[3]
-        checksum = data[4]
-        print("## checking...")
-        if ((sum(data[:4]) & 0xFF) != checksum):
-            raise RuntimeError("Checksum mismatch!")
+        for attempt in range(3):  # try up to 3 times
+            self._send_start_signal()
+            try:
+                bits = self._read_data()
+                data = self._bits_to_bytes(bits)
 
-        humidity /= 10.0
-        if temperature & 0x8000:
-            temperature = -(temperature & 0x7FFF)
-        temperature /= 10.0
+                humidity = (data[0] << 8) | data[1]
+                temperature = (data[2] << 8) | data[3]
+                checksum = data[4]
 
-        return temperature, humidity
+                if ((sum(data[:4]) & 0xFF) != checksum):
+                    raise RuntimeError("Checksum mismatch!")
+
+                humidity /= 10.0
+                if temperature & 0x8000:
+                    temperature = -(temperature & 0x7FFF)
+                temperature /= 10.0
+
+                return temperature, humidity
+
+            except Exception as e:
+                #print(f"Read attempt {attempt+1} failed: {e}")
+                time.sleep(0.5)  # short pause before retry
+        raise RuntimeError("Failed to read from DHT22 after retries")
 
 # Example usage
 if __name__ == "__main__":
