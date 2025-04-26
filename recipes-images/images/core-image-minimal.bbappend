@@ -19,7 +19,7 @@ IMAGE_INSTALL += " \
     python3-pyserial \
     python3-gpiod \
     python3-ntplib \
-    python3-adafruit-circuitpython-dht \
+    python3-pip \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
@@ -34,7 +34,11 @@ IMAGE_INSTALL += " \
     dhcpcd \
     linux-firmware-rtl8822 \
 "
-
+#python3-adafruit-blinka \
+#python3-adafruit-circuitpython-dht \
+#python3-adafruit-platformdetect \
+#
+  
 # WIFI!!
 #
 
