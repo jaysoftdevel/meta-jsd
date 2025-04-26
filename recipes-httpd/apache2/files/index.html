@@ -834,6 +834,10 @@
         }
         statusCamera = statusCamera
       }
+      if (id === "statusTemp") {
+        console.log("###### statusTemp: " + state)
+        return;
+      }
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
     };
@@ -860,7 +864,7 @@
   }
 
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients", "statusUptime"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients", "statusUptime", "statusTemp"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {

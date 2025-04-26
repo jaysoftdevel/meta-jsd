@@ -4,6 +4,7 @@ import logging
 from flask import render_template
 import subprocess
 import streamHandler
+import temperatureMeasure
 
 app = Flask(__name__)
 
@@ -131,6 +132,12 @@ def control():
                     return jsonify({"message": subprocess.run("uptime", shell=True, capture_output=True, text=True).stdout.strip(), "command": data}), 200
                 except subprocess.CalledProcessError as e:
                     logger.error(f"Error reading uptime: {e}")
+            case 'statusTemp':
+                logger.info("## Status request for temperature and humidity recieved")
+                try:
+                    return jsonify({"message": temperatureMeasure.DHT22(26).read()}), 200
+                except subprocess.CalledProcessError as e:
+                    logger.error(f"Error reading temperature: {e}")
             case 'clearServerLogs':
                 logger.info("## Clearing of server log files requested")
                 try:

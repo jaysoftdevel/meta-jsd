@@ -33,7 +33,7 @@ class DHT22:
         self.request.set_value(self.line_offset, Value.ACTIVE)  # Set HIGH
         time.sleep(0.00002)  # 20us
         self.request.set_value(self.line_offset, Value.INACTIVE)  # Set LOW
-        
+
         # Set the pin as input again
         self.request.release()
         # Re-request as input for reading
@@ -88,7 +88,7 @@ class DHT22:
                     temperature = -(temperature & 0x7FFF)
                 temperature /= 10.0
 
-                return temperature, humidity
+                return f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %"
 
             except Exception as e:
                 #print(f"Read attempt {attempt+1} failed: {e}")
