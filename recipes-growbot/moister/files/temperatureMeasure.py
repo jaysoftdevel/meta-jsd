@@ -22,21 +22,19 @@ class DHT22:
         return False
 
     def _send_start_signal(self):
-        # Set the pin as output
+        # First, release any previous request
         self.request.release()
 
-        # Re-request as input for reading
+        # Now re-request as OUTPUT
         self.request = gpiod.request_lines(self.chip, consumer="dht22", config={self.line_offset : gpiod.LineSettings(direction=Direction.OUTPUT)})
-        self.request.set_value(self.line_offset, Value.INACTIVE)  # Set LOW
-        time.sleep(0.02)  # 20ms
+        self.request.set_value(self.line_offset, Value.INACTIVE)  # LOW for start signal
+        time.sleep(0.02)  # 20 ms
 
-        self.request.set_value(self.line_offset, Value.ACTIVE)  # Set HIGH
-        time.sleep(0.00002)  # 20us
-        self.request.set_value(self.line_offset, Value.INACTIVE)  # Set LOW
+        self.request.set_value(self.line_offset, Value.ACTIVE)  # HIGH for 20-40 us
+        time.sleep(0.00003)  # 30 us
 
-        # Set the pin as input again
+        # Release and re-request as INPUT immediately
         self.request.release()
-        # Re-request as input for reading
         self.request = gpiod.request_lines(self.chip, consumer="dht22", config={self.line_offset : gpiod.LineSettings(direction=Direction.INPUT)})
 
     def _read_bit(self):
@@ -46,10 +44,10 @@ class DHT22:
             return None
         start = time.perf_counter()
         while self.request.get_value(self.line_offset) == Value.ACTIVE:
-            if (time.perf_counter() - start) > 0.0001:  # 100 us
+            if (time.perf_counter() - start) > 0.0002:  # 100 us
                 break
         pulse_length = (time.perf_counter() - start)
-        return 1 if pulse_length > 0.00006 else 0
+        return 1 if pulse_length > 0.00004 else 0
 
     def _read_data(self):
         bits = []
@@ -75,6 +73,8 @@ class DHT22:
             try:
                 bits = self._read_data()
                 data = self._bits_to_bytes(bits)
+                self.request.release()
+
 
                 humidity = (data[0] << 8) | data[1]
                 temperature = (data[2] << 8) | data[3]
@@ -98,8 +98,7 @@ class DHT22:
 # Example usage
 if __name__ == "__main__":
     sensor = DHT22(pin=26)  # BCM GPIO 26
-    #try:
-    temp, hum = sensor.read()
-    print(f"Temperature: {temp:.1f} °C, Humidity: {hum:.1f} %")
-    #except Exception as e:
-    #    print(f"Failed to read sensor: {e}")
+    try:
+        print(sensor.read())
+    except Exception as e:
+        print(f"Failed to read sensor: {e}")

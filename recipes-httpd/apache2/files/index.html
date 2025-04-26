@@ -466,7 +466,9 @@
 
     .label {
       text-align: center;
+      font-size: 1.2rem;
       margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
     }
 
     .lamp-wrapper {
@@ -643,6 +645,10 @@
     <div class="label">
       <div>Uptime:
       <label id="uptime"></label></div>
+    </div>
+    <div class="label">
+      <div>
+      <label id="temperature"></label></div>
     </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
@@ -835,8 +841,10 @@
         statusCamera = statusCamera
       }
       if (id === "statusTemp") {
-        console.log("###### statusTemp: " + state)
-        return;
+        if(state != undefined){
+          document.getElementById('temperature').textContent = state;
+          return;
+        }
       }
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
