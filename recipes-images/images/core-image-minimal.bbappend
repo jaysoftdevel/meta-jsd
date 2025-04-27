@@ -29,17 +29,19 @@ IMAGE_INSTALL += " \
     moister \
     usbutils \
     pciutils \
-    wpa-supplicant \
-    connman \
-    dhcpcd \
-    linux-firmware-rtl8822 \
 "
+
+# Adafruit libs, not fully working yet!
 #python3-adafruit-blinka \
 #python3-adafruit-circuitpython-dht \
 #python3-adafruit-platformdetect \
 #
-  
+
 # WIFI!!
+#wpa-supplicant \
+#connman \
+#dhcpcd \
+#linux-firmware-rtl8822 \
 #
 
 ROOTFS_POSTPROCESS_COMMAND += " set_timezone ; "
