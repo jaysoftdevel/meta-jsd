@@ -1,15 +1,15 @@
 // Pin configuration
-const int ledPin = 12; // D12
+const int atomizerPin = 12; // D12
 
 // Timing
 const unsigned long interval = 5000; // 5 seconds in milliseconds
 unsigned long previousMillis = 0;
 
 // State
-bool ledState = LOW;
+bool atomizerPin = LOW;
 
 void setup() {
-  pinMode(ledPin, OUTPUT);
+  pinMode(atomizerPin, OUTPUT);
 }
 
 void loop() {
@@ -20,7 +20,7 @@ void loop() {
     previousMillis = currentMillis; // save the last time the pin was toggled
 
     // Toggle the state
-    ledState = !ledState;
-    digitalWrite(ledPin, ledState);
+    atomizerPin = !ledState;
+    digitalWrite(atomizerPin, ledState);
   }
 }

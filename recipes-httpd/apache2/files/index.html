@@ -644,6 +644,10 @@
       <div>Uptime:
       <label id="uptime"></label></div>
     </div>
+    <div class="label">
+      <div>
+      <label id="temperature"></label></div>
+    </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
         <div id="lamp-statusRuntimeServer" class="lamp"></div>
@@ -836,8 +840,13 @@
       }
       if (id === "statusTemp") {
         if(state != undefined){
-          document.getElementById('temperature').textContent = state;
-        }
+           document.getElementById('temperature').textContent = state;
+         }
+         else{
+           if(!document.getElementById('temperature').textContent.includes('temperature*')){
+             document.getElementById('temperature').textContent = '*' + document.getElementById('temperature').textContent
+           }
+         }
         return;
       }
       const lamp = document.getElementById(`lamp-${id}`);

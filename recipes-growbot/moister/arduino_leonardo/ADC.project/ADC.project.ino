@@ -1,6 +1,13 @@
 #define USB_DEBUG
 #define ITERATIONS 10
 
+// Pin configuration
+const int atomizerPin = 12; // D12
+// State
+bool atomizerPin = LOW;
+
+static bool runAtomizer = false;
+
 static int avVal0[ITERATIONS] = {0};
 static int avVal1[ITERATIONS] = {0};
 
@@ -8,6 +15,7 @@ void setup()
 {
       Serial.begin(115200);
       Serial1.begin(115200);
+      pinMode(atomizerPin, OUTPUT);
 }
 
 void loop()
@@ -58,6 +66,19 @@ void loop()
                   Serial1.print(",");
                   Serial1.println(total1/ITERATIONS);
             }
+            else if (
+                  received_data0 == '3' ||
+                  received_data1 == '3')
+            {
+                  runAtomizer = true;
+            }
+
+            else if (
+                  received_data0 == '4' ||
+                  received_data1 == '4')
+            {
+                  runAtomizer = false;
+            }
             else
             {
                   Serial.print("# ");
@@ -67,5 +88,12 @@ void loop()
                   return;
             }
       }
-      delay(5000);
+      if(runAtomizer==true){
+            // start atomizer
+            digitalWrite(atomizerPin, HIGH);
+      }
+      delay(4000);
+      // always set low, before moist measuring to stabelize
+      digitalWrite(atomizerPin, LOW);
+      delay(1000);
 }
