@@ -1,10 +1,8 @@
 #define USB_DEBUG
-#define ITERATIONS 10
+#define ITERATIONS 6
 
 // Pin configuration
 const int atomizerPin = 12; // D12
-// State
-bool atomizerPin = LOW;
 
 static bool runAtomizer = false;
 
@@ -16,6 +14,7 @@ void setup()
       Serial.begin(115200);
       Serial1.begin(115200);
       pinMode(atomizerPin, OUTPUT);
+      digitalWrite(atomizerPin, HIGH); //init not to run, its active low!
 }
 
 void loop()
@@ -30,7 +29,8 @@ void loop()
             avVal1[i+1] = avVal1[i];
             total1 += avVal1[i+1];
       }
-
+      // wait for signal to be stabilized
+      delay(3000);
       // read back into "old" position 0
       avVal0[0] = analogRead(A0);
       avVal1[0] = analogRead(A1);
@@ -61,10 +61,14 @@ void loop()
             {
                   Serial.print(total0/ITERATIONS);
                   Serial.print(",");
-                  Serial.println(total1/ITERATIONS);
+                  Serial.print(total1/ITERATIONS);
+                  Serial.print(",");
+                  Serial.println(runAtomizer);
                   Serial1.print(total0/ITERATIONS);
                   Serial1.print(",");
-                  Serial1.println(total1/ITERATIONS);
+                  Serial1.print(total1/ITERATIONS);
+                  Serial1.print(",");
+                  Serial1.println(runAtomizer);
             }
             else if (
                   received_data0 == '3' ||
@@ -90,10 +94,9 @@ void loop()
       }
       if(runAtomizer==true){
             // start atomizer
-            digitalWrite(atomizerPin, HIGH);
+            digitalWrite(atomizerPin, LOW); // active low!
       }
-      delay(4000);
+      delay(7000);
       // always set low, before moist measuring to stabelize
-      digitalWrite(atomizerPin, LOW);
-      delay(1000);
+      digitalWrite(atomizerPin, HIGH); //inactive high!
 }
