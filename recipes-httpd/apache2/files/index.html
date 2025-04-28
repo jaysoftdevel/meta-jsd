@@ -703,6 +703,12 @@
           <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('clearMoistLogs')">
             Clear Moister Logs
           </button>
+          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('startSprayer')">
+            Start Spayer
+          </button>
+          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('stopSprayer')">
+            Stop Spayer
+          </button>
         </div>
 
         <!-- Right Column (Existing Buttons) -->
@@ -767,7 +773,7 @@
 
   <script>
     let myChartInstance = null;
-    let fullData = { times: [], data0: [], data1: [] };
+    let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [] };
     let currentLimit = 30;
 
     let serviceRunning = false;
@@ -907,7 +913,7 @@
         })
           .then(response => response.json())
           .then(data => {
-            console.log("fetching control ", data.message); // Handle response from Flask
+            console.log("fetching message " + data.message); // Handle response from Flask
           })
           .catch(error => {
             console.error('Error: ', error);
@@ -1052,15 +1058,18 @@
         const rows = data.split("\n");//.slice(1); // Skip header
 
         fullData.times = [];
-        fullData.data0 = [];
-        fullData.data1 = [];
+        fullData.soil_top = [];
+        fullData.soil_bottom = [];
+        fullData.atomizer = [];
+
 
         rows.forEach(row => {
-          const [time, val0, val1] = row.split(",");
+          const [time, val0, val1, val2] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
-            fullData.data0.push(parseInt(val0.trim(), 10));
-            fullData.data1.push(parseInt(val1.trim(), 10));
+            fullData.soil_top.push(parseInt(val0.trim(), 10));
+            fullData.soil_bottom.push(parseInt(val1.trim(), 10));
+            fullData.atomizer.push(parseInt(val2.trim(), 10));
           }
         });
 
@@ -1079,7 +1088,7 @@
     }
 
     function renderChartWithLimit() {
-      let { times, data0, data1 } = fullData;
+      let { times, soil_top, soil_bottom, atomizer } = fullData;
 
       if (!times.length) return;
 
@@ -1088,10 +1097,11 @@
       let entryCount = times.length;
 
       times = times.slice(-currentLimit);
-      data0 = data0.slice(-currentLimit);
-      data1 = data1.slice(-currentLimit);
+      soil_top = soil_top.slice(-currentLimit);
+      soil_bottom = soil_bottom.slice(-currentLimit);
+      atomizer = atomizer.slice(-currentLimit);
 
-      updateChart(times, data0, data1);
+      updateChart(times, soil_top, soil_bottom, atomizer);
 // Calculate duration (based on full CSV data, not filtered)
 const start = parseTimeToDate(fullData.times[0]);
 const end = parseTimeToDate(fullData.times[fullData.times.length - 1]);
@@ -1111,11 +1121,13 @@ if (!isNaN(diffMs)) {
   ].filter(Boolean).join(" ");
 }
 
-// Calculate min and max values for both data0 and data1
-const data0Min = Math.min(...fullData.data0);
-const data0Max = Math.max(...fullData.data0);
-const data1Min = Math.min(...fullData.data1);
-const data1Max = Math.max(...fullData.data1);
+// Calculate min and max values for both soil_top and soil_bottom
+const soil_topMin = Math.min(...fullData.soil_top);
+const soil_topMax = Math.max(...fullData.soil_top);
+const soil_bottomMin = Math.min(...fullData.soil_bottom);
+const soil_bottomMax = Math.max(...fullData.soil_bottom);
+const atomizerMin = Math.min(...fullData.atomizer);
+const atomizerMax = Math.max(...fullData.atomizer);
 
 const infoBox = document.getElementById('chart-info');
 infoBox.innerHTML = `
@@ -1123,8 +1135,9 @@ infoBox.innerHTML = `
   🧮 <strong>Entries:</strong> ${fullData.times.length} &nbsp; |
   ⏱️ <strong>Duration:</strong> ${duration} &nbsp;
   <br>
-  📈 <strong>data0:</strong> min ${data0Min}, max ${data0Max} &nbsp; |
-  📉 <strong>data1:</strong> min ${data1Min}, max ${data1Max}
+  📈 <strong>soil_top:</strong> min ${soil_topMin}, max ${soil_topMax} &nbsp; |
+  📉 <strong>soil_bottom:</strong> min ${soil_bottomMin}, max ${soil_bottomMax}
+  📉 <strong>atomizer:</strong> min ${atomizerMin}, max ${atomizerMax}
 `;
 
     }
@@ -1136,11 +1149,12 @@ infoBox.innerHTML = `
       return now;
     }
 
-    function updateChart(times, data0, data1) {
+    function updateChart(times, soil_top, soil_bottom, atomizer) {
       if (myChartInstance) {
         myChartInstance.data.labels = times;
-        myChartInstance.data.datasets[0].data = data0;
-        myChartInstance.data.datasets[1].data = data1;
+        myChartInstance.data.datasets[0].data = soil_top;
+        myChartInstance.data.datasets[1].data = soil_bottom;
+        myChartInstance.data.datasets[2].data = atomizer*400;
         myChartInstance.update();
       } else {
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -1151,7 +1165,7 @@ infoBox.innerHTML = `
             datasets: [
               {
                 label: 'Bottom',
-                data: data0,
+                data: soil_top,
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
                 backgroundColor: 'rgba(59, 130, 246, 0.25)',
                 borderWidth: 2,
@@ -1161,8 +1175,18 @@ infoBox.innerHTML = `
               },
               {
                 label: 'Top',
-                data: data1,
+                data: soil_bottom,
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
+                backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 1
+              },
+              {
+                label: 'atomizer',
+                data: atomizer,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow').trim(),
                 backgroundColor: 'rgba(16, 185, 129, 0.25)',
                 borderWidth: 2,
                 fill: true,

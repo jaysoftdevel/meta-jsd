@@ -7,6 +7,7 @@ from flask import render_template
 import subprocess
 import streamHandler
 import temperatureMeasure
+from moist_logger import moist_logger
 
 app = Flask(__name__)
 
@@ -133,6 +134,20 @@ def control():
                 subprocess.Popen(["systemctl", "start", "mjpg-streamer"])
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error starting camera stream: {e}")
+        case "startSprayer":
+            logger.info("## Request to start sprayer received")
+            try:
+                print("## stuff do be done for..")
+                moist_logger.startAtomzier()
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error starting Sprayer: {e}")
+        case "stopSprayer":
+            logger.info("## Request to stop sprayer received")
+            try:
+                print("## stuff do be done for off..")
+                moist_logger.stopAtomzier()
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error stopping Sprayer: {e}")
         case "statusRuntimeServer":
             logger.info("## Status of RuntimeServer recieved")
             try:
@@ -295,6 +310,7 @@ if __name__ == "__main__":
     except Exception as e:
         logger.error("Could not sync with time server: " + str(e))
     pump_controller = PumpController()
+    moist_logger = moist_logger()
     logger.info("## Starting service")
     sh = streamHandler.streamHandler(interval=10)
     try:
