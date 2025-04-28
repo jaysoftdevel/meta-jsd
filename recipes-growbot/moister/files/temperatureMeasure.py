@@ -22,8 +22,8 @@ class DHT22:
         return False
 
     def _send_start_signal(self):
-        # First, release any previous request
-        self.request.release()
+        if(self.request is not None):
+            self.request.release()
 
         # Now re-request as OUTPUT
         self.request = gpiod.request_lines(self.chip, consumer="dht22", config={self.line_offset : gpiod.LineSettings(direction=Direction.OUTPUT)})
@@ -74,6 +74,7 @@ class DHT22:
                 bits = self._read_data()
                 data = self._bits_to_bytes(bits)
                 self.request.release()
+                self.request = None
 
 
                 humidity = (data[0] << 8) | data[1]
@@ -93,7 +94,7 @@ class DHT22:
             except Exception as e:
                 #print(f"Read attempt {attempt+1} failed: {e}")
                 time.sleep(0.5)  # short pause before retry
-        raise RuntimeError("Failed to read from DHT22 after retries")
+        # raise RuntimeError("Failed to read from DHT22 after retries")
 
 # Example usage
 if __name__ == "__main__":
