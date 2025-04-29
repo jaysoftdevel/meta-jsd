@@ -1,0 +1,40 @@
+/dts-v1/;
+/plugin/;
+
+/ {
+    compatible = "brcm,bcm2712"; // Raspberry Pi 5 (BCM2712 SoC)
+
+    fragment@0 {
+        target-path = "/";
+        __overlay__ {
+            mygpio: mygpio {
+                compatible = "gpio-leds"; // gpio-leds driver for simple output control
+                pinctrl-names = "default";
+                pinctrl-0 = <&mygpio_pins>;
+
+                gpio2 {
+                    label = "boot-low-gpio2";
+                    gpios = <&gpio 2 0>; // GPIO 2, active high (0 = active high)
+                    default-state = "off"; // LOW at boot
+                };
+
+                gpio3 {
+                    label = "boot-low-gpio3";
+                    gpios = <&gpio 3 0>; // GPIO 3, active high (0 = active high)
+                    default-state = "off"; // LOW at boot
+                };
+            };
+        };
+    };
+
+    fragment@1 {
+        target = <&gpio>;
+        __overlay__ {
+            mygpio_pins: mygpio_pins {
+                brcm,pins = <2 3>;         // GPIO 2 and GPIO 3
+                brcm,function = <1 1>;     // 1 = OUTPUT
+                brcm,pull = <0 0>;         // 0 = No pull-up, no pull-down
+            };
+        };
+    };
+};
