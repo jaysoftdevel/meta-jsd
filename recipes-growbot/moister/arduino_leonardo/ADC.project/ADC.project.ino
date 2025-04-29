@@ -23,10 +23,10 @@ bool preparingSensorRead = false;
 
 void setup()
 {
-    Serial.begin(115200);
-    Serial1.begin(115200);
     pinMode(atomizerPin, OUTPUT);
     digitalWrite(atomizerPin, HIGH); // Atomizer initially OFF (active low)
+    Serial.begin(115200);
+    Serial1.begin(115200);
 }
 
 void loop()

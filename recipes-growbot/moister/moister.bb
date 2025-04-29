@@ -2,13 +2,14 @@ LICENSE = "CLOSED"
 
 SRC_URI += " \
     file://moist_logger.py \
-    file://moister.service \
     "
+#    file://moister.service \
+#
 
 inherit systemd
 
 # Make sure systemd service is enabled
-SYSTEMD_SERVICE:${PN} = "moister.service"
+#SYSTEMD_SERVICE:${PN} = "moister.service"
 
 S = "${WORKDIR}"
 
@@ -19,6 +20,6 @@ do_install(){
     install -m 0644 ${S}/moist_logger.py ${D}/var/www/html
 
     # Install the systemd service
-    install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/moister.service ${D}${systemd_unitdir}/system/moister.service
+    #install -d ${D}${systemd_unitdir}/system
+    #install -m 0644 ${WORKDIR}/moister.service ${D}${systemd_unitdir}/system/moister.service
 }

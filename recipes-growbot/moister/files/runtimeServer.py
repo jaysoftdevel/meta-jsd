@@ -166,24 +166,6 @@ def control():
                 )
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error reading status of runtimeServer: {e}")
-        case "statusMoister":
-            logger.info("## Status of Moister recieved")
-            try:
-                return (
-                    jsonify(
-                        {
-                            "message": subprocess.run(
-                                ["systemctl", "is-active", "moister"],
-                                capture_output=True,
-                                text=True,
-                            ).stdout,
-                            "command ": data,
-                        }
-                    ),
-                    200,
-                )
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Error reading status of moister: {e}")
         case "statusWebserver":
             logger.info("## Status of Webserver recieved")
             try:

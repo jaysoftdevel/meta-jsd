@@ -654,10 +654,6 @@
         <div class="label">statusRuntimeServer</div>
       </div>
       <div class="lamp-wrapper">
-        <div id="lamp-statusMoister" class="lamp"></div>
-        <div class="label">statusMoister</div>
-      </div>
-      <div class="lamp-wrapper">
         <div id="lamp-statusWebserver" class="lamp"></div>
         <div class="label">statusWebserver</div>
       </div>
@@ -718,9 +714,6 @@
           </button>
           <button onclick="sendServerCommand('restartWebServer')" class="server-button">
             Restart Webserver
-          </button>
-          <button onclick="sendServerCommand('restartMoistLogger')" class="server-button">
-            Restart Moist Logger
           </button>
           <button onclick="sendServerCommand('restartMoistMeasure')" class="server-button">
             Restart Moist Measurement ECU
@@ -881,7 +874,7 @@
   }
 
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusMoister", "statusCamera", "statusClients", "statusUptime", "statusTemp"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusTemp"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {
