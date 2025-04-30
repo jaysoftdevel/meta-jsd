@@ -68,6 +68,7 @@ class DHT22:
         return bytes_list
 
     def read(self):
+        global temperature, humidity
         for attempt in range(3):  # try up to 3 times
             self._send_start_signal()
             try:
@@ -88,18 +89,36 @@ class DHT22:
                 if temperature & 0x8000:
                     temperature = -(temperature & 0x7FFF)
                 temperature /= 10.0
-
-                return f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %"
-
+                
+                if(temperature < 38.0 and temperature > 0.0):
+                    return f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %"
+                elif(temperature >= 38.0 and temperature <= 80.0):
+                    return f"Temperature: {temperature/2:.1f} °C, Humidity: {humidity/2:.1f} %"
+                return f"Temperature: ERROR, Humidity: ERROR"
             except Exception as e:
                 #print(f"Read attempt {attempt+1} failed: {e}")
                 time.sleep(0.5)  # short pause before retry
-        # raise RuntimeError("Failed to read from DHT22 after retries")
+        
+    def read_raw(self):
+        global temperature, humidity 
+        self.read()
+        if(temperature < 38.0 and temperature > 0.0):
+            return f"{(temperature)},{humidity}"
+        elif(temperature >= 38.0 and temperature <= 80.0):
+            return f"{temperature / 2},{humidity / 2}"
+        else:
+            return f"0.0,0.0"
+
+
 
 # Example usage
 if __name__ == "__main__":
+    humidity = None
+    temperature = None
     sensor = DHT22(pin=26)  # BCM GPIO 26
     try:
         print(sensor.read())
+        time.sleep(1)
+        print(sensor.read_raw())
     except Exception as e:
         print(f"Failed to read sensor: {e}")

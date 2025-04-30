@@ -71,6 +71,7 @@
       padding: 1rem;
       max-width: 100%;
       box-sizing: border-box;
+      flex-direction: row;
     }
 
     #logoutBtn {
@@ -85,7 +86,8 @@
       border-radius: 6px;
       cursor: pointer;
       font-size: 1rem;
-      display: none; /* hidden by default */
+      display: none;
+      /* hidden by default */
     }
 
     #logoutBtn:hover {
@@ -186,16 +188,15 @@
 
     .watering-wrapper {
       display: inline-block;
-      text-align: left;
+      text-align: center;
       width: 100%;
-      max-width: 45%px;
     }
 
     .watering-wrapper label {
       display: block;
       margin-bottom: 6px;
       font-weight: bold;
-      font-size: 0.95rem;
+      font-size: 1.2rem;
       color: var(--accent-blue);
     }
 
@@ -210,7 +211,6 @@
       gap: 8px;
       align-items: center;
       width: 100%;
-      max-width: 100%;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       box-sizing: border-box;
     }
@@ -223,6 +223,8 @@
       border-radius: 5px;
       font-size: 0.95rem;
       cursor: pointer;
+      width: 12rem;
+      align-items: center;
     }
 
     .watering-frame button:hover {
@@ -256,11 +258,71 @@
       padding: 0.75rem;
       border-radius: 12px;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
-      max-width: 80%;
+      max-width: 100%;
       box-sizing: border-box;
     }
 
-    @media (max-width: 768px) {
+    .log-section {
+      display: flex;
+      justify-content: center;
+      padding: 2rem;
+    }
+
+    .log-title {
+      margin-top: 0;
+      font-size: 1.25rem;
+      color: var(--accent-blue);
+      margin-bottom: 1rem;
+    }
+
+    .log-output {
+      background-color: #141414;
+      /* Dark background for terminal effect */
+      color: #ebe5e5;
+      /* Light text */
+      font-family: 'Courier New', monospace;
+      font-size: 0.85rem;
+      border-radius: 8px;
+      padding: 1rem;
+      max-width: 100%;
+      max-height: 300px;
+      overflow-y: scroll;
+      /* Force scrollbars on all platforms */
+      white-space: pre-wrap;
+      -webkit-overflow-scrolling: touch;
+      /* iOS momentum scroll */
+      overscroll-behavior: contain;
+      /* Prevent parent scroll interference */
+      touch-action: pan-y;
+      /* Enable vertical gesture recognition */
+    }
+
+    .log-actions {
+      text-align: right;
+      margin-top: 1rem;
+    }
+
+    .reload-button {
+      background-color: #4b5563;
+      /* Button background */
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .custom-container {
+      display: flex;
+      justify-content: space-between;
+      padding: 2rem;
+      gap: 2rem;
+      flex-direction: row;
+    }
+
+
+    @media (max-width: 700px) {
       header {
         font-size: 2rem;
         padding: 1rem;
@@ -269,6 +331,7 @@
       .main-content {
         padding: 0.5rem;
         align-items: center;
+        flex-direction: row;
       }
 
       .webcam-frame,
@@ -287,13 +350,15 @@
         min-width: 80px;
       }
 
-      .watering-frame {
-        width: 100%;
-        max-width: 45%;
-      }
-
       .watering-section {
         padding: 0.5rem;
+      }
+
+      .custom-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        flex-direction: column;
       }
     }
 
@@ -322,14 +387,7 @@
       box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.4);
     }
 
-    /* Container for placing frames side by side */
-    .custom-container {
-      display: flex;
-      justify-content: space-between;
-      padding: 2rem;
-      gap: 2rem;
-      /* Ensures space between frames */
-    }
+
 
     /* Common style for all frames */
     .custom-frame {
@@ -345,10 +403,9 @@
 
     /* Title style within each frame */
     .custom-frame-title {
-      margin-top: 0;
+      margin: 0 0 1rem;
       font-size: 1.25rem;
       color: #3b82f6;
-      margin-bottom: 1rem;
     }
 
     /* Container for the buttons within the Server Handling frame */
@@ -367,6 +424,7 @@
       border-radius: 10px;
       cursor: pointer;
       transition: background-color 0.3s ease;
+      width: auto;
     }
 
     /* Specific color for Start Server button */
@@ -388,6 +446,7 @@
       flex-direction: column;
       gap: 12px;
       margin-top: 10px;
+      align-items: center;
     }
 
     .server-button:hover {
@@ -474,120 +533,121 @@
     }
 
     .webcam-frame {
-    cursor: pointer;
-    display: inline-block;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    max-width: 100%;
-  }
+      cursor: pointer;
+      display: inline-block;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      max-width: 100%;
+    }
 
-  .webcam-frame.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    background: #000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .webcam-frame.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .webcam-frame img {
-    width: 100%;
-    height: auto;
-    object-fit: contain;
-  }
+    .webcam-frame img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+    }
 
-  .webcam-frame.fullscreen img {
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .chart-frame {
-    cursor: pointer;
-    border-radius: 8px;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-    max-width: 100%;
-    height: 400px;
-  }
+    .webcam-frame.fullscreen img {
+      max-width: 100%;
+      max-height: 100%;
+    }
 
-  .chart-frame.fullscreen {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    background: #fff;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .chart-frame {
+      cursor: pointer;
+      border-radius: 8px;
+      overflow: hidden;
+      transition: transform 0.3s ease;
+      max-width: 100%;
+      height: 400px;
+    }
 
-  .chart-frame canvas {
-    max-width: 100%;
-    max-height: 400px;
-  }
+    .chart-frame.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: 9999;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .chart-frame.fullscreen canvas {
-    max-width: 90%;
-    max-height: 90%;
-  }
+    .chart-frame canvas {
+      max-width: 100%;
+      max-height: 400px;
+    }
 
-  .login-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgb(117, 117, 117);
-    z-index: 10000;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+    .chart-frame.fullscreen canvas {
+      max-width: 90%;
+      max-height: 90%;
+    }
 
-  .login-modal {
-    background: white;
-    padding: 2rem;
-    border-radius: 12px;
-    max-width: 400px;
-    width: 90%;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-  }
+    .login-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgb(117, 117, 117);
+      z-index: 10000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-  .login-modal h2 {
-    margin-top: 0;
-    margin-bottom: 1rem;
-  }
+    .login-modal {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
 
-  .login-modal input {
-    width: 100%;
-    padding: 0.75rem;
-    margin: 0.5rem 0;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1rem;
-  }
+    .login-modal h2 {
+      margin-top: 0;
+      margin-bottom: 1rem;
+    }
 
-  .login-modal button {
-    width: 100%;
-    padding: 0.75rem;
-    background: #007bff;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-top: 1rem;
-  }
+    .login-modal input {
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
 
-  .login-modal button:hover {
-    background: #0056b3;
-  }
+    .login-modal button {
+      width: 100%;
+      padding: 0.75rem;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      margin-top: 1rem;
+    }
+
+    .login-modal button:hover {
+      background: #0056b3;
+    }
   </style>
 
 </head>
@@ -611,7 +671,7 @@
 
   <!-- Webcam and Chart -->
   <div class="main-content">
-    <div class="webcam-frame"  id="webcamFrame">
+    <div class="webcam-frame" id="webcamFrame">
       <img src="/stream?action=stream" id="webcamstream" class="webcamstream" alt="Webcam Feed">
     </div>
 
@@ -636,15 +696,18 @@
   <div class="status-card">
     <div class="label">
       <div>Connected clients:
-      <label id="clientsConnected"></label></div>
+        <label id="clientsConnected"></label>
+      </div>
     </div>
     <div class="label">
       <div>Uptime:
-      <label id="uptime"></label></div>
+        <label id="uptime"></label>
+      </div>
     </div>
     <div class="label">
       <div>
-      <label id="temperature"></label></div>
+        <label id="temperature"></label>
+      </div>
     </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
@@ -664,100 +727,61 @@
 
   <div class="custom-container">
     <!-- Watering Frame -->
-    <h2 class="custom-frame-title">Watering System</h2>
     <div class="watering-wrapper">
-      <label><input type="checkbox" id="override-checkbox"> Override</label>
-
+      <h2 class="custom-frame-title">Watering System</h2>
       <div class="watering-frame" id="watering-frame">
+        <label><input type="checkbox" id="override-checkbox"> Override</label>
+  
         <button id="water-button" onclick="triggerWater()">Water</button>
-
-        <label for="water-level">Water Level (1-5)</label>
+  
+        <label for="water-level">Water Level (1–5)</label>
         <input type="range" id="water-level" min="1" max="5" value="2" oninput="updateWaterLevel(this.value)">
         <span id="water-level-value">2</span>
-
+  
         <div>
-          <label><input type="radio" name="pump" value="pump0" checked>Top</label>
-          <label><input type="radio" name="pump" value="pump1">Bottom</label>
+          <label><input type="radio" name="pump" value="pump0" checked> Top</label>
+          <label><input type="radio" name="pump" value="pump1"> Bottom</label>
         </div>
       </div>
     </div>
-
-    <h2 class="custom-frame-title">Server Handling</h2>
-    <div class="watering-frame" id="watering-frame">
-      <!-- Button Container with Two Columns -->
-      <div style="display: flex; gap: 150px;">
-
-        <div class="server-button-container-vertical">
-          <button id="toggle-button" class="server-button resrestart-runtimeServer-btn" onclick="toggleCamera()">
-            Toggle Camera
-          </button>
-          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('clearServerLogs')">
-            Clear Server Logs
-          </button>
-          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('clearMoistLogs')">
-            Clear Moister Logs
-          </button>
-          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('startSprayer')">
-            Start Spayer
-          </button>
-          <button class="server-button resrestart-runtimeServer-btn" onclick="sendServerCommand('stopSprayer')">
-            Stop Spayer
-          </button>
-        </div>
-
-        <!-- Right Column (Existing Buttons) -->
-        <div class="server-button-container-vertical">
-          <button onclick="sendServerCommand('restartRuntimeServer')" class="server-button">
-            Restart Runtime Server
-          </button>
-          <button onclick="sendServerCommand('restartWebServer')" class="server-button">
-            Restart Webserver
-          </button>
-          <button onclick="sendServerCommand('restartMoistMeasure')" class="server-button">
-            Restart Moist Measurement ECU
-          </button>
-          <button onclick="sendServerCommand('restartSystem')" class="server-button">
-            Restart System
-          </button>
-        </div>
-
+  
+    <!-- Control Frame -->
+    <div class="watering-wrapper">
+      <h2 class="custom-frame-title">Server Handling</h2>
+      <div class="watering-frame" id="watering-frame">
+        <table style="width: 100%; border-collapse: separate; border-spacing: 1rem;">
+          <tr>
+            <td valign="top">
+              <div class="server-button-container-vertical">
+                <button class="server-button" onclick="toggleCamera()" id="toggle-button">Toggle Camera</button>
+                <button class="server-button" onclick="sendServerCommand('clearServerLogs')">Clear Server Logs</button>
+                <button class="server-button" onclick="sendServerCommand('clearMoistLogs')">Clear Moister Logs</button>
+                <button class="server-button" onclick="sendServerCommand('startSprayer')">Start Sprayer</button>
+                <button class="server-button" onclick="sendServerCommand('stopSprayer')">Stop Sprayer</button>
+              </div>
+            </td>
+            <td valign="top">
+              <div class="server-button-container-vertical">
+                <button class="server-button" onclick="sendServerCommand('restartRuntimeServer')">Restart Runtime Server</button>
+                <button class="server-button" onclick="sendServerCommand('restartWebServer')">Restart Webserver</button>
+                <button class="server-button" onclick="sendServerCommand('restartMoistMeasure')">Restart Moist Measurement ECU</button>
+                <button class="server-button" onclick="sendServerCommand('restartSystem')">Restart System</button>
+              </div>
+            </td>
+          </tr>
+        </table>
       </div>
     </div>
-
-
-  </div>
   </div>
 
-  <div class="log-section" style="display: flex; justify-content: center; padding: 2rem;">
+  <div class="log-section">
     <div class="log-container">
-      <h2 style="margin-top: 0; font-size: 1.25rem; color: var(--accent-blue); margin-bottom: 1rem;">
-        Pump Log
-      </h2>
+      <h2 class="log-title">Pump Log</h2>
 
-      <div style="
-        background-color: #141414; /* Dark background for terminal effect */
-        color: #ebe5e5; /* Light text */
-        font-family: 'Courier New', monospace;
-        font-size: 0.85rem;
-        border-radius: 8px;
-        padding: 1rem;
-        max-height: 300px;
-        overflow-y: auto;
-        white-space: pre-wrap;
-      " id="pump-log"></div>
+      <div id="pump-log" class="log-output"></div>
 
-      <div style="text-align: right; margin-top: 1rem;">
-        <button onclick="reloadLogs()" style="
-          background-color: #4b5563; /* Button background */
-          color: white;
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: 6px;
-          cursor: pointer;
-          font-size: 0.9rem;
-        ">
-          Reload Logs
-        </button>
+      <div class="log-actions">
+        <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
       </div>
     </div>
   </div>
@@ -823,7 +847,7 @@
         document.getElementById('uptime').textContent = state.trim();
         return;
       }
-      if(id === "statusCamera"){
+      if (id === "statusCamera") {
         statusCamera = state.trim()
         if (statusCamera === "active") {
           btn.textContent = "Stop Camera";  // Update button text
@@ -836,14 +860,14 @@
         statusCamera = statusCamera
       }
       if (id === "statusTemp") {
-        if(state != undefined){
-           document.getElementById('temperature').textContent = state;
-         }
-         else{
-           if(!document.getElementById('temperature').textContent.includes('temperature*')){
-             document.getElementById('temperature').textContent = '*' + document.getElementById('temperature').textContent
-           }
-         }
+        if (state != undefined) {
+          document.getElementById('temperature').textContent = state;
+        }
+        else {
+          if (!document.getElementById('temperature').textContent.includes('temperature*')) {
+            document.getElementById('temperature').textContent = '*' + document.getElementById('temperature').textContent
+          }
+        }
         return;
       }
       const lamp = document.getElementById(`lamp-${id}`);
@@ -868,8 +892,8 @@
 
         // Replace the webcam image with a message when deactivated
         imageElement.src = "";  // Stops the webcam feed
+      }
     }
-  }
 
     const checkStatus = () => {
       ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusTemp"].forEach(key => {
@@ -953,7 +977,7 @@
 
       // Ensure that the elements exist
       if (!waterButton || !overrideCheckbox || !wateringFrame) {
-        console.error("Error: One or more required elements are missing in the DOM.");
+        console.error("Error: One or more required elements are missing in the DOM." + waterButton + " # " + overrideCheckbox + " # " + wateringFrame + " ##");
         return;
       }
 
@@ -991,10 +1015,6 @@
 
       if (userConfirmed) {
         // Send the water level and pump selection to the Flask backend if confirmed
-        console.log("stinging: ", JSON.stringify({
-          water_duration: waterLevel,
-          pump_selection: pumpSelection // Send pump selection as part of the request
-        }))
         fetch('/water', {
           method: 'POST',
           headers: {
@@ -1052,15 +1072,29 @@
         fullData.soil_top = [];
         fullData.soil_bottom = [];
         fullData.atomizer = [];
+        fullData.temperature = [];
+        fullData.humidity = [];
 
 
         rows.forEach(row => {
-          const [time, val0, val1, val2] = row.split(",");
+          const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
             fullData.soil_top.push(parseInt(val0.trim(), 10));
             fullData.soil_bottom.push(parseInt(val1.trim(), 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
+            if (isNaN(val3.trim(), 10)) {
+              fullData.temperature.push(0);
+            }
+            else {
+              fullData.temperature.push(parseInt(val3.trim(), 10));
+            }
+            if (isNaN(val4.trim(), 10)) {
+              fullData.humidity.push(0);
+            }
+            else {
+              fullData.humidity.push(parseInt(val4.trim(), 10));
+            }
           }
         });
 
@@ -1079,7 +1113,7 @@
     }
 
     function renderChartWithLimit() {
-      let { times, soil_top, soil_bottom, atomizer } = fullData;
+      let { times, soil_top, soil_bottom, atomizer, temperature, humidity } = fullData;
 
       if (!times.length) return;
 
@@ -1091,44 +1125,72 @@
       soil_top = soil_top.slice(-currentLimit);
       soil_bottom = soil_bottom.slice(-currentLimit);
       atomizer = atomizer.slice(-currentLimit);
+      temperature = temperature.slice(-currentLimit);
+      humidity = humidity.slice(-currentLimit);
 
-      updateChart(times, soil_top, soil_bottom, atomizer);
-// Calculate duration (based on full CSV data, not filtered)
-const start = parseTimeToDate(fullData.times[0]);
-const end = parseTimeToDate(fullData.times[fullData.times.length - 1]);
-const diffMs = end - start;
+      updateChart(times, soil_top, soil_bottom, atomizer, temperature, humidity);
+      // Calculate duration (based on full CSV data, not filtered)
+      const start = parseTimeToDate(fullData.times[0]);
+      const end = parseTimeToDate(fullData.times[fullData.times.length - 1]);
+      const diffMs = end - start;
 
-let duration = "N/A";
-if (!isNaN(diffMs)) {
-  const totalMinutes = Math.floor(diffMs / (1000 * 60));
-  const days = Math.floor(totalMinutes / (60 * 24));
-  const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-  const minutes = totalMinutes % 60;
+      let duration = "N/A";
+      if (!isNaN(diffMs)) {
+        const totalMinutes = Math.floor(diffMs / (1000 * 60));
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minutes = totalMinutes % 60;
 
-  duration = [
-    days ? `${days}d` : "",
-    hours ? `${hours}h` : "",
-    `${minutes}m`
-  ].filter(Boolean).join(" ");
-}
+        duration = [
+          days ? `${days}d` : "",
+          hours ? `${hours}h` : "",
+          `${minutes}m`
+        ].filter(Boolean).join(" ");
+      }
 
-// Calculate min and max values for both soil_top and soil_bottom
-const soil_topMin = Math.min(...fullData.soil_top);
-const soil_topMax = Math.max(...fullData.soil_top);
-const soil_bottomMin = Math.min(...fullData.soil_bottom);
-const soil_bottomMax = Math.max(...fullData.soil_bottom);
-const atomizerMin = Math.min(...fullData.atomizer);
-const atomizerMax = Math.max(...fullData.atomizer);
+      // Calculate min and max values for both soil_top and soil_bottom
+      const soil_topMin = Math.min(...fullData.soil_top);
+      const soil_topMax = Math.max(...fullData.soil_top);
+      const soil_bottomMin = Math.min(...fullData.soil_bottom);
+      const soil_bottomMax = Math.max(...fullData.soil_bottom);
+      // For temp and humi, filter failed measures
+      const temperatureMin = Math.min(
+        ...fullData.temperature
+          .filter(val => val !== '0' && val !== 0)
+          .map(val => parseFloat(val))
+          .filter(val => !isNaN(val))
+      );
+      const temperatureMax = Math.max(
+        ...fullData.temperature
+          .filter(val => val !== '*')
+          .map(val => parseFloat(val))
+          .filter(val => !isNaN(val))
+      );
+      const humidityMin = Math.min(
+        ...fullData.humidity
+          .filter(val => val !== '0' && val !== 0)
+          .map(val => parseFloat(val))
+          .filter(val => !isNaN(val))
+      );
+      const humidityMax = Math.max(
+        ...fullData.humidity
+          .filter(val => val !== '*')
+          .map(val => parseFloat(val))
+          .filter(val => !isNaN(val))
+      );
 
-const infoBox = document.getElementById('chart-info');
-infoBox.innerHTML = `
+
+      const infoBox = document.getElementById('chart-info');
+      infoBox.innerHTML = `
   📅 <strong>Start:</strong> ${start.toLocaleTimeString()} &nbsp; |
   🧮 <strong>Entries:</strong> ${fullData.times.length} &nbsp; |
   ⏱️ <strong>Duration:</strong> ${duration} &nbsp;
   <br>
   📈 <strong>soil_top:</strong> min ${soil_topMin}, max ${soil_topMax} &nbsp; |
   📉 <strong>soil_bottom:</strong> min ${soil_bottomMin}, max ${soil_bottomMax}
-  📉 <strong>atomizer:</strong> min ${atomizerMin}, max ${atomizerMax}
+  📉 <strong>temperature:</strong> min ${temperatureMin}, max ${temperatureMax}
+  📉 <strong>humidity:</strong> min ${humidityMin}, max ${humidityMax}
+  
 `;
 
     }
@@ -1140,12 +1202,14 @@ infoBox.innerHTML = `
       return now;
     }
 
-    function updateChart(times, soil_top, soil_bottom, atomizer) {
+    function updateChart(times, soil_top, soil_bottom, atomizer, temperature, humidity) {
       if (myChartInstance) {
         myChartInstance.data.labels = times;
         myChartInstance.data.datasets[0].data = soil_top;
         myChartInstance.data.datasets[1].data = soil_bottom;
-        myChartInstance.data.datasets[2].data = atomizer*400;
+        myChartInstance.data.datasets[2].data = atomizer * 400;
+        myChartInstance.data.datasets[3].data = temperature;
+        myChartInstance.data.datasets[4].data = humidity;
         myChartInstance.update();
       } else {
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -1177,8 +1241,30 @@ infoBox.innerHTML = `
               {
                 label: 'atomizer',
                 data: atomizer,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-dark').trim(),
+                backgroundColor: 'rgba(116, 185, 129, 0.25)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 1
+              }
+              ,
+              {
+                label: 'Temperature',
+                data: temperature,
+                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-red').trim(),
+                backgroundColor: 'rgba(220, 150, 60, 0.25)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3,
+                pointRadius: 1
+              }
+              ,
+              {
+                label: 'Humidity',
+                data: humidity,
                 borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow').trim(),
-                backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                backgroundColor: 'rgba(200, 185, 12, 0.25)',
                 borderWidth: 2,
                 fill: true,
                 tension: 0.3,
@@ -1257,19 +1343,7 @@ infoBox.innerHTML = `
       }
     }
 
-    // Prevent clicks before login
-    chartFrame.addEventListener('click', () => {
-      if (!isLoggedIn) return;
 
-      if (!document.fullscreenElement) {
-        chartFrame.classList.add('fullscreen');
-        chartFrame.requestFullscreen().catch(err => {
-          console.error(`Error enabling fullscreen: ${err.message}`);
-        });
-      } else {
-        document.exitFullscreen();
-      }
-    });
 
     window.addEventListener('DOMContentLoaded', () => {
       if (localStorage.getItem('isLoggedIn') === 'true') {

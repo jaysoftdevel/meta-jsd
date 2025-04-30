@@ -3,6 +3,7 @@ import datetime
 import time
 import logging
 import threading
+import temperatureMeasure
 
 # Define the serial port and baud rate
 SERIAL_PORT = "/dev/ttyAMA1"  # Change to match your device
@@ -23,7 +24,7 @@ class moist_logger:
             moist0 = ser.readline().decode('utf-8', errors='ignore').strip()
             date=datetime.datetime.now().strftime('%H:%M:%S')
 
-            return f"{date},{moist0}\n"
+            return f"{date},{moist0}"
 
         except serial.SerialException as e:
             logging.info(f"Error: {e.text()}")
@@ -56,7 +57,9 @@ class moist_logger:
         while True:
             try:
                 with open(LOGFILE, "a") as file:
-                    file.write(self.getMoist())
+                    # moist = self.getMoist()
+                    # temp = 
+                    file.write(f"{self.getMoist()},{temperatureMeasure.DHT22(26).read_raw()}\n")
                     file.flush()
                 time.sleep(59)  # Wait 59 seconds
             except Exception as e:
