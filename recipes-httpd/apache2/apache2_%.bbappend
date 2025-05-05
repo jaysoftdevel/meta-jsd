@@ -7,6 +7,7 @@ FILESEXTRAPATHS:prepend := "${THISDIR}/files:"
 SRC_URI += " \
     file://index.html \
     file://httpd.conf \
+    file://htpasswd \
     "
 
 DestPath = "/var/www/html"
@@ -24,6 +25,7 @@ do_install:append:class-target() {
         -subj "/C=US/ST=State/L=City/O=GrowBot/OU=IT/CN=growbot.jsd"
 
     install -m 0644 ${WORKDIR}/httpd.conf ${D}${sysconfdir}/apache2/httpd.conf
+    install -m 0640 ${WORKDIR}/htpasswd ${D}${sysconfdir}/apache2/.htpasswd
 }
 
 FILES:${PN} += "/*"

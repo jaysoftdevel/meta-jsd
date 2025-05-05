@@ -36,22 +36,26 @@ class moist_logger:
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("3".encode())
+            self.status=True
             time.sleep(0.5)
             ser.flush()
             ser.close()
         except Exception as e:
             print(f"## ERROR during control: {e}")
-#     return jsonify({"error": str(e)}), 500
 
     def stopAtomzier(self):
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("4".encode())
+            self.status=False
             time.sleep(0.5)
             ser.flush()
             ser.close()
         except Exception as e:
             print(f"## ERROR during control: {e}")
+
+    def getAtomizerStatus(self):
+        return self.status
 
     def _run(self):
         while True:
@@ -67,6 +71,7 @@ class moist_logger:
 
     def __init__(self):
         print("## init moister")
+        self.status=False
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.thread.start()
 

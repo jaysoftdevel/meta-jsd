@@ -74,25 +74,6 @@
       flex-direction: row;
     }
 
-    #logoutBtn {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      z-index: 10001;
-      padding: 0.5rem 1rem;
-      background: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 1rem;
-      display: none;
-      /* hidden by default */
-    }
-
-    #logoutBtn:hover {
-      background: #c0392b;
-    }
 
     .webcam-frame,
     .chart-container {
@@ -101,6 +82,7 @@
       background-color: var(--card-bg);
       padding: 0.75rem;
       border-radius: 12px;
+      overflow-x: auto;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       box-sizing: border-box;
     }
@@ -436,14 +418,14 @@
     }
 
     /* Specific color for Start Server button */
-    .resrestart-runtimeServer-btn {
+    .resrestart-runtimeServer-cameraBtn {
       background-color: #4caf50;
       /* Green */
       color: white;
     }
 
     /* Specific color for Restart Server button */
-    .restart-system-btn {
+    .restart-system-cameraBtn {
       background-color: #f44336;
       /* Red */
       color: white;
@@ -604,77 +586,11 @@
       max-width: 90%;
       max-height: 90%;
     }
-
-    .login-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgb(117, 117, 117);
-      z-index: 10000;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .login-modal {
-      background: white;
-      padding: 2rem;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-    }
-
-    .login-modal h2 {
-      margin-top: 0;
-      margin-bottom: 1rem;
-    }
-
-    .login-modal input {
-      width: 100%;
-      padding: 0.75rem;
-      margin: 0.5rem 0;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-
-    .login-modal button {
-      width: 100%;
-      padding: 0.75rem;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-top: 1rem;
-    }
-
-    .login-modal button:hover {
-      background: #0056b3;
-    }
   </style>
 
 </head>
 
 <body>
-  <!-- Login Modal HTML -->
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-modal">
-      <h2>Login</h2>
-      <form onsubmit="handleLogin(event)">
-        <input type="text" id="username" placeholder="Username" required>
-        <input type="password" id="password" placeholder="Password" required>
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  </div>
-
-  <button id="logoutBtn" onclick="handleLogout()">Logout</button>
-
   <header>JSD's GrowBot</header>
 
   <!-- Webcam and Chart -->
@@ -730,6 +646,10 @@
         <div id="lamp-statusCamera" class="lamp"></div>
         <div class="label">statusCamera</div>
       </div>
+      <div class="lamp-wrapper">
+        <div id="lamp-statusSprayer" class="lamp"></div>
+        <div class="label">statusSprayer</div>
+      </div>
     </div>
   </div>
 
@@ -739,20 +659,20 @@
       <h2 class="custom-frame-title">Watering System</h2>
       <label><input type="checkbox" id="override-checkbox"> Override</label>
       <div class="watering-frame" id="watering-frame">
-  
+
         <button id="water-button" onclick="triggerWater()">Water</button>
-  
+
         <label for="water-level">Water Level (1–5)</label>
         <input type="range" id="water-level" min="1" max="5" value="2" oninput="updateWaterLevel(this.value)">
         <span id="water-level-value">2</span>
-  
+
         <div>
           <label><input type="radio" name="pump" value="pump0" checked> Top</label>
           <label><input type="radio" name="pump" value="pump1"> Bottom</label>
         </div>
       </div>
     </div>
-  
+
     <!-- Control Frame -->
     <div class="watering-wrapper">
       <h2 class="custom-frame-title">Server Handling</h2>
@@ -764,15 +684,16 @@
                 <button class="server-button" onclick="toggleCamera()" id="toggle-button">Toggle Camera</button>
                 <button class="server-button" onclick="sendServerCommand('clearServerLogs')">Clear Server Logs</button>
                 <button class="server-button" onclick="sendServerCommand('clearMoistLogs')">Clear Moister Logs</button>
-                <button class="server-button" onclick="sendServerCommand('startSprayer')">Start Sprayer</button>
-                <button class="server-button" onclick="sendServerCommand('stopSprayer')">Stop Sprayer</button>
+                <button class="server-button" onclick="toggleSprayer()" id="sprayer-button">Toggle Sprayer</button>
               </div>
             </td>
             <td valign="top">
               <div class="server-button-container-vertical">
-                <button class="server-button" onclick="sendServerCommand('restartRuntimeServer')">Restart Runtime Server</button>
+                <button class="server-button" onclick="sendServerCommand('restartRuntimeServer')">Restart Runtime
+                  Server</button>
                 <button class="server-button" onclick="sendServerCommand('restartWebServer')">Restart Webserver</button>
-                <button class="server-button" onclick="sendServerCommand('restartMoistMeasure')">Restart Moist Measurement ECU</button>
+                <button class="server-button" onclick="sendServerCommand('restartMoistMeasure')">Restart Moist
+                  Measurement ECU</button>
                 <button class="server-button" onclick="sendServerCommand('restartSystem')">Restart System</button>
               </div>
             </td>
@@ -796,17 +717,17 @@
 
   <script>
     let myChartInstance = null;
-    let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [] };
+    let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
     let currentLimit = 30;
 
     let serviceRunning = false;
     let statusCamera = "inactive";
 
-    const btn = document.getElementById('toggle-button');
+    const cameraBtn = document.getElementById('toggle-button');
+    const sprayerBtn = document.getElementById('sprayer-button');
+
     const webcamFrame = document.getElementById('webcamFrame');
     const chartFrame = document.getElementById('chartFrame');
-    const loginOverlay = document.getElementById('loginOverlay');
-    const logoutBtn = document.getElementById('logoutBtn');
 
     // Block fullscreen until logged in
     let isLoggedIn = false;
@@ -858,14 +779,26 @@
       if (id === "statusCamera") {
         statusCamera = state.trim()
         if (statusCamera === "active") {
-          btn.textContent = "Stop Camera";  // Update button text
-          btn.style.backgroundColor = "tomato";
+          cameraBtn.textContent = "Stop Camera";
+          cameraBtn.style.backgroundColor = "tomato";
         }
         else if (statusCamera === "inactive") {
-          btn.textContent = "Start Camera";  // Update button text
-          btn.style.backgroundColor = "#4CAF50";
+          cameraBtn.textContent = "Start Camera";
+          cameraBtn.style.backgroundColor = "#4CAF50";
         }
         statusCamera = statusCamera
+      }
+      if (id === "statusSprayer") {
+        statusSprayer = state.trim()
+        if (statusSprayer === "active") {
+          sprayerBtn.textContent = "Stop Sprayer";
+          sprayerBtn.style.backgroundColor = "tomato";
+        }
+        else if (statusSprayer === "inactive") {
+          sprayerBtn.textContent = "Start Sprayer";
+          sprayerBtn.style.backgroundColor = "#4CAF50";
+        }
+        statusSprayer = statusSprayer
       }
       if (id === "statusTemp") {
         if (state != undefined) {
@@ -903,8 +836,24 @@
       }
     }
 
+
+    function toggleSprayer() {
+      if (statusSprayer.trim() === "inactive") {
+        sendServerCommand("startSprayer");  // Send command to stop camera
+
+        statusSprayer = "active";  // Toggle state to active
+
+      } else if (statusSprayer.trim() === "active") {
+        sendServerCommand("stopSprayer");  // Send command to start camera
+
+        statusCamera = "inactive";  // Toggle state to inactive
+        let imageElement = document.getElementById("statusSprayer");
+      }
+    }
+
+
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusTemp"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusTemp", "statusSprayer"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {
@@ -1088,8 +1037,8 @@
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
-            fullData.soil_top.push(parseInt(val0.trim(), 10));
-            fullData.soil_bottom.push(parseInt(val1.trim(), 10));
+            fullData.soil_top.push(300 - parseInt(val0.trim(), 10));
+            fullData.soil_bottom.push(300 - parseInt(val1.trim(), 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
             if (isNaN(val3.trim(), 10)) {
               fullData.temperature.push(0);
@@ -1117,7 +1066,7 @@
       renderChartWithLimit();
 
       const buttons = document.querySelectorAll('.button-container button');
-      buttons.forEach(btn => btn.classList.remove('active'));
+      buttons.forEach(cameraBtn => cameraBtn.classList.remove('active'));
     }
 
     function renderChartWithLimit() {
@@ -1136,26 +1085,27 @@
       temperature = temperature.slice(-currentLimit);
       humidity = humidity.slice(-currentLimit);
 
-      updateChart(times, soil_top, soil_bottom, atomizer, temperature, humidity);
-      // Calculate duration (based on full CSV data, not filtered)
+      updateChart(times, soil_top, soil_bottom, temperature, humidity);
+
       const start = parseTimeToDate(fullData.times[0]);
       const end = parseTimeToDate(fullData.times[fullData.times.length - 1]);
-      const diffMs = end - start;
 
-      let duration = "N/A";
-      if (!isNaN(diffMs)) {
-        const totalMinutes = Math.floor(diffMs / (1000 * 60));
-        const days = Math.floor(totalMinutes / (60 * 24));
-        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
-        const minutes = totalMinutes % 60;
-
-        duration = [
-          days ? `${days}d` : "",
-          hours ? `${hours}h` : "",
-          `${minutes}m`
-        ].filter(Boolean).join(" ");
-      }
-
+      totalSeconds = fullData.times.length * 60;
+      const days = Math.floor(totalSeconds / (24 * 3600));
+      totalSeconds %= 24 * 3600;
+      
+      const hours = Math.floor(totalSeconds / 3600);
+      totalSeconds %= 3600;
+      
+      const minutes = Math.floor(totalSeconds / 60);
+      
+      // Optional: const seconds = totalSeconds % 60;
+      
+      const duration = [
+        days > 0 ? `${days}d` : null,
+        (hours > 0 || days > 0) ? `${hours}h` : null,
+        `${minutes}m`
+      ].filter(Boolean).join(" ");
       // Calculate min and max values for both soil_top and soil_bottom
       const soil_topMin = Math.min(...fullData.soil_top);
       const soil_topMax = Math.max(...fullData.soil_top);
@@ -1210,14 +1160,14 @@
       return now;
     }
 
-    function updateChart(times, soil_top, soil_bottom, atomizer, temperature, humidity) {
+    function updateChart(times, soil_top, soil_bottom, temperature, humidity) {
       if (myChartInstance) {
         myChartInstance.data.labels = times;
         myChartInstance.data.datasets[0].data = soil_top;
         myChartInstance.data.datasets[1].data = soil_bottom;
-        myChartInstance.data.datasets[2].data = atomizer * 400;
-        myChartInstance.data.datasets[3].data = temperature;
-        myChartInstance.data.datasets[4].data = humidity;
+        //myChartInstance.data.datasets[2].data = atomizer * 400;
+        myChartInstance.data.datasets[2].data = temperature;
+        myChartInstance.data.datasets[3].data = humidity;
         myChartInstance.update();
       } else {
         const ctx = document.getElementById('myChart').getContext('2d');
@@ -1229,144 +1179,115 @@
               {
                 label: 'Bottom',
                 data: soil_top,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-blue').trim(),
-                backgroundColor: 'rgba(59, 130, 246, 0.25)',
+                borderColor: '#3b82f6',
+                backgroundColor: 'rgba(59, 130, 246, 0.15)',
                 borderWidth: 2,
                 fill: true,
-                tension: 0.3,
-                pointRadius: 1
+                tension: 0.4,
+                pointRadius: 0
               },
               {
                 label: 'Top',
                 data: soil_bottom,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-green').trim(),
-                backgroundColor: 'rgba(16, 185, 129, 0.25)',
+                borderColor: '#10b981',
+                backgroundColor: 'rgba(16, 185, 129, 0.15)',
                 borderWidth: 2,
                 fill: true,
-                tension: 0.3,
-                pointRadius: 1
+                tension: 0.4,
+                pointRadius: 0
               },
-              {
-                label: 'atomizer',
-                data: atomizer,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-dark').trim(),
-                backgroundColor: 'rgba(116, 185, 129, 0.25)',
-                borderWidth: 2,
-                fill: true,
-                tension: 0.3,
-                pointRadius: 1
-              }
-              ,
               {
                 label: 'Temperature',
                 data: temperature,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-red').trim(),
-                backgroundColor: 'rgba(220, 150, 60, 0.25)',
+                borderColor: '#ef4444',
+                backgroundColor: 'rgba(220, 150, 60, 0.15)',
                 borderWidth: 2,
                 fill: true,
-                tension: 0.3,
-                pointRadius: 1
-              }
-              ,
+                tension: 0.4,
+                pointRadius: 0
+              },
               {
                 label: 'Humidity',
                 data: humidity,
-                borderColor: getComputedStyle(document.documentElement).getPropertyValue('--accent-yellow').trim(),
-                backgroundColor: 'rgba(200, 185, 12, 0.25)',
+                borderColor: '#eab308',
+                backgroundColor: 'rgba(200, 185, 12, 0.15)',
                 borderWidth: 2,
                 fill: true,
-                tension: 0.3,
-                pointRadius: 1
+                tension: 0.4,
+                pointRadius: 0
               }
             ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
+            interaction: {
+              mode: 'index',
+              intersect: false
+            },
             plugins: {
               title: {
                 display: true,
-                text: 'Soil moisture',
+                text: 'Soil Moisture Levels',
+                color: '#fff',
                 font: {
-                  size: 18,
+                  size: 20,
                   weight: 'bold'
-                },
-                color: '#f1f1f1'
+                }
+              },
+              tooltip: {
+                backgroundColor: '#222',
+                titleColor: '#fff',
+                bodyColor: '#eee',
+                cornerRadius: 5,
+                padding: 10
+              },
+              legend: {
+                labels: {
+                  color: '#ccc',
+                  font: {
+                    size: 14
+                  }
+                }
               }
             },
             scales: {
               x: {
                 ticks: {
-                  color: '#ccc',
-                  autoSkip: true,
-                  maxTicksLimit: 25
+                  color: '#aaa'
                 },
                 title: {
                   display: true,
                   text: 'Time',
-                  color: '#eee'
+                  color: '#ccc'
+                },
+                grid: {
+                  color: '#333'
                 }
               },
               y: {
                 ticks: {
-                  color: '#ccc'
+                  color: '#aaa'
                 },
                 title: {
                   display: true,
-                  text: 'Moisture',
-                  color: '#eee'
-                }
-              }
+                  text: 'Value',
+                  color: '#ccc'
+                },
+                grid: {
+                  color: '#333'
+                },
+                beginAtZero: true
+              },
             },
             animation: {
-              duration: 500,
-              easing: 'easeOutQuart',
-              onComplete: function () {
-                console.log("Animation complete");
-              }
+              duration: 700,
+              easing: 'easeOutQuart'
             }
           }
         });
 
       }
-    }
-
-    function handleLogin() {
-      if (event) event.preventDefault(); // Prevents the default form submit
-      const username = document.getElementById('username').value.trim();
-      const password = document.getElementById('password').value;
-
-      // Replace with real auth check
-      if (username == "done" && "funk") {
-        isLoggedIn = true;
-        loginOverlay.style.display = 'none';
-        logoutBtn.style.display = 'none';
-
-        document.body.classList.remove('modal-open');
-
-        // Save login flag in localStorage
-        localStorage.setItem('isLoggedIn', 'true');
-      } else {
-        alert('Login ot valid!');
-      }
-    }
-
-
-
-    window.addEventListener('DOMContentLoaded', () => {
-      if (localStorage.getItem('isLoggedIn') === 'true') {
-        isLoggedIn = true;
-        loginOverlay.style.display = 'none';
-        logoutBtn.style.display = 'block';
-      }
-    });
-
-    function handleLogout() {
-      isLoggedIn = false;
-      localStorage.removeItem('isLoggedIn');
-      loginOverlay.style.display = 'flex';
-      logoutBtn.style.display = 'none';
-      document.body.classList.add('modal-open');
     }
 
     fetchCSV();

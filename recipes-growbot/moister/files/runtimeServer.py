@@ -248,6 +248,12 @@ def control():
                 return jsonify({"message": temperatureMeasure.DHT22(26).read()}), 200
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error reading temperature: {e}")
+        case "statusSprayer":
+            logger.info("## Status of humidity sprayer requested")
+            if(moist_logger.getAtomizerStatus()==True):
+                return jsonify({"message": "active"})
+            else:
+                return jsonify({"message": "inactive"})
         case "clearServerLogs":
             logger.info("## Clearing of server log files requested")
             try:
