@@ -96,7 +96,7 @@ class DHT22:
                     return f"Temperature: {temperature/2:.1f} °C, Humidity: {humidity/2:.1f} %"
                 return f"Temperature: ERROR, Humidity: ERROR"
             except Exception as e:
-                #print(f"Read attempt {attempt+1} failed: {e}")
+                print(f"Read attempt {attempt+1} failed: {e}")
                 time.sleep(0.5)  # short pause before retry
         
     def read_raw(self):
@@ -116,9 +116,9 @@ if __name__ == "__main__":
     humidity = None
     temperature = None
     sensor = DHT22(pin=26)  # BCM GPIO 26
-    try:
-        print(sensor.read())
-        time.sleep(1)
-        print(sensor.read_raw())
-    except Exception as e:
-        print(f"Failed to read sensor: {e}")
+    #try:
+    print("read: " + sensor.read())
+    time.sleep(1)
+    print("read_raw: " + sensor.read_raw())
+    #except Exception as e:
+    print(f"Failed to read sensor: {e}")

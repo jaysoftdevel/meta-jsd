@@ -633,6 +633,11 @@
         <label id="temperature"></label>
       </div>
     </div>
+    <div class="label">
+      <div>
+        <label id="latest_moist"></label>
+      </div>
+    </div>
     <div class="lamp-container">
       <div class="lamp-wrapper">
         <div id="lamp-statusRuntimeServer" class="lamp"></div>
@@ -767,7 +772,9 @@
     });
 
     const updateLamp = (id, state) => {
-
+      // update latest diplayed data
+      document.getElementById('temperature').textContent = "Temperature: " + fullData.temperature[fullData.temperature.length-1] + "°C, Humidity: " + fullData.humidity[fullData.humidity.length-1] + "%";
+      document.getElementById('latest_moist').textContent = "Soil top: " + fullData.soil_top[fullData.soil_top.length-1] + ", Soil bottom: " + fullData.soil_bottom[fullData.soil_bottom.length-1];
       if (id === "statusClients") {
         document.getElementById('clientsConnected').textContent = state.trim();
         return;
@@ -800,17 +807,7 @@
         }
         statusSprayer = statusSprayer
       }
-      if (id === "statusTemp") {
-        if (state != undefined) {
-          document.getElementById('temperature').textContent = state;
-        }
-        else {
-          if (!document.getElementById('temperature').textContent.includes('temperature*')) {
-            document.getElementById('temperature').textContent = '*' + document.getElementById('temperature').textContent
-          }
-        }
-        return;
-      }
+
       const lamp = document.getElementById(`lamp-${id}`);
       lamp.style.backgroundColor = state.trim() === "active" ? "#005e00" : "#990000";
     };
@@ -853,7 +850,7 @@
 
 
     const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusTemp", "statusSprayer"].forEach(key => {
+      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusSprayer"].forEach(key => {
         fetch('/control', {
           method: 'POST',
           headers: {
@@ -1032,7 +1029,6 @@
         fullData.temperature = [];
         fullData.humidity = [];
 
-
         rows.forEach(row => {
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
@@ -1041,16 +1037,16 @@
             fullData.soil_bottom.push(300 - parseInt(val1.trim(), 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
             if (isNaN(val3.trim(), 10)) {
-              fullData.temperature.push(0);
+              fullData.temperature.push(0.0);
             }
             else {
-              fullData.temperature.push(parseInt(val3.trim(), 10));
+              fullData.temperature.push(parseFloat(val3.trim()));
             }
             if (isNaN(val4.trim(), 10)) {
-              fullData.humidity.push(0);
+              fullData.humidity.push(0.0);
             }
             else {
-              fullData.humidity.push(parseInt(val4.trim(), 10));
+              fullData.humidity.push(parseFloat(val4.trim()));
             }
           }
         });

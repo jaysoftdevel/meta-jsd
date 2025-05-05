@@ -8,9 +8,6 @@ SRC_URI += " \
 
 inherit systemd
 
-# Make sure systemd service is enabled
-#SYSTEMD_SERVICE:${PN} = "moister.service"
-
 S = "${WORKDIR}"
 
 FILES:${PN} += "/"
