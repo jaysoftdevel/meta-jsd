@@ -3,6 +3,8 @@
 
 // Pin configuration
 const int atomizerPin = 12; // D12
+const int LED0 = 8;
+const int LED1 = 9;
 
 static bool runAtomizer = false;
 
@@ -27,6 +29,8 @@ void setup()
     digitalWrite(atomizerPin, HIGH); // Atomizer initially OFF (active low)
     Serial.begin(115200);
     Serial1.begin(115200);
+    pinMode(LED0, OUTPUT);
+    pinMode(LED1, OUTPUT);
 }
 
 void loop()
@@ -125,6 +129,16 @@ void handleCommand(char cmd)
     else if (cmd == '4')
     {
         runAtomizer = false;
+    }
+    else if (cmd == '5')
+    {
+        digitalWrite(LED0, HIGH);
+        digitalWrite(LED1, HIGH);
+    }
+    else if (cmd == '6')
+    {
+        digitalWrite(LED0, LOW);
+        digitalWrite(LED1, LOW);
     }
     else
     {
