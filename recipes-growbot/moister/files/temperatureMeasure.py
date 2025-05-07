@@ -102,12 +102,13 @@ class DHT22:
     def read_raw(self):
         global temperature, humidity 
         self.read()
-        if(temperature < 38.0 and temperature > 0.0):
-            return f"{(temperature)},{humidity}"
-        elif(temperature >= 38.0 and temperature <= 80.0):
-            return f"{temperature / 2},{humidity / 2}"
-        else:
-            return f"0.0,0.0"
+        if(temperature != None):
+            if(temperature < 38.0 and temperature > 0.0):
+                return f"{(temperature)},{humidity}"
+            elif(temperature >= 38.0 and temperature <= 80.0):
+                return f"{temperature / 2},{humidity / 2}"
+        # this means error!
+        return f"0.0,0.0"
 
 
 
@@ -117,8 +118,7 @@ if __name__ == "__main__":
     temperature = None
     sensor = DHT22(pin=26)  # BCM GPIO 26
     #try:
-    print("read: " + sensor.read())
+    print("read: " + str(sensor.read()))
     time.sleep(1)
-    print("read_raw: " + sensor.read_raw())
+    print("read_raw: " + str(sensor.read_raw()))
     #except Exception as e:
-    print(f"Failed to read sensor: {e}")

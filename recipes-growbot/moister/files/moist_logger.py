@@ -24,6 +24,11 @@ class moist_logger:
             moist0 = ser.readline().decode('utf-8', errors='ignore').strip()
             date=datetime.datetime.now().strftime('%H:%M:%S')
 
+            # assign atomizer value
+            if(int(moist0.split(',')[-1]) == 1):
+                self.status = True
+            elif(int(moist0.split(',')[-1]) == 0):
+                self.status = False
             return f"{date},{moist0}"
 
         except serial.SerialException as e:

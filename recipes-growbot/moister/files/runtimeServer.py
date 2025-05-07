@@ -242,12 +242,6 @@ def control():
                 )
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error reading uptime: {e}")
-        case "statusTemp":
-            logger.info("## Status request for temperature and humidity recieved")
-            try:
-                return jsonify({"message": temperatureMeasure.DHT22(26).read()}), 200
-            except subprocess.CalledProcessError as e:
-                logger.error(f"Error reading temperature: {e}")
         case "statusSprayer":
             logger.info("## Status of humidity sprayer requested")
             if(moist_logger.getAtomizerStatus()==True):
