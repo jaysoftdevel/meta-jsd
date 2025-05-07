@@ -37,6 +37,27 @@ class moist_logger:
         except serial.Timeout:
             logging.info("Timeout!")
 
+    def startNightLight(self):
+        try:
+            ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
+            ser.write("5".encode())
+            self.status=True
+            time.sleep(0.5)
+            ser.flush()
+            ser.close()
+        except Exception as e:
+            print(f"## ERROR starting night light: {e}")
+
+    def stopNightLight(self):
+        try:
+            ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
+            ser.write("6".encode())
+            self.status=True
+            time.sleep(0.5)
+            ser.flush()
+            ser.close()
+        except Exception as e:
+            print(f"## ERROR stopping night light: {e}")
     def startAtomzier(self):
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
@@ -67,7 +88,7 @@ class moist_logger:
             try:
                 with open(LOGFILE, "a") as file:
                     # moist = self.getMoist()
-                    # temp = 
+                    # temp =
                     file.write(f"{self.getMoist()},{temperatureMeasure.DHT22(26).read_raw()}\n")
                     file.flush()
                 time.sleep(59)  # Wait 59 seconds
