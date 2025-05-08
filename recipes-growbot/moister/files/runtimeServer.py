@@ -136,6 +136,18 @@ def control():
                 subprocess.Popen(["systemctl", "start", "mjpg-streamer"])
             except subprocess.CalledProcessError as e:
                 logger.error(f"Error starting camera stream: {e}")
+        case "stopNightLight":
+            logger.info("## Request to stop night light received")
+            try:
+                moist_logger.stopNightLight()
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error stopping night light stream: {e}")
+        case "startNightLight":
+            logger.info("## Request to start night light received")
+            try:
+                moist_logger.startNightLight()
+            except subprocess.CalledProcessError as e:
+                logger.error(f"Error stating night light: {e}")
         case "startSprayer":
             logger.info("## Request to start sprayer received")
             try:

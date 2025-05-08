@@ -5,10 +5,10 @@ from gpiod.line import Direction, Value
 
 class DHT22:
     def __init__(self, pin):
+        os.nice(-10)
         self.pin = pin
         self.chip = "/dev/gpiochip0"
-        #self.line = self.chip.get_line(self.pin)
-        self.line_offset = 26
+        self.line_offset = 6
         # Request the line once, but we'll request it for input and output as needed
         self.request = gpiod.request_lines(self.chip, consumer="dht22", config={self.line_offset : gpiod.LineSettings(direction=Direction.INPUT)})
 

@@ -26,9 +26,9 @@ class moist_logger:
 
             # assign atomizer value
             if(int(moist0.split(',')[-1]) == 1):
-                self.status = True
+                self.atomizerStatus = True
             elif(int(moist0.split(',')[-1]) == 0):
-                self.status = False
+                self.atomizerStatus = False
             return f"{date},{moist0}"
 
         except serial.SerialException as e:
@@ -41,7 +41,6 @@ class moist_logger:
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("5".encode())
-            self.status=True
             time.sleep(0.5)
             ser.flush()
             ser.close()
@@ -52,17 +51,17 @@ class moist_logger:
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("6".encode())
-            self.status=True
             time.sleep(0.5)
             ser.flush()
             ser.close()
         except Exception as e:
             print(f"## ERROR stopping night light: {e}")
+
     def startAtomzier(self):
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("3".encode())
-            self.status=True
+            self.atomizerStatus=True
             time.sleep(0.5)
             ser.flush()
             ser.close()
@@ -73,7 +72,7 @@ class moist_logger:
         try:
             ser = serial.Serial('/dev/ttyAMA1', 115200, timeout=TIMEOUT)
             ser.write("4".encode())
-            self.status=False
+            self.atomizerStatus=False
             time.sleep(0.5)
             ser.flush()
             ser.close()
@@ -81,7 +80,7 @@ class moist_logger:
             print(f"## ERROR during control: {e}")
 
     def getAtomizerStatus(self):
-        return self.status
+        return self.atomizerStatus
 
     def _run(self):
         while True:
@@ -97,7 +96,7 @@ class moist_logger:
 
     def __init__(self):
         print("## init moister")
-        self.status=False
+        self.atomizerStatus=False
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.thread.start()
 
