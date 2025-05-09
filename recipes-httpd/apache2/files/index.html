@@ -727,6 +727,7 @@
 
     let serviceRunning = false;
     let statusCamera = "inactive";
+    let statusSprayer = "inactive";
 
     const cameraBtn = document.getElementById('toggle-button');
     const sprayerBtn = document.getElementById('sprayer-button');
@@ -772,16 +773,15 @@
     });
 
     const updateLamp = (id, state) => {
-      // update latest diplayed data
-      document.getElementById('temperature').textContent = "Temperature: " + fullData.temperature[fullData.temperature.length-1] + "°C, Humidity: " + fullData.humidity[fullData.humidity.length-1] + "%";
-      document.getElementById('latest_moist').textContent = "Soil top: " + fullData.soil_top[fullData.soil_top.length-1] + ", Soil bottom: " + fullData.soil_bottom[fullData.soil_bottom.length-1];
+      document.getElementById('temperature').textContent = "Temperature: " + fullData.temperature[fullData.temperature.length - 1] + "°C, Humidity: " + fullData.humidity[fullData.humidity.length - 1] + "%";
+      document.getElementById('latest_moist').textContent = "Soil top: " + fullData.soil_top[fullData.soil_top.length - 1] + ", Soil bottom: " + fullData.soil_bottom[fullData.soil_bottom.length - 1];
       if (id === "statusClients") {
         document.getElementById('clientsConnected').textContent = state.trim();
-        return;
+        return; // return as statusClients has no lamp!
       }
       if (id === "statusUptime") {
         document.getElementById('uptime').textContent = state.trim();
-        return;
+        return; // return as Uptime has no lamp!
       }
       if (id === "statusCamera") {
         statusCamera = state.trim()
@@ -793,7 +793,6 @@
           cameraBtn.textContent = "Start Camera";
           cameraBtn.style.backgroundColor = "#4CAF50";
         }
-        statusCamera = statusCamera
       }
       if (id === "statusSprayer") {
         statusSprayer = state.trim()
@@ -805,7 +804,6 @@
           sprayerBtn.textContent = "Start Sprayer";
           sprayerBtn.style.backgroundColor = "#4CAF50";
         }
-        statusSprayer = statusSprayer
       }
 
       const lamp = document.getElementById(`lamp-${id}`);
@@ -817,7 +815,6 @@
         sendServerCommand("startCamera");  // Send command to stop camera
 
         statusCamera = "active";  // Toggle state to active
-
         setTimeout(() => {
           let imageElement = document.getElementById("webcamstream");
           imageElement.src = "/stream?action=stream&t=" + new Date().getTime();
@@ -827,24 +824,18 @@
 
         statusCamera = "inactive";  // Toggle state to inactive
         let imageElement = document.getElementById("webcamstream");
-
         // Replace the webcam image with a message when deactivated
         imageElement.src = "";  // Stops the webcam feed
       }
     }
 
-
     function toggleSprayer() {
       if (statusSprayer.trim() === "inactive") {
         sendServerCommand("startSprayer");  // Send command to stop camera
-
         statusSprayer = "active";  // Toggle state to active
-
       } else if (statusSprayer.trim() === "active") {
         sendServerCommand("stopSprayer");  // Send command to start camera
-
-        statusCamera = "inactive";  // Toggle state to inactive
-        let imageElement = document.getElementById("statusSprayer");
+        statusSprayer = "inactive";  // Toggle state to inactive
       }
     }
 
@@ -882,7 +873,7 @@
         })
           .then(response => response.json())
           .then(data => {
-            console.log("fetching message " + data.message); // Handle response from Flask
+            console.log("## key: " + command + " # fetching message " + data.message); // Handle response from Flask
           })
           .catch(error => {
             console.error('Error: ', error);
@@ -1033,8 +1024,8 @@
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
-            fullData.soil_top.push(300 - parseInt(val0.trim(), 10));
-            fullData.soil_bottom.push(300 - parseInt(val1.trim(), 10));
+            fullData.soil_top.push(400 - parseInt(val0.trim(), 10));
+            fullData.soil_bottom.push(400 - parseInt(val1.trim(), 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
             if (isNaN(val3.trim(), 10)) {
               fullData.temperature.push(0.0);
@@ -1089,14 +1080,14 @@
       totalSeconds = fullData.times.length * 60;
       const days = Math.floor(totalSeconds / (24 * 3600));
       totalSeconds %= 24 * 3600;
-      
+
       const hours = Math.floor(totalSeconds / 3600);
       totalSeconds %= 3600;
-      
+
       const minutes = Math.floor(totalSeconds / 60);
-      
+
       // Optional: const seconds = totalSeconds % 60;
-      
+
       const duration = [
         days > 0 ? `${days}d` : null,
         (hours > 0 || days > 0) ? `${hours}h` : null,
