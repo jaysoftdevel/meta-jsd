@@ -1,6 +1,7 @@
 import threading
 import subprocess
 import time
+import moist_logger
 
 class streamHandler:
     def __init__(self, interval=10):
@@ -17,6 +18,7 @@ class streamHandler:
                     if subprocess.run("systemctl is-active mjpg-streamer", shell=True, capture_output=True, text=True).stdout.strip() == "active":
                         print("Disable webcam: " + str(result))
                         subprocess.run([ 'systemctl', 'stop', 'mjpg-streamer'])
+                        moist_logger.stopNightLight()
             except Exception as e:
                 print("### Exception while running netstat:", str(e))
             time.sleep(self.interval)

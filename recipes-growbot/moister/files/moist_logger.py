@@ -99,32 +99,3 @@ class moist_logger:
         self.atomizerStatus=False
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.thread.start()
-
-    # def __init__(self):
-    #     print("## init moister")
-    #     while True:
-    #         try:
-    #             print("## open file")
-    #             with open(LOGFILE, "a") as file:
-    #                 file.write(self.getMoist())
-    #                 file.flush()
-    #                 print("## done writing")
-    #                 file.close() # free for streamer control
-    #                 print("## closed!!!")
-    #             # once every minute (- drift correction, due to measurement)
-    #             time.sleep(59)
-    #         except KeyboardInterrupt:
-    #             logging.info("\nSerial reading stopped.")
-    #             exit()
-
-# while True:
-#     try:
-#         with open(LOGFILE, "a") as file:
-#             file.write(m.getMoist())
-#             file.flush()
-#             #file.close() # free for streamer control
-#         # once every minute (- drift correction, due to measurement)
-#         time.sleep(59)
-#     except KeyboardInterrupt:
-#         logging.info("\nSerial reading stopped.")
-#         exit()

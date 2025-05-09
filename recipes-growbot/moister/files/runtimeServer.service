@@ -13,5 +13,18 @@ RestartSec=10
 StandardOutput=journal
 StandardError=journal
 
+# --- High Priority Settings ---
+Nice=-10                          # Lower nice value = higher priority
+CPUSchedulingPolicy=rr           # Or "fifo" (real-time)
+CPUSchedulingPriority=20         # 1–99 (only for real-time policies)
+
+# Optional: pin to a CPU core for determinism
+# CPUAffinity=1                  # Pin to CPU core 1
+
+# Optional: increase allowed real-time runtime (needed for RT policies)
+LimitRTPRIO=99
+LimitMEMLOCK=infinity
+LimitNICE=-20
+
 [Install]
 WantedBy=multi-user.target

@@ -279,11 +279,6 @@ def control():
             return jsonify({"error": "Invalid control sequence: " + str(data)}), 400
     return jsonify({"message": "controlled successfully", "command ": data}), 200
 
-
-# except Exception as e:
-#     logger.error(f"## ERROR during control: {e}")
-#     return jsonify({"error": str(e)}), 500
-
 if __name__ == "__main__":
     logger.info(
         "**** starting GROWBOT ("

@@ -11,6 +11,7 @@ IMAGE_INSTALL += " \
     gstreamer1.0-plugins-ugly \
     gstreamer1.0-libav \
     gst-player \
+    htop \
     ffmpeg \
     v4l-utils \
     gstreamer1.0-vaapi \

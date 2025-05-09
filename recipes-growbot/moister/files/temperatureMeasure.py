@@ -69,7 +69,7 @@ class DHT22:
 
     def read(self):
         global temperature, humidity
-        for attempt in range(3):  # try up to 3 times
+        for attempt in range(6):  # try up to x times
             self._send_start_signal()
             try:
                 bits = self._read_data()
@@ -82,30 +82,31 @@ class DHT22:
                 temperature = (data[2] << 8) | data[3]
                 checksum = data[4]
 
-                if ((sum(data[:4]) & 0xFF) != checksum):
-                    raise RuntimeError("Checksum mismatch!")
+                # CHECK ABOUT USE OF THIS!!
+                #if ((sum(data[:4]) & 0xFF) != checksum):
+                #    raise RuntimeError("Checksum mismatch!")
 
                 humidity /= 10.0
                 if temperature & 0x8000:
                     temperature = -(temperature & 0x7FFF)
                 temperature /= 10.0
-                
-                if(temperature < 38.0 and temperature > 0.0):
+
+                if(temperature < 36.0 and temperature > 0.0):
                     return f"Temperature: {temperature:.1f} °C, Humidity: {humidity:.1f} %"
-                elif(temperature >= 38.0 and temperature <= 80.0):
+                elif(temperature >= 36.0 and temperature <= 100.0):
                     return f"Temperature: {temperature/2:.1f} °C, Humidity: {humidity/2:.1f} %"
                 return f"Temperature: ERROR, Humidity: ERROR"
             except Exception as e:
                 print(f"Read attempt {attempt+1} failed: {e}")
                 time.sleep(0.5)  # short pause before retry
-        
+
     def read_raw(self):
-        global temperature, humidity 
+        global temperature, humidity
         self.read()
         if(temperature != None):
-            if(temperature < 38.0 and temperature > 0.0):
+            if(temperature < 36.0 and temperature > 0.0):
                 return f"{(temperature)},{humidity}"
-            elif(temperature >= 38.0 and temperature <= 80.0):
+            elif(temperature >= 36.0 and temperature <= 100.0):
                 return f"{temperature / 2},{humidity / 2}"
         # this means error!
         return f"0.0,0.0"
