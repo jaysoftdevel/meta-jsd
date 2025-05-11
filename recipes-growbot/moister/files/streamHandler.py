@@ -15,10 +15,12 @@ class streamHandler:
             try:
                 result = subprocess.run("netstat -an | grep :80 | grep ESTABLISHED | wc -l", shell=True, capture_output=True, text=True).stdout.strip()
                 if result == "0":
+                    print("### Closing connections")
                     if subprocess.run("systemctl is-active mjpg-streamer", shell=True, capture_output=True, text=True).stdout.strip() == "active":
                         print("Disable webcam: " + str(result))
                         subprocess.run([ 'systemctl', 'stop', 'mjpg-streamer'])
-                        moist_logger.stopNightLight()
+                        moist_logger.moist_logger.stopNightLight()
+                        print("### done")
             except Exception as e:
                 print("### Exception while running netstat:", str(e))
             time.sleep(self.interval)
