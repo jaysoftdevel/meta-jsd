@@ -724,6 +724,8 @@
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
     let currentLimit = 30;
+    let MOISTER_OFFSET = 170;
+    let CSVErros = 0;
 
     let serviceRunning = false;
     let statusCamera = "inactive";
@@ -1012,6 +1014,7 @@
         const response = await fetch('moist_log.csv');
         const data = await response.text();
         const rows = data.split("\n");//.slice(1); // Skip header
+        CSVErros = 0;
 
         fullData.times = [];
         fullData.soil_top = [];
@@ -1024,20 +1027,23 @@
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
-            fullData.soil_top.push(400 - parseInt(val0.trim(), 10));
-            fullData.soil_bottom.push(400 - parseInt(val1.trim(), 10));
+            fullData.soil_top.push(MOISTER_OFFSET - parseInt(val0.trim()/3, 10));
+            fullData.soil_bottom.push(MOISTER_OFFSET - parseInt(val1.trim()/3, 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
-            if (isNaN(val3.trim(), 10)) {
-              fullData.temperature.push(0.0);
+            temp = parseFloat(val3.trim());
+            humi = parseFloat(val4.trim());
+            if (temp === 0.0) {
+              CSVErros+=1;
+              fullData.temperature.push(fullData.temperature[fullData.temperature.length-2]);
             }
             else {
-              fullData.temperature.push(parseFloat(val3.trim()));
+              fullData.temperature.push(temp);
             }
-            if (isNaN(val4.trim(), 10)) {
-              fullData.humidity.push(0.0);
+            if (humi === 0.0) {
+              fullData.humidity.push(fullData.humidity[fullData.humidity.length-2]);
             }
             else {
-              fullData.humidity.push(parseFloat(val4.trim()));
+              fullData.humidity.push(humi);
             }
           }
         });
@@ -1064,14 +1070,12 @@
       let startTime = times[0];
       let endTime = times[times.length - 1];
       let entryCount = times.length;
-
       times = times.slice(-currentLimit);
       soil_top = soil_top.slice(-currentLimit);
       soil_bottom = soil_bottom.slice(-currentLimit);
       atomizer = atomizer.slice(-currentLimit);
       temperature = temperature.slice(-currentLimit);
       humidity = humidity.slice(-currentLimit);
-
       updateChart(times, soil_top, soil_bottom, temperature, humidity);
 
       const start = parseTimeToDate(fullData.times[0]);
@@ -1128,14 +1132,14 @@
       const infoBox = document.getElementById('chart-info');
       infoBox.innerHTML = `
   📅 <strong>Start:</strong> ${start.toLocaleTimeString()} &nbsp; |
-  🧮 <strong>Entries:</strong> ${fullData.times.length} &nbsp; |
+  🧮 <strong>Entries:</strong> ${fullData.times.length} &nbsp;, <strong>Errors:</strong> ${CSVErros}|
   ⏱️ <strong>Duration:</strong> ${duration} &nbsp;
   <br>
   📈 <strong>soil_top:</strong> min ${soil_topMin}, max ${soil_topMax} &nbsp; |
   📉 <strong>soil_bottom:</strong> min ${soil_bottomMin}, max ${soil_bottomMax}
   📉 <strong>temperature:</strong> min ${temperatureMin}, max ${temperatureMax}
   📉 <strong>humidity:</strong> min ${humidityMin}, max ${humidityMax}
-  
+
 `;
 
     }
@@ -1164,7 +1168,7 @@
             labels: times,
             datasets: [
               {
-                label: 'Bottom',
+                label: 'Top',
                 data: soil_top,
                 borderColor: '#3b82f6',
                 backgroundColor: 'rgba(59, 130, 246, 0.15)',
@@ -1174,7 +1178,7 @@
                 pointRadius: 0
               },
               {
-                label: 'Top',
+                label: 'Bottom',
                 data: soil_bottom,
                 borderColor: '#10b981',
                 backgroundColor: 'rgba(16, 185, 129, 0.15)',

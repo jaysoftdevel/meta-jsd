@@ -82,11 +82,12 @@ class DHT22:
                 temperature = (data[2] << 8) | data[3]
                 checksum = data[4]
 
-                # CHECK ABOUT USE OF THIS!!
+                # Checksum is to unreliable, ignore and use close-frieds approach
                 #if ((sum(data[:4]) & 0xFF) != checksum):
                 #    raise RuntimeError("Checksum mismatch!")
-
                 humidity /= 10.0
+                if humidity > 100:
+                    humidity = 0.0
                 if temperature & 0x8000:
                     temperature = -(temperature & 0x7FFF)
                 temperature /= 10.0
