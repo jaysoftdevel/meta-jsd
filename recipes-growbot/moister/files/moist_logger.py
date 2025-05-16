@@ -86,8 +86,6 @@ class moist_logger:
         while True:
             try:
                 with open(LOGFILE, "a") as file:
-                    # moist = self.getMoist()
-                    # temp =
                     file.write(f"{self.getMoist()},{temperatureMeasure.DHT22(26).read_raw()}\n")
                     file.flush()
                 time.sleep(59)  # Wait 59 seconds

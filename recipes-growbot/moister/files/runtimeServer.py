@@ -303,7 +303,7 @@ if __name__ == "__main__":
     pump_controller = PumpController()
     moist_logger = moist_logger()
     logger.info("## Starting service")
-    sh = streamHandler.streamHandler(interval=10)
+    sh = streamHandler.streamHandler(interval=10, logger=moist_logger)
     try:
         app.run(host="0.0.0.0")
     except Exception as e:

@@ -1,26 +1,29 @@
 import threading
 import subprocess
 import time
-import moist_logger
+from moist_logger import moist_logger
 
 class streamHandler:
-    def __init__(self, interval=10):
+    def __init__(self, logger, interval=10):
+        self.logger = logger
         self.interval = interval
         self._stop_event = threading.Event()
         self.thread = threading.Thread(target=self._poll_connections, daemon=True)
         self.thread.start()
+        print("done")
 
     def _poll_connections(self):
         while not self._stop_event.is_set():
             try:
                 result = subprocess.run("netstat -an | grep :80 | grep ESTABLISHED | wc -l", shell=True, capture_output=True, text=True).stdout.strip()
+                print("result: "+str(result))
                 if result == "0":
                     print("### Closing connections")
-                    if subprocess.run("systemctl is-active mjpg-streamer", shell=True, capture_output=True, text=True).stdout.strip() == "active":
-                        print("Disable webcam: " + str(result))
-                        subprocess.run([ 'systemctl', 'stop', 'mjpg-streamer'])
-                        moist_logger.moist_logger.stopNightLight()
-                        print("### done")
+                    print("### Disable webcam: " + str(result))
+                    subprocess.run([ 'systemctl', 'stop', 'mjpg-streamer'])
+                    print("### Stopping night light")
+                    self.logger.stopNightLight()
+                    print("### done")
             except Exception as e:
                 print("### Exception while running netstat:", str(e))
             time.sleep(self.interval)
@@ -32,7 +35,8 @@ class streamHandler:
 
 # Example usage
 if __name__ == "__main__":
-    poller = streamHandler(interval=10)
+    moist_logger = moist_logger()
+    poller = streamHandler(moist_logger, interval=10)
     try:
         while True:
             time.sleep(1)
