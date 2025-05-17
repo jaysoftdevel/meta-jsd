@@ -5,4 +5,4 @@ Requires=network.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/take_photo.sh
+ExecStart=/var/www/html/take_photo.sh

@@ -720,6 +720,18 @@
     </div>
   </div>
 
+  <h1>Latest Webcam Timelapse</h1>
+
+  <div class="webcam-frame">
+    <video id="timelapseVideo" preload="metadata">
+      <source src="webcam_photos/timelapse_latest.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+    <button id="playBtn" class="play-button">▶</button>
+  </div>
+
+  <p>Last updated: <span id="timestamp"></span></p>
+
   <script>
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
@@ -739,6 +751,24 @@
 
     // Block fullscreen until logged in
     let isLoggedIn = false;
+
+    const video = document.getElementById('timelapseVideo');
+    const playBtn = document.getElementById('playBtn');
+
+    playBtn.addEventListener('click', () => {
+      video.play();
+      playBtn.classList.add('hidden');
+    });
+
+    video.addEventListener('pause', () => {
+      playBtn.classList.remove('hidden');
+    });
+
+    video.addEventListener('ended', () => {
+      playBtn.classList.remove('hidden');
+    });
+
+    document.getElementById("timestamp").textContent = new Date().toLocaleString();
 
     chartFrame.addEventListener('click', () => {
       if (!document.fullscreenElement) {
