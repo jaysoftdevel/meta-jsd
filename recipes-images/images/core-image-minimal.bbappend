@@ -2,6 +2,7 @@ IMAGE_FSTYPES = "wic"
 
 IMAGE_INSTALL += " \
     apache2 \
+    curl \
     dropbear \
     vim \
     gstreamer1.0 \
