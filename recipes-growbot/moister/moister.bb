@@ -3,8 +3,6 @@ LICENSE = "CLOSED"
 SRC_URI += " \
     file://moist_logger.py \
     "
-#    file://moister.service \
-#
 
 inherit systemd
 

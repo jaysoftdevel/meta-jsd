@@ -6,7 +6,9 @@ SRC_URI += " \
     file://runtimeServer.service \
     file://streamHandler.py \
     file://temperatureMeasure.py \
-    file://take-photo.sh \
+    file://take_photo.sh \
+    file://webcam-capture.service \
+    file://webcam-capture.timer \
     "
 
 inherit systemd
@@ -20,6 +22,7 @@ FILES:${PN} += "/"
 
 do_install(){
     install -d ${D}/var/www/html
+    install -d ${D}/var/www/html/webcam_photos"
     install -m 0644 ${S}/PumpController.py ${D}/var/www/html
     install -m 0644 ${S}/runtimeServer.py ${D}/var/www/html
     install -m 0644 ${S}/streamHandler.py ${D}/var/www/html
@@ -28,5 +31,7 @@ do_install(){
 
     # Install the systemd service
     install -d ${D}${systemd_unitdir}/system
-    install -m 0644 ${WORKDIR}/runtimeServer.service ${D}${systemd_unitdir}/system/runtimeServer.service
+    install -m 0644 ${S}/runtimeServer.service ${D}${systemd_unitdir}/system/runtimeServer.service
+    install -m 0644 ${S}/webcam-capture.service ${D}${systemd_system_unitdir}/webcam-capture.service
+    install -m 0644 ${S}/webcam-capture.timer ${D}${systemd_system_unitdir}/webcam-capture.timer
 }
