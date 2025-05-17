@@ -12,6 +12,7 @@ IMAGE_INSTALL += " \
     gstreamer1.0-libav \
     gst-player \
     htop \
+    i2c-tools \
     ffmpeg \
     v4l-utils \
     gstreamer1.0-vaapi \
@@ -21,6 +22,10 @@ IMAGE_INSTALL += " \
     python3-gpiod \
     python3-ntplib \
     python3-pip \
+    python3-core \
+    python3-pillow \
+    python3-adafruit-circuitpython-ssd1306 \
+    python3-adafruit-blinka \
     libgpiod \
     mjpg-streamer \
     kernel-modules \
