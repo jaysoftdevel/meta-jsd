@@ -1,6 +1,6 @@
 #!/bin/sh
 
-set -e
+#set -e
 
 OUTPUT_DIR="/var/www/html/webcam_photos"
 VIDEO_OUTPUT_DIR="${OUTPUT_DIR}"
@@ -13,8 +13,15 @@ LAST_INDEX=$(ls "$OUTPUT_DIR"/photo_*.jpg 2>/dev/null | sed -n 's/.*photo_\([0-9
 # Calculate next index
 NEXT_INDEX=$(printf "%04d" $(expr 0 + "$LAST_INDEX" + 1))
 
-# Capture snapshot using wget
-wget -q "http://localhost:8080/?action=snapshot" -O "$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+# Check if camera is running already
+if [ `systemctl is-active mjpg-streamer` == "inactive" ]
+then
+    systemctl start mjpg-streamer
+    wget -q "http://localhost:8080/?action=snapshot" -O "$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+    systemctl stop mjpg-streamer
+else
+    wget -q "http://localhost:8080/?action=snapshot" -O "$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+fi
 
 # Always overwrite timelapse video
 VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
