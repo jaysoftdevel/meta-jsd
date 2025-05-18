@@ -17,7 +17,7 @@ PHOTO_PATH="$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
 # Check if camera is running
 if [ "$(systemctl is-active mjpg-streamer)" = "inactive" ]; then
     systemctl start mjpg-streamer
-    sleep 2
+    sleep 5
     wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
     systemctl stop mjpg-streamer
 else
@@ -30,5 +30,7 @@ python3 add-timestamp.py "${PHOTO_PATH}"
 VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
 echo "[INFO] Rendering video → $VIDEO_PATH"
 ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
-    -i "$OUTPUT_DIR/photo_*.jpg" \
-    -c:v libx264 -pix_fmt yuv420p "$VIDEO_PATH"
+  -i "$OUTPUT_DIR/photo_*.jpg" \
+  -vf "scale=640:-2" \
+  -c:v libx264 -preset veryfast -crf 30 \
+  -pix_fmt yuv420p "$VIDEO_PATH"
