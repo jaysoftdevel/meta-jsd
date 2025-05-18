@@ -27,8 +27,8 @@ class PumpController:
         self.chip_path = chip_path
 
         self.line_offsets = {
-            "pump0": 2,
-            "pump1": 3,
+            "pump0": 17,
+            "pump1": 27,
             "moister": 16,
         }
 
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     logger.info("### staritng...")
     controller = PumpController()
     logger.info("### init done...")
-    
+
     try:
         # logger.info("Pump 1 ON")
         # controller.set_pump("pump0", PUMP_ON)

@@ -34,6 +34,7 @@ IMAGE_INSTALL += " \
     tzdata \
     ntp \
     moister \
+    oled-display \
     usbutils \
     pciutils \
 "
