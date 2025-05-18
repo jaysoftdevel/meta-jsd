@@ -1,8 +1,22 @@
 [Unit]
-Description=Capture webcam photo via MJPEG stream
-After=network.target
-Requires=network.target
+Description=Capture webcam photo and render video
 
 [Service]
 Type=oneshot
 ExecStart=/var/www/html/take-photo.sh
+
+# Run with lowest CPU and IO priority
+Nice=19
+IOSchedulingClass=idle
+
+# Optional: ensure minimal resource contention
+CPUWeight=1
+IOWeight=1
+
+# Allow interruption (e.g. with systemctl stop)
+KillMode=control-group
+TimeoutStopSec=5s
+SendSIGKILL=yes
+
+[Install]
+WantedBy=multi-user.target

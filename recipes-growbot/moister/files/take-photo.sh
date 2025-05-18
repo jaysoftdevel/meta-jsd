@@ -24,15 +24,18 @@ else
     wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
 fi
 
-# Render timestamp onto image
+# Render timestamp onto image (reduced quality: 75%)
 TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
 convert "$PHOTO_PATH" -gravity SouthEast -fill white \
-    -undercolor '#00000080' -pointsize 20 \
-    -annotate +10+10 "$TIMESTAMP" "$PHOTO_PATH"
+    -undercolor '#00000080' -pointsize 16 \
+    -annotate +10+10 "$TIMESTAMP" \
+    -quality 75 "$PHOTO_PATH"
 
-# Always overwrite timelapse video
+# Always overwrite timelapse video (reduced resolution + compression)
 VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
 echo "[INFO] Rendering video → $VIDEO_PATH"
 ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
     -i "$OUTPUT_DIR/photo_*.jpg" \
-    -c:v libx264 -pix_fmt yuv420p "$VIDEO_PATH"
+    -vf "scale=640:-2" \              # scale width to 640px, height auto
+    -c:v libx264 -preset veryfast \   # faster encoding, lower CPU
+    -crf 30 -pix_fmt yuv420p "$VIDEO_PATH"

@@ -14,6 +14,6 @@ RDEPENDS:${PN} += " \
 "
 
 do_install() {
-    install -d ${D}${bindir}
+    install -d ${D}/var/www/html
     install -m 0755 ${S}/oled_display.py ${D}/var/www/html/oled_display.py
 }
