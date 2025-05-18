@@ -97,3 +97,7 @@ class moist_logger:
         self.atomizerStatus=False
         self.thread = threading.Thread(target=self._run, daemon=True)
         self.thread.start()
+
+if __name__ == '__main__':
+    moister = moist_logger()
+    print("## reading moist value: " + moister.getMoist())

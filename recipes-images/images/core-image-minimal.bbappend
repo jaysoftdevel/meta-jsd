@@ -25,8 +25,9 @@ IMAGE_INSTALL += " \
     python3-pip \
     python3-core \
     python3-pillow \
-    python3-adafruit-circuitpython-ssd1306 \
-    python3-adafruit-blinka \
+    python3-luma-core \
+    python3-luma-oled \
+    python3-cbor2 \
     libgpiod \
     mjpg-streamer \
     kernel-modules \

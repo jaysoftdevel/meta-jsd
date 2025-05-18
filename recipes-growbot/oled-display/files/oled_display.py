@@ -1,31 +1,18 @@
-import time
-import board
-import busio
-from adafruit_ssd1306 import SSD1306_I2C
-from PIL import Image, ImageDraw, ImageFont
+from luma.core.interface.serial import i2c
+from luma.oled.device import ssd1306
+from PIL import ImageDraw, ImageFont, Image
 
-# Set up I2C interface
-i2c = busio.I2C(board.SCL, board.SDA)
+serial = i2c(port=1, address=0x3C)
+device = ssd1306(serial)
 
-# Initialize display
-WIDTH = 128
-HEIGHT = 32
-oled = SSD1306_I2C(WIDTH, HEIGHT, i2c)
-
-# Clear display
-oled.fill(0)
-oled.show()
-
-# Create blank image for drawing
-image = Image.new("1", (WIDTH, HEIGHT))
+# Create an image to draw on
+image = Image.new("1", device.size)
 draw = ImageDraw.Draw(image)
 
-# Use default font
-font = ImageFont.load_default()
+# Draw some text
+draw.text((15, 15), "Hello Pi 5!", fill=255)
 
-# Draw text
-draw.text((0, 0), "Hello, RPi5!", font=font, fill=255)
+# Display the image
+device.display(image)
 
-# Display image
-oled.image(image)
-oled.show()
+device.clear()

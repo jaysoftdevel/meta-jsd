@@ -11,11 +11,9 @@ DEPENDS += "python3"
 RDEPENDS:${PN} += " \
     python3-core \
     python3-pillow \
-    python3-adafruit-circuitpython-ssd1306 \
-    python3-adafruit-blinka \
 "
 
 do_install() {
     install -d ${D}${bindir}
-    install -m 0755 ${S}/oled_display.py ${D}${bindir}/oled_display
+    install -m 0755 ${S}/oled_display.py ${D}/var/www/html/oled_display.py
 }
