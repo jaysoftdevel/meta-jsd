@@ -15,7 +15,6 @@ IMAGE_INSTALL += " \
     htop \
     i2c-tools \
     ffmpeg \
-    freetype \
     v4l-utils \
     gstreamer1.0-vaapi \
     python3 \
