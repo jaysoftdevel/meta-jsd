@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#set -e
+
 OUTPUT_DIR="/var/www/html/webcam_photos"
 VIDEO_OUTPUT_DIR="${OUTPUT_DIR}"
 FRAMERATE=2
@@ -22,12 +24,11 @@ else
     wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
 fi
 
-# Always overwrite timelapse video (with timestamp overlay)
+python3 add-timestamp.py "${PHOTO_PATH}"
+
+# Always overwrite timelapse video
 VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
 echo "[INFO] Rendering video → $VIDEO_PATH"
-
 ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
-  -i "$OUTPUT_DIR/photo_*.jpg" \
-  -vf "scale=640:-2,drawtext=fontfile=/usr/share/fonts/TTF/DejaVuSans.ttf: \
-       text='%{pts\:localtime\:%s}':fontcolor=white:fontsize=16:box=1:boxcolor=black@0.5:x=w-tw-10:y=h-th-10" \
-  -c:v libx264 -preset veryfast -crf 30 -pix_fmt yuv420p "$VIDEO_PATH"
+    -i "$OUTPUT_DIR/photo_*.jpg" \
+    -c:v libx264 -pix_fmt yuv420p "$VIDEO_PATH"

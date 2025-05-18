@@ -9,6 +9,7 @@ SRC_URI += " \
     file://take-photo.sh \
     file://webcam-capture.service \
     file://webcam-capture.timer \
+    file://add-timestamp.py \
     "
 
 inherit systemd
@@ -28,6 +29,7 @@ do_install(){
     install -m 0644 ${S}/streamHandler.py ${D}/var/www/html
     install -m 0644 ${S}/temperatureMeasure.py ${D}/var/www/html
     install -m 0755 ${S}/take-photo.sh ${D}/var/www/html
+    install -m 0644 ${S}/add-timestamp.py ${D}/var/www/html
 
     # Install the systemd service
     install -d ${D}${systemd_unitdir}/system
