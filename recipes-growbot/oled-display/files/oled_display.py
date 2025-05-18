@@ -1,6 +1,7 @@
 from luma.core.interface.serial import i2c
 from luma.oled.device import ssd1306
 from PIL import ImageDraw, ImageFont, Image
+import time
 
 serial = i2c(port=1, address=0x3C)
 device = ssd1306(serial)
@@ -14,5 +15,4 @@ draw.text((15, 15), "Hello Pi 5!", fill=255)
 
 # Display the image
 device.display(image)
-
-device.clear()
+time.sleep(10)

@@ -730,8 +730,6 @@
     <button id="playBtn" class="play-button">▶</button>
   </div>
 
-  <p>Last updated: <span id="timestamp"></span></p>
-
   <script>
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
@@ -767,8 +765,6 @@
     video.addEventListener('ended', () => {
       playBtn.classList.remove('hidden');
     });
-
-    document.getElementById("timestamp").textContent = new Date().toLocaleString();
 
     chartFrame.addEventListener('click', () => {
       if (!document.fullscreenElement) {

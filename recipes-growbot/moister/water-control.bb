@@ -27,7 +27,7 @@ do_install(){
     install -m 0644 ${S}/runtimeServer.py ${D}/var/www/html
     install -m 0644 ${S}/streamHandler.py ${D}/var/www/html
     install -m 0644 ${S}/temperatureMeasure.py ${D}/var/www/html
-    install -m 0644 ${S}/take-photo.sh ${D}/var/www/html
+    install -m 0755 ${S}/take-photo.sh ${D}/var/www/html
 
     # Install the systemd service
     install -d ${D}${systemd_unitdir}/system
