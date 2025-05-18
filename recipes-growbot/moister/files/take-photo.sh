@@ -12,21 +12,26 @@ LAST_INDEX=$(ls "$OUTPUT_DIR"/photo_*.jpg 2>/dev/null | sed -n 's/.*photo_\([0-9
 
 # Calculate next index
 NEXT_INDEX=$(printf "%04d" $(expr 0 + "$LAST_INDEX" + 1))
+PHOTO_PATH="$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
 
-# Check if camera is running already
+# Check if camera is running
 if [ "$(systemctl is-active mjpg-streamer)" = "inactive" ]; then
-then
     systemctl start mjpg-streamer
     sleep 2
-    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
     systemctl stop mjpg-streamer
 else
-    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
 fi
+
+# Render timestamp onto image
+TIMESTAMP=$(date '+%Y-%m-%d %H:%M:%S')
+convert "$PHOTO_PATH" -gravity SouthEast -fill white \
+    -undercolor '#00000080' -pointsize 20 \
+    -annotate +10+10 "$TIMESTAMP" "$PHOTO_PATH"
 
 # Always overwrite timelapse video
 VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
-
 echo "[INFO] Rendering video → $VIDEO_PATH"
 ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
     -i "$OUTPUT_DIR/photo_*.jpg" \
