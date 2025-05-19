@@ -197,6 +197,21 @@
       box-sizing: border-box;
     }
 
+    .timelapse-frame {
+      transition: opacity 0.3s ease;
+      border: 2px solid #333;
+      padding: 10px;
+      border-radius: 10px;
+      background-color: var(--card-bg);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      align-items: center;
+      width: 100%;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      box-sizing: border-box;
+    }
+
     .watering-frame button {
       padding: 10px 20px;
       background-color: #4CAF50;
@@ -305,7 +320,7 @@
 
     #timelapse-image {
       width: 100%;
-      max-height: 400px;
+      max-height: 80%;
       border-radius: 12px;
       object-fit: contain;
       margin-bottom: 12px;
@@ -622,10 +637,6 @@
       max-height: 90%;
     }
 
-    #timelapse-frame {
-      padding: 16px;
-    }
-
     #timelapse-caption {
       font-size: 0.9rem;
     }
@@ -768,13 +779,15 @@
         </div>
       </div>
     </div>
-    <div id="timelapse-frame" class="watering-wrapper">
-      <div class="watering-frame">
-        <img id="timelapse-image" src="" alt="Timelapse Image" />
-        <div id="timelapse-caption">Loading…</div>
-        <div class="timelapse-controls">
-          <button id="timelapse-prev-btn" class="timelapse-button">⏪ Previous</button>
-          <button id="timelapse-next-btn" class="timelapse-button">Next ⏩</button>
+    <div id="timelapse-frame" class="timelapse-frame">
+      <div class="timelapse-frame">
+        <img id="timelapse-image" src="" alt="Timelapse Image" style="max-width: 100%; border-radius: 8px;">
+        <div id="timelapse-caption" style="margin-top: 8px; font-weight: bold;"></div>
+        <div id="timelapse-counter" style="margin-top: 4px; font-size: 0.9em; color: #666;"></div>
+
+        <div style="margin-top: 12px;">
+          <button onclick="prevImage()">Previous</button>
+          <button onclick="nextImage()">Next</button>
         </div>
       </div>
     </div>
@@ -795,57 +808,56 @@
 
     const webcamFrame = document.getElementById('webcamFrame');
     const chartFrame = document.getElementById('chartFrame');
+    const timelapseFrame = document.getElementById('timelapse-frame');
+    const timelapseImage = document.getElementById('timelapse-image');
+
 
     // Block fullscreen until logged in
     let isLoggedIn = false;
 
     let timelapseIndex = 0;
-    let timelapseTimestamps = [];
+    let timelapseFilenames = [];
 
-    function updateTimelapseImage() {
-      const ts = timelapseTimestamps[timelapseIndex];
-      const filename = `photo_${String(timelapseIndex + 1).padStart(4, '0')}.jpg`;
-      const readableTime = formatTimestamp(ts);
-
+    function loadImage(index) {
+      const filename = timelapseFilenames[index];
       document.getElementById('timelapse-image').src = `webcam_photos/${filename}`;
-      document.getElementById('timelapse-caption').textContent =
-        `Image ${timelapseIndex + 1} of ${timelapseTimestamps.length} — ${readableTime}`;
+
+      // Caption formatting
+      const match = filename.match(/photo_(\d{4}-\d{2}-\d{2})_(\d{2})-(\d{2})\.jpg/);
+      if (match) {
+        const [, date, hour, minute] = match;
+        const formatted = `${date} ${hour}:${minute}`;
+        document.getElementById('timelapse-caption').innerText = formatted;
+      } else {
+        document.getElementById('timelapse-caption').innerText = "Unknown timestamp";
+      }
+
+      // Update image counter (e.g., 3 / 10)
+      document.getElementById('timelapse-counter').innerText = `${index + 1} / ${timelapseFilenames.length}`;
     }
 
-    function formatTimestamp(ts) {
-      const date = new Date(ts * 1000);
-      const yyyy = date.getFullYear();
-      const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months start at 0
-      const dd = String(date.getDate()).padStart(2, '0');
-      const hh = String(date.getHours()).padStart(2, '0');
-      const min = String(date.getMinutes()).padStart(2, '0');
-
-      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    function nextImage() {
+      timelapseIndex = (timelapseIndex + 1) % timelapseFilenames.length;
+      loadImage(timelapseIndex);
     }
 
-    function changeTimelapseImage(delta) {
-      const total = timelapseTimestamps.length;
-      timelapseIndex = (timelapseIndex + delta + total) % total;
-      updateTimelapseImage();
+    function prevImage() {
+      timelapseIndex = (timelapseIndex - 1 + timelapseFilenames.length) % timelapseFilenames.length;
+      loadImage(timelapseIndex);
     }
 
-
-    document.getElementById('timelapse-prev-btn').addEventListener('click', () => changeTimelapseImage(-1));
-    document.getElementById('timelapse-next-btn').addEventListener('click', () => changeTimelapseImage(1));
-
+    // Load timestamps.json
     fetch("webcam_photos/timestamps.json")
-      .then(response => response.json())
+      .then(res => res.json())
       .then(data => {
-        timelapseTimestamps = data;
-        if (timelapseTimestamps.length > 0) {
-          updateTimelapseImage();
-        } else {
-          document.getElementById('timelapse-caption').textContent = "No timelapse images found.";
+        timelapseFilenames = data.map(f => f.trim()).filter(f => f.endsWith('.jpg'));
+        if (timelapseFilenames.length > 0) {
+          loadImage(timelapseIndex);
         }
       })
-      .catch(() => {
-        document.getElementById('timelapse-caption').textContent = "Failed to load timelapse data.";
-      });
+      .catch(err => console.error(`Error loading timestamps: ${err.message}`));
+
+
 
     chartFrame.addEventListener('click', () => {
       if (!document.fullscreenElement) {
@@ -854,6 +866,21 @@
           console.error(`Error trying to enable full-screen mode: ${err.message}`);
         });
       } else {
+        document.exitFullscreen();
+      }
+    });
+
+    timelapseFrame.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        timelapseFrame.classList.add('fullscreen');
+        timelapseFrame.requestFullscreen().catch(err => {
+          console.error(`Error trying to enable full-screen mode: ${err.message}`);
+        });
+      }
+    });
+
+    timelapseImage.addEventListener('click', () => {
+      if (document.fullscreenElement) {
         document.exitFullscreen();
       }
     });

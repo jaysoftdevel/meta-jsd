@@ -267,13 +267,13 @@ def control():
             try:
                 open("/var/www/html/growbot-logs.log", "a").truncate(0)
             except subprocess.CalledProcessError as e:
-                logger.error(f"Error reading status of camera stream: {e}")
+                logger.error(f"Error clearing server logs: {e}")
         case "clearMoistLogs":
             logger.info("## Clearing of moister log files requested")
             try:
                 open("/var/www/html/moist_log.csv", "a").truncate(0)
             except subprocess.CalledProcessError as e:
-                logger.error(f"Error reading status of camera stream: {e}")
+                logger.error(f"Error moist server logs: {e}")
         case _:
             logger.warning({"error": "Invalid control sequence: " + str(data)})
             return jsonify({"error": "Invalid control sequence: " + str(data)}), 400

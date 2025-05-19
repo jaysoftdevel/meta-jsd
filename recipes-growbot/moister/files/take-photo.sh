@@ -1,46 +1,41 @@
 #!/bin/sh
 
-#set -e
-
 OUTPUT_DIR="/var/www/html/webcam_photos"
-VIDEO_OUTPUT_DIR="${OUTPUT_DIR}"
-FRAMERATE=2
-IMG_DIR="webcam_photos"
-JSON_OUTPUT="$IMG_DIR/timestamps.json"
+JSON_OUTPUT="${OUTPUT_DIR}/timestamps.json"
 
-# Determine next image index
-LAST_INDEX=$(ls "$OUTPUT_DIR"/photo_*.jpg 2>/dev/null | sed -n 's/.*photo_\([0-9]*\)\.jpg/\1/p' | sort -n | tail -1)
-[ -z "$LAST_INDEX" ] && LAST_INDEX=0000
-
-# Calculate next index
-NEXT_INDEX=$(printf "%04d" $(expr 0 + "$LAST_INDEX" + 1))
-PHOTO_PATH="$OUTPUT_DIR/photo_${NEXT_INDEX}.jpg"
+# Create timestamp in format YYYY-MM-DD_HH:MM
+TIMESTAMP=$(date +"%Y-%m-%d_%H-%M")
+PHOTO_PATH="${OUTPUT_DIR}/photo_${TIMESTAMP}.jpg"
 
 # Check if camera is running
-if [ "$(systemctl is-active mjpg-streamer)" = "inactive" ]; then
+if [ "$(systemctl is-active mjpg-streamer)" == "inactive" ]; then
     systemctl start mjpg-streamer
-    sleep 5
+    sleep 1
     wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
     systemctl stop mjpg-streamer
 else
     wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
 fi
 
-python3 add-timestamp.py "${PHOTO_PATH}"
+python3 /var/www/html/add-timestamp.py "${PHOTO_PATH}"
 
-# Generate JSON array of image timestamps (UNIX epoch format)
 echo "[" > "$JSON_OUTPUT"
 first=1
-for img in "$IMG_DIR"/*.jpg; do
-  # Get last modified time as UNIX timestamp
-  ts=$(stat -c %Y "$img")
+
+for img in "${OUTPUT_DIR}"/photo_*.jpg; do
+  # Extract timestamp string from filename
+  basename=$(basename "$img")
+  timestamp_str=$(echo "$basename" | sed -E 's/photo_([0-9]{4}:[0-9]{2}:[0-9]{2}_[0-9]{2}-[0-9]{2})\.jpg/\1/')
+
   if [ $first -eq 1 ]; then
     first=0
   else
     echo "," >> "$JSON_OUTPUT"
   fi
-  echo "  $ts" >> "$JSON_OUTPUT"
+
+  echo "  \"$timestamp_str\"" >> "$JSON_OUTPUT"
 done
+
 echo "]" >> "$JSON_OUTPUT"
 
 # !! Rendering on the RPi5 is too much effort at runtime!!
