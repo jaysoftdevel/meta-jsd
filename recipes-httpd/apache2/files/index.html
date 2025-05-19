@@ -319,11 +319,9 @@
     }
 
     #timelapse-image {
-      width: 100%;
-      max-height: 80%;
+      width: auto;
       border-radius: 12px;
       object-fit: contain;
-      margin-bottom: 12px;
     }
 
     .timelapse-controls {
@@ -767,7 +765,7 @@
     </div>
   </div>
 
-  <div class="log-section">
+  <div class="custom-container">
     <div class="watering-wrapper">
       <div class="log-container">
         <h2 class="log-title">Pump Log</h2>
@@ -780,16 +778,14 @@
       </div>
     </div>
     <div id="timelapse-frame" class="timelapse-frame">
-      <div class="timelapse-frame">
-        <img id="timelapse-image" src="" alt="Timelapse Image" style="max-width: 100%; border-radius: 8px;">
-        <div id="timelapse-caption" style="margin-top: 8px; font-weight: bold;"></div>
-        <div id="timelapse-counter" style="margin-top: 4px; font-size: 0.9em; color: #666;"></div>
+        <img id="timelapse-image" src="" alt="Timelapse Image" class="webcam-frame">
+        <div id="timelapse-caption" style="font-weight: bold;"></div>
+        <div id="timelapse-counter" style="color: #666;"></div>
 
         <div style="margin-top: 12px;">
           <button onclick="prevImage()">Previous</button>
           <button onclick="nextImage()">Next</button>
         </div>
-      </div>
     </div>
   </div>
   <script>
@@ -870,18 +866,25 @@
       }
     });
 
-    timelapseFrame.addEventListener('click', () => {
+    timelapseImage.addEventListener('click', () => {
       if (!document.fullscreenElement) {
         timelapseFrame.classList.add('fullscreen');
         timelapseFrame.requestFullscreen().catch(err => {
           console.error(`Error trying to enable full-screen mode: ${err.message}`);
         });
+        document.getElementById('timelapse-frame').style.padding = "0px";
+        document.getElementById('timelapse-frame').style.gap = "0px";
+        document.getElementById('timelapse-counter').style.fontSize = "10px";
+
       }
     });
 
     timelapseImage.addEventListener('click', () => {
       if (document.fullscreenElement) {
         document.exitFullscreen();
+        document.getElementById('timelapse-frame').style.padding = "10px";
+        document.getElementById('timelapse-frame').style.gap = "8px";
+        document.getElementById('timelapse-counter').style.fontSize = "10px";
       }
     });
 
