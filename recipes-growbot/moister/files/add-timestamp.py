@@ -14,10 +14,12 @@ draw = ImageDraw.Draw(img)
 
 # Load a font with larger size
 font_size = 32
-try:
-    font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", font_size)
-except IOError:
-    font = ImageFont.load_default()
+
+# use a bitmap font
+#font = ImageFont.load("arial.pil")
+
+# use a truetype font
+font = ImageFont.truetype("LiberationMono-Regular.ttf", 25)
 
 timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
 draw.text((10, img.height - font_size - 10), timestamp, font=font, fill=(255, 255, 255))

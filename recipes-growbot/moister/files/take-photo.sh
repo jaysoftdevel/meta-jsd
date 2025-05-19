@@ -5,6 +5,8 @@
 OUTPUT_DIR="/var/www/html/webcam_photos"
 VIDEO_OUTPUT_DIR="${OUTPUT_DIR}"
 FRAMERATE=2
+IMG_DIR="webcam_photos"
+JSON_OUTPUT="$IMG_DIR/timestamps.json"
 
 # Determine next image index
 LAST_INDEX=$(ls "$OUTPUT_DIR"/photo_*.jpg 2>/dev/null | sed -n 's/.*photo_\([0-9]*\)\.jpg/\1/p' | sort -n | tail -1)
@@ -26,11 +28,27 @@ fi
 
 python3 add-timestamp.py "${PHOTO_PATH}"
 
+# Generate JSON array of image timestamps (UNIX epoch format)
+echo "[" > "$JSON_OUTPUT"
+first=1
+for img in "$IMG_DIR"/*.jpg; do
+  # Get last modified time as UNIX timestamp
+  ts=$(stat -c %Y "$img")
+  if [ $first -eq 1 ]; then
+    first=0
+  else
+    echo "," >> "$JSON_OUTPUT"
+  fi
+  echo "  $ts" >> "$JSON_OUTPUT"
+done
+echo "]" >> "$JSON_OUTPUT"
+
+# !! Rendering on the RPi5 is too much effort at runtime!!
 # Always overwrite timelapse video
-VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
-echo "[INFO] Rendering video → $VIDEO_PATH"
-ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
-  -i "$OUTPUT_DIR/photo_*.jpg" \
-  -vf "scale=640:-2" \
-  -c:v libx264 -preset veryfast -crf 30 \
-  -pix_fmt yuv420p "$VIDEO_PATH"
+# VIDEO_PATH="$VIDEO_OUTPUT_DIR/timelapse_latest.mp4"
+# echo "[INFO] Rendering video → $VIDEO_PATH"
+# ffmpeg -y -framerate "$FRAMERATE" -pattern_type glob \
+#   -i "$OUTPUT_DIR/photo_*.jpg" \
+#   -vf "scale=640:-2" \
+#   -c:v libx264 -preset veryfast -crf 30 \
+#   -pix_fmt yuv420p "$VIDEO_PATH"

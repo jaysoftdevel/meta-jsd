@@ -170,7 +170,7 @@
 
     .watering-wrapper {
       display: inline-block;
-      text-align: center;
+      text-align: left;
       width: 100%;
     }
 
@@ -303,6 +303,41 @@
       flex-direction: row;
     }
 
+    #timelapse-image {
+      width: 100%;
+      max-height: 400px;
+      border-radius: 12px;
+      object-fit: contain;
+      margin-bottom: 12px;
+    }
+
+    .timelapse-controls {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .timelapse-button {
+      flex: 1 1 45%;
+      padding: 12px;
+      font-size: 1.1rem;
+      background-color: #007acc;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .timelapse-button:hover {
+      background-color: #005fa3;
+    }
+
+    .timelapse-button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
 
     @media (max-width: 700px) {
       header {
@@ -586,6 +621,19 @@
       max-width: 90%;
       max-height: 90%;
     }
+
+    #timelapse-frame {
+      padding: 16px;
+    }
+
+    #timelapse-caption {
+      font-size: 0.9rem;
+    }
+
+    .timelapse-button {
+      font-size: 1rem;
+      padding: 10px;
+    }
   </style>
 
 </head>
@@ -709,27 +757,28 @@
   </div>
 
   <div class="log-section">
-    <div class="log-container">
-      <h2 class="log-title">Pump Log</h2>
+    <div class="watering-wrapper">
+      <div class="log-container">
+        <h2 class="log-title">Pump Log</h2>
 
-      <div id="pump-log" class="log-output"></div>
+        <div id="pump-log" class="log-output"></div>
 
-      <div class="log-actions">
-        <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
+        <div class="log-actions">
+          <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
+        </div>
+      </div>
+    </div>
+    <div id="timelapse-frame" class="watering-wrapper">
+      <div class="watering-frame">
+        <img id="timelapse-image" src="" alt="Timelapse Image" />
+        <div id="timelapse-caption">Loading…</div>
+        <div class="timelapse-controls">
+          <button id="timelapse-prev-btn" class="timelapse-button">⏪ Previous</button>
+          <button id="timelapse-next-btn" class="timelapse-button">Next ⏩</button>
+        </div>
       </div>
     </div>
   </div>
-
-  <h1>Latest Webcam Timelapse</h1>
-
-  <div class="webcam-frame">
-    <video id="timelapseVideo" preload="metadata">
-      <source src="webcam_photos/timelapse_latest.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-    </video>
-    <button id="playBtn" class="play-button">▶</button>
-  </div>
-
   <script>
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
@@ -750,21 +799,53 @@
     // Block fullscreen until logged in
     let isLoggedIn = false;
 
-    const video = document.getElementById('timelapseVideo');
-    const playBtn = document.getElementById('playBtn');
+    let timelapseIndex = 0;
+    let timelapseTimestamps = [];
 
-    playBtn.addEventListener('click', () => {
-      video.play();
-      playBtn.classList.add('hidden');
-    });
+    function updateTimelapseImage() {
+      const ts = timelapseTimestamps[timelapseIndex];
+      const filename = `photo_${String(timelapseIndex + 1).padStart(4, '0')}.jpg`;
+      const readableTime = formatTimestamp(ts);
 
-    video.addEventListener('pause', () => {
-      playBtn.classList.remove('hidden');
-    });
+      document.getElementById('timelapse-image').src = `webcam_photos/${filename}`;
+      document.getElementById('timelapse-caption').textContent =
+        `Image ${timelapseIndex + 1} of ${timelapseTimestamps.length} — ${readableTime}`;
+    }
 
-    video.addEventListener('ended', () => {
-      playBtn.classList.remove('hidden');
-    });
+    function formatTimestamp(ts) {
+      const date = new Date(ts * 1000);
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0'); // Months start at 0
+      const dd = String(date.getDate()).padStart(2, '0');
+      const hh = String(date.getHours()).padStart(2, '0');
+      const min = String(date.getMinutes()).padStart(2, '0');
+
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    }
+
+    function changeTimelapseImage(delta) {
+      const total = timelapseTimestamps.length;
+      timelapseIndex = (timelapseIndex + delta + total) % total;
+      updateTimelapseImage();
+    }
+
+
+    document.getElementById('timelapse-prev-btn').addEventListener('click', () => changeTimelapseImage(-1));
+    document.getElementById('timelapse-next-btn').addEventListener('click', () => changeTimelapseImage(1));
+
+    fetch("webcam_photos/timestamps.json")
+      .then(response => response.json())
+      .then(data => {
+        timelapseTimestamps = data;
+        if (timelapseTimestamps.length > 0) {
+          updateTimelapseImage();
+        } else {
+          document.getElementById('timelapse-caption').textContent = "No timelapse images found.";
+        }
+      })
+      .catch(() => {
+        document.getElementById('timelapse-caption').textContent = "Failed to load timelapse data.";
+      });
 
     chartFrame.addEventListener('click', () => {
       if (!document.fullscreenElement) {
@@ -1053,20 +1134,20 @@
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
             fullData.times.push(time.trim());
-            fullData.soil_top.push(MOISTER_OFFSET - parseInt(val0.trim()/3, 10));
-            fullData.soil_bottom.push(MOISTER_OFFSET - parseInt(val1.trim()/3, 10));
+            fullData.soil_top.push(MOISTER_OFFSET - parseInt(val0.trim() / 3, 10));
+            fullData.soil_bottom.push(MOISTER_OFFSET - parseInt(val1.trim() / 3, 10));
             fullData.atomizer.push(parseInt(val2.trim(), 10));
             temp = parseFloat(val3.trim());
             humi = parseFloat(val4.trim());
             if (temp === 0.0) {
-              CSVErros+=1;
-              fullData.temperature.push(fullData.temperature[fullData.temperature.length-2]);
+              CSVErros += 1;
+              fullData.temperature.push(fullData.temperature[fullData.temperature.length - 2]);
             }
             else {
               fullData.temperature.push(temp);
             }
             if (humi === 0.0) {
-              fullData.humidity.push(fullData.humidity[fullData.humidity.length-2]);
+              fullData.humidity.push(fullData.humidity[fullData.humidity.length - 2]);
             }
             else {
               fullData.humidity.push(humi);
