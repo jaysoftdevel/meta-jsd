@@ -9,6 +9,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 img_path = sys.argv[1]
+print("## opening "+ str(img_path))
 img = Image.open(img_path)
 draw = ImageDraw.Draw(img)
 

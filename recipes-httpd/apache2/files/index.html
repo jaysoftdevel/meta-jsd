@@ -210,6 +210,7 @@
       width: 100%;
       box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
       box-sizing: border-box;
+      justify-content: space-evenly;
     }
 
     .watering-frame button {
@@ -319,7 +320,7 @@
     }
 
     #timelapse-image {
-      width: auto;
+      width: 100%;
       border-radius: 12px;
       object-fit: contain;
     }
@@ -765,29 +766,31 @@
     </div>
   </div>
 
-  <div class="custom-container">
-    <div class="watering-wrapper">
-      <div class="log-container">
-        <h2 class="log-title">Pump Log</h2>
+<div class="custom-container">
+  <div class="watering-wrapper">
+    <div class="log-container">
+      <h2 class="log-title">Pump Log</h2>
 
-        <div id="pump-log" class="log-output"></div>
+      <div id="pump-log" class="log-output"></div>
 
-        <div class="log-actions">
-          <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
-        </div>
+      <div class="log-actions">
+        <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
       </div>
     </div>
-    <div id="timelapse-frame" class="timelapse-frame">
-        <img id="timelapse-image" src="" alt="Timelapse Image" class="webcam-frame">
-        <div id="timelapse-caption" style="font-weight: bold;"></div>
-        <div id="timelapse-counter" style="color: #666;"></div>
+  </div>
 
-        <div style="margin-top: 12px;">
-          <button onclick="prevImage()">Previous</button>
-          <button onclick="nextImage()">Next</button>
-        </div>
+  <!-- Cleaned-up timelapse-frame without redundant wrapping -->
+  <div id="timelapse-frame" class="timelapse-frame">
+    <img id="timelapse-image" src="" alt="Timelapse Image">
+    <div id="timelapse-caption" style="font-weight: bold;"></div>
+    <div id="timelapse-counter" style="color: #666;"></div>
+    <div style="margin-top: 12px;">
+      <button onclick="prevImage()">Previous</button>
+      <button onclick="nextImage()">Next</button>
     </div>
   </div>
+</div>
+
   <script>
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
@@ -874,8 +877,9 @@
         });
         document.getElementById('timelapse-frame').style.padding = "0px";
         document.getElementById('timelapse-frame').style.gap = "0px";
+        document.getElementById('timelapse-image').style.maxHeight = "80%";
         document.getElementById('timelapse-counter').style.fontSize = "10px";
-
+        document.getElementById('timelapse-caption').style.marginTop = "10px";
       }
     });
 
@@ -884,7 +888,9 @@
         document.exitFullscreen();
         document.getElementById('timelapse-frame').style.padding = "10px";
         document.getElementById('timelapse-frame').style.gap = "8px";
+        document.getElementById('timelapse-image').style.maxHeight = "100%";
         document.getElementById('timelapse-counter').style.fontSize = "10px";
+        document.getElementById('timelapse-caption').style.marginTop = "0px";
       }
     });
 
