@@ -5,8 +5,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>GrowBot Dashboard</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
     *,
@@ -620,7 +620,7 @@
       width: 100vw;
       height: 100vh;
       z-index: 9999;
-      background: #fff;
+      background: #2c2c3a;
       display: flex;
       justify-content: center;
       align-items: center;
@@ -766,35 +766,36 @@
     </div>
   </div>
 
-<div class="custom-container">
-  <div class="watering-wrapper">
-    <div class="log-container">
-      <h2 class="log-title">Pump Log</h2>
+  <div class="custom-container">
+    <div class="watering-wrapper">
+      <div class="log-container">
+        <h2 class="log-title">Pump Log</h2>
 
-      <div id="pump-log" class="log-output"></div>
+        <div id="pump-log" class="log-output"></div>
 
-      <div class="log-actions">
-        <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
+        <div class="log-actions">
+          <button onclick="reloadLogs()" class="reload-button">Reload Logs</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cleaned-up timelapse-frame without redundant wrapping -->
+    <div id="timelapse-frame" class="timelapse-frame">
+      <img id="timelapse-image" src="" alt="Timelapse Image">
+      <div id="timelapse-caption" style="font-weight: bold;"></div>
+      <div id="timelapse-counter" style="color: #666;"></div>
+      <div style="margin-top: 12px;">
+        <button onclick="prevImage()">Previous</button>
+        <button onclick="nextImage()">Next</button>
       </div>
     </div>
   </div>
 
-  <!-- Cleaned-up timelapse-frame without redundant wrapping -->
-  <div id="timelapse-frame" class="timelapse-frame">
-    <img id="timelapse-image" src="" alt="Timelapse Image">
-    <div id="timelapse-caption" style="font-weight: bold;"></div>
-    <div id="timelapse-counter" style="color: #666;"></div>
-    <div style="margin-top: 12px;">
-      <button onclick="prevImage()">Previous</button>
-      <button onclick="nextImage()">Next</button>
-    </div>
-  </div>
-</div>
-
   <script>
     let myChartInstance = null;
     let fullData = { times: [], soil_top: [], soil_bottom: [], atomizer: [], temperature: [], humidity: [] };
-    let currentLimit = 30;
+    let transitionIndices = [];
+    let currentLimit;
     let MOISTER_OFFSET = 170;
     let CSVErros = 0;
 
@@ -917,6 +918,25 @@
       }
     });
 
+    const checkStatus = () => {
+      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusSprayer"].forEach(key => {
+        fetch('/control', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ command: key })
+        })
+          .then(res => res.json())
+          .then(json => {
+            updateLamp(key, json.message);
+          })
+          .catch(err => {
+            console.error(`Error fetching status for ${key}:`, err);
+          });
+      });
+    };
+
     const updateLamp = (id, state) => {
       document.getElementById('temperature').textContent = "Temperature: " + fullData.temperature[fullData.temperature.length - 1] + "°C, Humidity: " + fullData.humidity[fullData.humidity.length - 1] + "%";
       document.getElementById('latest_moist').textContent = "Soil top: " + fullData.soil_top[fullData.soil_top.length - 1] + ", Soil bottom: " + fullData.soil_bottom[fullData.soil_bottom.length - 1];
@@ -983,26 +1003,6 @@
         statusSprayer = "inactive";  // Toggle state to inactive
       }
     }
-
-
-    const checkStatus = () => {
-      ["statusRuntimeServer", "statusWebserver", "statusCamera", "statusClients", "statusUptime", "statusSprayer"].forEach(key => {
-        fetch('/control', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ command: key })
-        })
-          .then(res => res.json())
-          .then(json => {
-            updateLamp(key, json.message);
-          })
-          .catch(err => {
-            console.error(`Error fetching status for ${key}:`, err);
-          });
-      });
-    };
 
     function sendServerCommand(command) {
       // Show a confirmation dialog before sending the request
@@ -1145,18 +1145,13 @@
       document.getElementById('water-level-value').textContent = value;
     }
 
-
-    // For setting data limit (chart buttons)
-    function setDataLimit(limit) {
-      // Your code for handling data limit
-      console.log(`Data limit set to: ${limit}`);
-    }
-
     async function fetchCSV() {
       try {
         const response = await fetch('moist_log.csv');
         const data = await response.text();
         const rows = data.split("\n");//.slice(1); // Skip header
+        let iteration = 0;
+        let prevHour = 0;
         CSVErros = 0;
 
         fullData.times = [];
@@ -1166,9 +1161,17 @@
         fullData.temperature = [];
         fullData.humidity = [];
 
+        transitionIndices = [];
+
         rows.forEach(row => {
           const [time, val0, val1, val2, val3, val4] = row.split(",");
           if (time && val0 && val1) {
+
+            const currHour = parseInt(time.split(':')[0]);
+            if (prevHour === 23 && currHour === 0) {
+              transitionIndices.push(iteration);
+            }
+            prevHour = currHour;
             fullData.times.push(time.trim());
             fullData.soil_top.push(MOISTER_OFFSET - parseInt(val0.trim() / 3, 10));
             fullData.soil_bottom.push(MOISTER_OFFSET - parseInt(val1.trim() / 3, 10));
@@ -1189,16 +1192,19 @@
               fullData.humidity.push(humi);
             }
           }
+          iteration += 1;
         });
 
         renderChartWithLimit();
       } catch (error) {
         console.error("Error fetching CSV:", error);
       }
+      checkStatus();
     }
 
     function setDataLimit(limit) {
       currentLimit = limit;
+
       renderChartWithLimit();
 
       const buttons = document.querySelectorAll('.button-container button');
@@ -1360,6 +1366,28 @@
               intersect: false
             },
             plugins: {
+              annotation: {
+                annotations: transitionIndices.map(index => ({
+                  type: 'line',
+                  mode: 'vertical',
+                  xMin: index,
+                  xMax: index,
+                  value: index,
+                  borderColor: 'rgba(255, 255, 255, 0.6)',
+                  borderWidth: 2,
+                  borderDash: [6, 4],
+                  label: {
+                    enabled: true,
+                    content: 'Midnight',
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    color: '#fff',
+                    font: {
+                      size: 10,
+                      weight: 'bold'
+                    }
+                  }
+                }))
+              },
               title: {
                 display: true,
                 text: 'Soil Moisture Levels',
@@ -1425,10 +1453,10 @@
     }
 
     fetchCSV();
-    checkStatus();
-    setDataLimit(10);
+    //checkStatus();
+    setDataLimit(120);
     setInterval(fetchCSV, 10000);
-    setInterval(checkStatus, 10000);
+    //setInterval(checkStatus, 10000);
 
     // Auto-load logs on page load
     document.addEventListener('DOMContentLoaded', reloadLogs);
