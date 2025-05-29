@@ -280,6 +280,7 @@ def control():
     return jsonify({"message": "controlled successfully", "command ": data}), 200
 
 if __name__ == "__main__":
+    print("### starting runtime server")
     logger.info(
         "**** starting GROWBOT ("
         + str(

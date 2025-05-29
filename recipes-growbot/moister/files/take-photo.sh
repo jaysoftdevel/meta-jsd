@@ -19,7 +19,6 @@ if [ "$(systemctl is-active mjpg-streamer)" == "inactive" ]; then
         fi
         sleep 1
     done
-    # Take snapshot using curl
     if ! curl --silent --show-error --fail \
               --connect-timeout 5 \
               -u done:funk \
@@ -31,16 +30,15 @@ if [ "$(systemctl is-active mjpg-streamer)" == "inactive" ]; then
     fi
     systemctl stop mjpg-streamer
 else
-# Take snapshot using curl
-if ! curl --silent --show-error --fail \
-          --connect-timeout 5 \
-          -u done:funk \
-          "http://localhost:8080/?action=snapshot" \
-          -o "$PHOTO_PATH"; then
-    echo "Failed to retrieve snapshot."
-else
-    echo "Snapshot saved to $PHOTO_PATH"
-fi
+  if ! curl --silent --show-error --fail \
+            --connect-timeout 5 \
+            -u done:funk \
+            "http://localhost:8080/?action=snapshot" \
+            -o "$PHOTO_PATH"; then
+      echo "Failed to retrieve snapshot."
+  else
+      echo "Snapshot saved to $PHOTO_PATH"
+  fi
 fi
 
 python3 /var/www/html/add-timestamp.py "${PHOTO_PATH}"
