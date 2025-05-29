@@ -40,6 +40,8 @@ IMAGE_INSTALL += " \
     pciutils \
 "
 
+IMAGE_ROOTFS_EXTRA_SPACE = "5000000"
+
 # Adafruit libs, not fully working yet!
 #python3-adafruit-blinka \
 #python3-adafruit-circuitpython-dht \

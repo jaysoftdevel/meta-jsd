@@ -10,11 +10,37 @@ PHOTO_PATH="${OUTPUT_DIR}/photo_${TIMESTAMP}.jpg"
 # Check if camera is running
 if [ "$(systemctl is-active mjpg-streamer)" == "inactive" ]; then
     systemctl start mjpg-streamer
-    sleep 1
-    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
+    # Wait for port 8080 to be ready
+    echo "Waiting for mjpg-streamer to become available..."
+    for i in {1..10}; do
+        if nc -z localhost 8080; then
+            echo "Stream is live."
+            break
+        fi
+        sleep 1
+    done
+    # Take snapshot using curl
+    if ! curl --silent --show-error --fail \
+              --connect-timeout 5 \
+              -u done:funk \
+              "http://localhost:8080/?action=snapshot" \
+              -o "$PHOTO_PATH"; then
+        echo "Failed to retrieve snapshot."
+    else
+        echo "Snapshot saved to $PHOTO_PATH"
+    fi
     systemctl stop mjpg-streamer
 else
-    wget -q "http://done:funk@localhost:8080/?action=snapshot" -O "$PHOTO_PATH"
+# Take snapshot using curl
+if ! curl --silent --show-error --fail \
+          --connect-timeout 5 \
+          -u done:funk \
+          "http://localhost:8080/?action=snapshot" \
+          -o "$PHOTO_PATH"; then
+    echo "Failed to retrieve snapshot."
+else
+    echo "Snapshot saved to $PHOTO_PATH"
+fi
 fi
 
 python3 /var/www/html/add-timestamp.py "${PHOTO_PATH}"

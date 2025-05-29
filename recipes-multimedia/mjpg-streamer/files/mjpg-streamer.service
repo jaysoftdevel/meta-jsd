@@ -19,8 +19,6 @@ ExecStart=/usr/bin/mjpg_streamer \
 
 CPUAffinity=2 3
 Restart=on-failure
-User=root
-Group=root
 StandardOutput=journal
 StandardError=journal
 
